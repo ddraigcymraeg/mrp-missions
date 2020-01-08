@@ -1,6 +1,6 @@
 # CrackDown: Missions and Mission Generator/Mission Creation Resource. 
 See first post at for all the information:
-https://forum.fivem.net/t/release-fivem-crackdown-gamemode-and-mission-generator-creation-beta/275613/41
+https://forum.cfx.re/t/release-fivem-crackdown-game-mode-and-mission-generator-creation-beta/275613
 
 Installation:
 Install like any other FiveM Server Resource.
