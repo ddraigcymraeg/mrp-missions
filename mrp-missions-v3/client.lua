@@ -16891,7 +16891,7 @@ Citizen.CreateThread(function()
 						Wait(1)
 						
 						if GetGameTimer() - starttime >= 1000 then
-							print("break")
+							--print("break")
 							break
 						end
 						
