@@ -1,0 +1,3940 @@
+
+FIVEM CRACKDOWN MISSIONS v3 BETA RESOURCE CONFIGURATION 
+
+**USE MISSIONS.LUA IN THE RESOURCE, NOT THIS FILE, WHICH IS JUST A DESCRIPTION/EXAMPLE***
+
+--Edit Resource settings and edit/create Missions. All settings can be applied globally across all missions,
+--or per mission which overrides the global setting, unless said otherwise. Missions need to be ordered Mission1, Mission2, Mission3, etc... to work.
+--To increase difficulty for missions for more players consider increasing SetPedMinAccuracy/SetPedMaxAccuracy first from 60 to around 100 max
+
+Config = {}
+
+--DIFFERENT TYPES OF MISSIONS:
+Type="Objective", where you need to capture one main objective to complete the mission.
+Type="ObjectiveRescue", where you need to capture multiple objectives to complete the mission. See 'isObjective=true' in MISSION SETUP further down. Only for Regular mission, not 'IsRandom'
+Type="Assassinate", where you need to kill all the target NPCs to complete the mission.
+Type="HostageRescue", where you need to rescue all friendly NPCs to complete the mission. If a hostage dies the mission fails.
+Type="BossRush", where you need to kill all the target 'Boss' NPCs. 
+
+
+--MISSIONS CAN ALSO BE/HAVE:
+Regular : where you can specify exact Peds, Props and Vehicles with their exact positions, and behaviors using attributes (see below)
+IsRandom=true --: Random mission generator missions, where you can specify random mission generator settings globally or per mission.
+--what distance to trigger the mission. Distance from Blip or from MissionTriggerStartPoint
+Config.MissionTriggerRadius = 15000.0
+—used with variable above
+MissionTriggerStartPoint={x=0.0,y=0.0,z=0.0}
+
+IndoorMissions=true --Add this to Regular indoor missions that happen in indoor locations like Doomsday Heist Bunker or Humane Labs to have Peds/Vehicles spawn dynamically, which fixes this problem: 
+--https://forum.fivem.net/t/spawning-indoors-and-underground-have-invisible-peds-npcs/373532
+--You can override this, to have the vehicle/ped spawn at mission start by adding the attribute 'outside=true' to the Ped or Vehicle (**see Regular Mission Setup further down**)
+
+IndoorsMissionStrongSpawnCheck = true --Used with IndoorMissions=true. Does raytracing on players within 300m of spawn location, to make sure the NPC/Vehicle doesnt just appear out of nowhere in front of a player. 
+--if any player is in the line of sight it will not spawn. Sometimes you will not want this on.
+
+VehicleGotoMissionTarget="trailersmall", —create an inert vehicle to make vehicle  NPCs that have the VehicleGotoMissionTarget=true attribute to circle/chase
+VehicleGotoMissionTargetPed   —index of npc ped for vehicles npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
+VehicleGotoMissionTargetVehicle —index of npc vehicle for vehicle npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
+—NOTE, you can set VehicleGotoMissionTargetPed or VehicleGotoMissionTargetPed attributes per vehicle definition as well. See below. 
+
+
+
+HostageRescue=true --: If a hostage NPC dies during the mission, the mission fails. Used for any Mission Type.
+--IsDefend settings are meant to be used with Type="Assassinate" missions: 
+IsDefend=true --: Players must defend a zone from being reached by enemy NPCs, else the mission fails. 
+IsDefendTarget=true --: Players must defend an NPC target from being eliminated by the enemy NPCs, else the mission failes. Requires IsDefend=true.
+IsDefendTargetRescue = true --Can rescue the friendly NPC target by walking up to them for 1 second, like a regular hostage. This will complete the mission. 
+Config.IsDefendTargetMaxHealth = 600  --extra health buff for friendly NPC target
+ObjectiveRescueShortRangeBlip = true, --only show objectiverescue objective blips on the map when the players are close by (within 100m)
+IsDefendTargetGotoGoal — NPC target goes to Blip goal, escort them, or transport them to the goal Blip
+IsDefendTargetDoPlaneMission —call planemission task instead of plane chase task for ai.
+
+IsDefendTargetRewardBlip, — when IsDefendTargetGotoGoal is true, create a marker with IsDefendTargetGoalDistance radius
+
+IsDefendTargetGoalDistance —radius of goal reward area
+
+IsDefendTargetChase —used to make enemy npcs chase NPC target:
+IsVehicleDefendTargetChase =—used to make enemy npcs vehicles chase NPC target/vehicle
+IsVehicleDefendTargetGotoBlipTargetOnly=true, —think this is deprecated, Makes only the npc target to defend go to the blip
+IsDefendTargetEnemySetBlockingOfNonTemporaryEvents=true, —used for when IsRandom=true to make enemies keep to task until IsDefendTargetAttackDistance or IsDefendTargetVehicleAttackDistance is reached
+IsDefendTargetSetBlockingOfNonTemporaryEvents=true, —used for when IsRandom=true make the target to defend npc stay still or keep to task
+
+--How close to the target will peds on feet finally attack? Useful when SetBlockingOfNonTemporaryEvents is set for a ped.
+Config.IsDefendTargetAttackDistance = 10.0
+
+Config.IsDefendTargetVehicleAttackDistance = 50.0
+
+IsDefendTargetOnlyPlayersDamagePeds —Override, since for IsDefendTarget missions, SetEntityOnlyDamagedByPlayer is set to false.
+
+IsDefendTargetPassenger —for escort mission, force target NPC to defend into passenger seat. default seatid 0
+IsDefendTargetPassengerSeatId —if IsDefendTargetPassenger= true, what seated if not 0?
+
+—SEE FURTHER DOWN AS WELL, MORE IsDefendTarget settings explained above.
+
+
+--NOTE: only around 98 characters will display for these messages below:
+Config.StartMessage --Large mission intro text that pops up and disappears. 
+Config.FinishMessage --Large mission outro text that pops up and disappears on completion. Used with $ reward text and reason why. 
+Config.MissionTitle --red text on lower r.h.s. of the screen.
+Config.MissionMessage --green text on below MissionTitle that reminds players what to do. 
+Config.FailedMessage --= Mission Failed Message. It will be used with a reason why text, and any money lost. 
+
+
+--These are set per mission (see Mission42 in mission.lua)
+--This allows a mission to automatically lead into another mission (In this case Mission32)
+--This can allow for a campaign or a series of mini-missions to finish to complete the overall mission:
+NextMission="Mission32" 
+--What mission to go to if the mission fails?
+NextMissionIfFailed="Mission42",
+--progress to NextMission even if the mission has failed?:
+ProgressToNextMissionIfFail=false,
+
+
+-- OPT-OUT/OPT-IN SETTINGS. NOT PER MISSION, ONLY GLOBAL:
+
+--IF EITHER EnableOptIn OR EnableSafeHouseOptIn IS true, THE OTHER HAS TO BE false:
+--This allows players to simply press ‘Q’ and ‘[’ keys or RB + DPAD DOWN together to join an active mission:
+Config.EnableOptIn = false
+--requires the player to journey to the safehouse marker (they will see the safehouse blip on the map) 
+--and press either ‘]’ key or DPAD UP in order to join the mission:
+Config.EnableSafeHouseOptIn = false
+--When set to true, when a mission is active and a player is not opted in, it displays text in the lower RHS 
+--that there is an active mission with directions on how to join:
+Config.EnableOptInHUD = false
+--This forces all players to opt out of the mission system at mission end, forcing them to opt back in for the next mission. 
+--Does not remove weapons, but removes buffs:
+Config.ForceOptOutAtMissionEnd = false
+
+--END OPT-OUT/OPT-IN SETTINGS
+
+--Set this to true to remove all weapons and upgrades (Crackdown mode buffs if enabled) at the mission end. 
+--This should be used with one of the 2 OptIn bove settings set to true, else it will remove weapons from everyone.
+Config.RemoveWeaponsAndUpgradesAtMissionEnd = false
+
+--same thing, but at mission start
+--RemoveWeaponsAndUpgradesAtMissionStart = true,
+
+
+-show help notifications on how to play and controls at mission start?
+Config.DoHelpScreens = false
+
+
+--Spawn mission vehicles with a random livery
+--provides more variety in how vehicles look
+Config.MissionVehicleRandomizeLiveries=true
+
+
+--show bottom of the screen mission description text when mission starts?
+--now replaced by SMS texts.
+Config.ShowMissionIntroText=false
+
+
+
+--THESE MISSION SMS SETTINGS SHOULD BE SET PER MISSION:
+--LENGTH OF SMS_ContactPics, SMS_ContactNames, etc... NEED TO BE THE SAME LENGTH:
+--ONE WILL BE CHOSEN RANDOMLY.
+Config.SMS_ContactNames={"Military Contact","Agency Contact","Military Contact",
+"Agency Contact","Agency Contact"
+}
+
+--see: https://wiki.rage.mp/index.php?title=Notification_Pictures
+Config.SMS_ContactPics={"CHAR_MP_ARMY_CONTACT","CHAR_AGENT14","CHAR_BOATSITE2",
+"DIA_PRINCESS","CHAR_STEVE"
+}
+
+Config.SMS_ContactSubjects={"New Mission","New Mission","New Mission","New Mission","New Mission",}
+
+Config.SMS_ContactMessages={"Need Help with a mission","Need Help with a mission",
+"Need Help with a mission","Need Help with a mission","Need Help with a mission"}
+
+
+Config.SMS_ContactPassedSubjects={"Great Job!","Great Job!","Great Job!","Great Job!","Great Job!",}
+
+Config.SMS_ContactPassedMessages={"Good working with you","Good working with you",
+"Good working with you","Good working with you","Good working with you"}
+
+Config.SMS_ContactFailedSubjects={"What happened?","What happened?","What happened?","What happened?","What happened?",}
+
+Config.SMS_ContactFailedMessages={"This is terrible news!","This is terrible news!",
+"This is terrible news!","This is terrible news!","This is terrible news!"}
+
+Config.SMS_PlaySound = true
+
+
+--MORE SMS MISSION SEND OPTIONS, SET PER MISSION, THESE will OVERRIDE ABOVE VALUES:
+SMS_Subject="Capture the goods",
+--99 char limit per message, so can use up to 3 SMS texts:
+SMS_Message=""
+SMS_Message2=""
+SMS_Message3=""
+
+--WHAT TO SEND FROM MISSION CONTACT AFTER MISSION FAIL:
+SMS_FailedSubject="HAHA",
+SMS_FailedMessage="You should have stayed away, this is much bigger than you",
+--WHAT TO SEND FROM MISSION CONTACT AFTER PASSING MISSION:
+SMS_PassedSubject="It Exists!",
+SMS_PassedMessage="The legends were true afterall! Enjoy your reimbursement"
+
+--DONT SEND ANY FAIL/PASS SMS? SO can leave above blank if true:
+SMS_NoFailedMessage=true,
+SMS_NoPassedMessage=true,
+
+
+--Make mission title the sms subject, ignoring SMS_ContactSubjects array?
+Config.SMS_MissionTitle = true
+--Make mission message the sms message, ignoring SMS_ContactMessages array?
+Config.SMS_MissionMessage = true
+
+
+--accuracy range of peds, default is 60, max is 100
+Config.SetPedMinAccuracy = 60 
+Config.SetPedMaxAccuracy = 60
+
+Config.StartMissionsOnSpawn=true --Start a mission as soon as the first player joins? Use with 'ExtraTimeToWaitToStartNextMission' in server.lua
+
+--set to true, to turn off only damaged by player
+--Makes HostageRescue missions a little harder
+Config.DelicateHostages = false
+
+
+--Draw markers on the top of Enemy Targets:
+Config.DrawTargetMarker = true
+
+--Draw markers on the top of Friendly Targets:
+Config.DrawRescueMarker = true
+
+--Draw markers on the top of Friendly IsDefend Target:
+Config.DrawIsDefendTargetMarker = true
+
+--Draw markers on the top of ObjectiveRescue Objectives:
+Config.DrawObjectiveRescueMarker = true
+
+--Draw markers on the top of Objective mission Objectve:
+Config.DrawObjectiveMarker = true
+
+--Draw extra 'Defend Zone' text for ISDefend mission zone:
+Config.DrawIsDefendMarker = true
+	
+
+--Time till mission is over:
+Config.MissionLengthMinutes = 60
+
+--Do not timeout mission?:
+Config.MissionNoTimeout = false
+
+
+--set false for linear progression, true for any random mission chosen (GLOBAL only)
+Config.RandomMissions = true 
+
+
+--Time after the end of the mission, before starting the next mission
+Config.MissionSpaceTime = 30000 --milliseconds between missions
+
+
+--set player default max health (Global Only)
+Config.DefaultPlayerMaxHealthAmount = 200	
+
+--***MONEY REWARDS***
+
+--For killing an enemy target in Assassinate, or any NPC with target=true in any regular mission: 
+Config.TargetKillReward = 250 --cash
+
+--For killing an enemy NPC in any mission that is not target:
+Config.KillReward = 250 --cash
+
+--Extra money given for killing enemy NPCs/NPC targets that are in vehicles:
+Config.KillVehiclePedBonus = 150 --cash
+
+--Extra money given for killing enemy NPC 'Bosses' (they have full auto chainguns and different models)
+Config.KillBossPedBonus = 150 --cash
+
+--For capturing the objective:
+Config.FinishedObjectiveReward = 5000 --cash
+
+--Self explanatory:
+Config.HostageKillPenalty = 500  --cash
+
+--Move up to a hostage and wait a second, and they will be rescued:
+Config.HostageRescueReward = 500  --cash
+
+---Move up to a friendly NPC target and wait a second, and they will be rescued:
+Config.IsDefendTargetRescueReward = 5000 --cash
+
+--Self explanatory:
+Config.IsDefendTargetKillPenalty = 5000 --cash
+
+--Reward for capturing an ObjectiveRescue objective:
+Config.ObjectRescueReward = 3000 --cash
+
+
+—Reward for helping IsDefendTarget NPC to the goal.
+Config.GoalReachedReward = 2000
+
+
+--List of vehicles with their seatids
+--**You can use seatids to auto-fill passengers as well, not just turrets**
+--**All vehicle seats for all vehicles get auto-populated for NPCs by default**
+--**Use this to override that, to set only certain seatids**
+Config.VehicleTurretSeatIds = {
+	apc = {0},
+	barrage = {1,2},
+	halftrack = {1},
+	dune3 = {0},
+	insurgent = {7},
+	insurgent3 = {7},
+	technical = {1},
+	technical2 = {1},
+	technical3 = {1},
+	limo2 = {3},
+	menacer = {3},
+	boxville5 = {3},
+	toro2={0,1,2,3}
+} 
+
+
+--**Nerfs are deprecated EXCEPT FOR NerfValkyrieHelicopterCannon**, all fire patterns are done per vehicle in doVehicleMods function now in client.lua:
+Config.NerfValkyrieHelicopterCannon = true
+--make the cannon on the APC shoot much slower like a slow tank
+Config.NerfAPCCannon = true
+--make the cannon on the khanjali and rhino tanks shooter more like a slow tank
+Config.NerfTankCannon = false
+--make all other turrets in any other vehicle nerfed? (burst shots vs 30-50 rounds at a time)
+Config.NerfTurrets = false
+
+--Fast firing NPC peds, make them all shoot full auto (if they can). Can potentially make it MUCH more difficult
+Config.FastFiringPeds = false
+
+--Configure Boss health. Chance to appear in IsRandom missions with RandomMissionBossChance
+--in regular missions, use isBoss=true
+Config.BossHealth = 1000 
+
+--***ON GROUND PICKUP SPAWN SETTINGS***
+
+--In regular missions you can specify 'mission pickups' that spawn on the ground at mission start
+--and 'reward pickups' that spawn on the ground at mission completion 
+
+--cleanup any remaining mission and reward pickups when a new mission starts?
+Config.CleanupPickups = true 
+
+--extra pickups that dead enemy NPC spawns at mission completion:  
+Config.EnemiesCanSpawnPickups = false 
+
+--Percent Chance to spawn an extra pickup:
+Config.EnemySpawnedPickupsChance = 10 
+
+--Types of extra pickups:
+Config.EnemySpawnedPickups = {
+	"PICKUP_HEALTH_SNACK",
+	"PICKUP_HEALTH_STANDARD",
+}	
+
+--Enable/Disable native NPC weapon drops:
+Config.SetPedDropsWeaponsWhenDead = true
+								 
+
+--***DIRECT 'PICKUP' SETTINGS***--
+--Alternatively, mission and reward 'pickups' can be given directly to players.
+--These need to be weapons or gadgets or components and use weapon/weapon component hashes instead
+
+--Give Players weapons at mission start?:
+Config.SpawnMissionPickupsOnPlayer = false
+
+--Give Players weapon components at mission start?:
+Config.SpawnMissionComponentsOnPlayer = false
+
+--What weapons to give the player at mission start: 
+Config.SpawnMissionPickups = {"WEAPON_CARBINERIFLE","WEAPON_COMBATPISTOL","WEAPON_KNIFE","GADGET_NIGHTVISION"}
+
+--What components to give the player at mission start: 
+-NOTE: Need a space between attachment/component and weapon it goes on
+Config.SpawnMissionComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL"} 
+
+
+--Same for reward pickups for mission completion: 
+Config.SpawnRewardPickupsOnPlayer = false
+Config.SpawnRewardComponentsOnPlayer = false 
+Config.SpawnRewardPickups = {
+"WEAPON_CARBINERIFLE","WEAPON_COMBATPISTOL","WEAPON_KNIFE","GADGET_NIGHTVISION","WEAPON_GRENADE","WEAPON_PROXMINE","WEAPON_STICKYBOMB","WEAPON_PIPEBOMB","WEAPON_FLARE",
+"weapon_hominglauncher","weapon_marksmanrifle_mk2","weapon_assaultshotgun",
+"WEAPON_RPG","WEAPON_COMBATPISTOL","WEAPON_KNIFE","GADGET_PARACHUTE","weapon_grenadelauncher","weapon_specialcarbine_mk2","weapon_molotov","weapon_combatmg","weapon_assaultsmg",
+"weapon_heavyshotgun","weapon_heavysniper_mk2","weapon_minigun"
+
+}    
+Config.SpawnRewardComponents = {"COMPONENT_AT_PI_FLSH WEAPON_COMBATPISTOL","COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL"} 
+
+
+--**REGEN SETTINGS**--
+
+--Beyond regular GTA V 1/2 health regen:
+
+--give player full health and armor when they get any type of $ reward for a mission?	
+Config.RegenHealthAndArmourOnReward = true
+	
+--Turn on Regen like Halo for Health (and armour if they have any)?
+--Regen will stop if player loses health, or is active, so they need to rest
+Config.RegenHealthAndArmour = true	
+
+
+--***SAFEHOUSE SETTINGS*** 
+
+--Safe houses are on by default and are places where player visit 
+--to get mission health, armor, upgrades and vehicles at an optional cost
+--Players can 'claim' a mission vehicle where only they can drive, but other players 
+--can be passengers. 
+
+--turn safehouses off/on
+Config.UseSafeHouse = true
+
+--turn safehouse crate drops on/off (uses Config.SafeHouseTimeTillNextUse as well to stop spamming)
+Config.UseSafeHouseCrateDrop = true
+
+--turn on bandito remote detonate bomb deploys?
+Config.UseSafeHouseBanditoDrop = true
+
+--$ cost to use:
+Config.SafeHouseCost = 2000
+
+--$cost to use crate drop (players hit LB & RB on gamepad or Q & E key):
+Config.SafeHouseCostCrate = 1000
+
+--$ cost to 'claim' a vehicle
+Config.SafeHouseCostVehicle = 2000
+
+--Max amount of vehicles a player can claim per mission:
+Config.SafeHouseVehiclesMaxClaim = 2 
+
+--immediate give of upgrade and weapons when the player enters the safehouse
+SafeHouseGiveImmediately = true,
+
+--no countdown with safehouse.
+SafeHouseGiveNoCountDown = true,
+
+--Time in milliseconds till the safe house can next be used by the player?:
+Config.SafeHouseTimeTillNextUse = 180000 --3 minutes default 
+
+--reset safehouse access when player respawns?
+--(really need to use ESX& database to stop 
+--players disconnecting and reconnecting
+--to record.)
+Config.ResetSafeHouseOnRespawn = false
+--do we also reset player next use for the safe house for the next mission?
+Config.ResetSafeHouseOnNewMission = false
+
+
+
+--pawns player to the current mission safehouse when they spawn/respawn
+Config.TeleportToSafeHouseOnSpawn = true
+
+--teleport player to safe house on mission start?:
+Config.TeleportToSafeHouseOnMissionStart = true
+
+--Will teleport all mission players OUT of vehicles 
+--to the safehouse marker (useful as well if no BlipSL set):
+Config.TeleportToSafeHouseOnMissionStartNoVehicle = true
+
+--Time after mission start to teleport, default is 5000 (5 seconds to read the mission text)
+Config.TeleportToSafeHouseOnMissionStartDelay = 5000
+
+--minimum distance from safehouse in order to teleport Player to safehouse
+Config.TeleportToSafeHouseMinDistance = 50
+
+--minimum distance from vehicle safe house zone (BlipSL) in order to teleport Player + Vehicle to safehouse
+Config.TeleportToSafeHouseMinVehicleDistance = 200
+
+
+--when going to safe house for mission equipment armor and 
+--health, will also  give super jump 
+-- and fast sprint, fast swim and 2000 health by default (global only)
+Config.SafeHouseCrackDownMode = true
+
+--Amount of health to give (global only):
+Config.SafeHouseCrackDownModeHealthAmount = 2000
+
+--doctor peds at safe house:
+Config.SafeHousePedDoctors = {"s_m_m_doctor_01","a_f_y_business_02","u_f_y_princess"}
+
+--mission leader peds at safe house:
+Config.SafeHousePedLeaders = {"s_m_y_blackops_02","s_m_y_blackops_01","s_m_y_blackops_03"}
+
+--safe house prop:
+Config.SafeHouseProps = {"v_ilev_liconftable_sml"}--{"ex_prop_crate_expl_bc"}
+
+--weapons the leader can have:
+Config.SafeHousePedWeapons = {0x83BF0278,0x05FC3C11}
+
+
+--Amount of safe house vehicles, aircraft and boats to spawn:
+--NOTE, When safe houses are turned on. For regular missions, place vehicles without 'id2' attribute in Vehicles= {} to also create safe house vehicles for players
+--**They need to be placed *after* any vehicles  with 'id2' attribute which are NPC vehicles** See MISSION SETUP below.
+Config.SafeHouseVehicleCount = 5
+Config.SafeHouseAircraftCount = 2
+Config.SafeHouseBoatCount = 3
+
+--Weapon Hashes that player gets at the safe house:
+Config.SpawnSafeHousePickups = {"WEAPON_CARBINERIFLE","WEAPON_COMBATPISTOL","WEAPON_KNIFE","GADGET_NIGHTVISION","WEAPON_GRENADE","WEAPON_PROXMINE","WEAPON_STICKYBOMB","WEAPON_PIPEBOMB","WEAPON_FLARE",
+"weapon_hominglauncher","weapon_sniperrifle","weapon_bullpupshotgun",
+}
+
+--Weapon Component Hashes the player gets (NOTE: use a space between weapon and it's component):
+Config.SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL"} --space between attachment/component and weapon it goes on
+
+--potential available vehicles at the safe house:
+Config.SafeHouseVehicles = {	"apc",
+	"barrage",
+	"halftrack",
+	"dune3",
+	"insurgent",
+	"insurgent3",
+	"technical",
+	"technical2",
+	"technical3",
+	"limo2",
+	"menacer",
+	"rhino",
+	"khanjali",
+	"trailersmall2",
+	"tampa3"
+}
+
+--potential available safe house aircraft: 
+Config.SafeHouseAircraft = {
+"hydra",
+"lazer",
+"strikeforce"
+}
+
+
+--potential available safe house boats:  
+Config.SafeHouseBoat = {
+"dinghy4",
+"seashark",
+"toro2",
+"jetmax"
+}
+
+--For IsRandom=true Random Mission Generator missions...
+--When a random mission is spawned, use a safe house location from the 
+--SafeHouseLocations table? The closest (>500m away) safe house to the 
+--mission will be chosen. 
+Config.UseSafeHouseLocations = true
+
+
+--Safe houses need BlipS for safe house map blip, MarkerS for the safe house enterable
+--BlipSL for where the vehicles/aircraft spawn (optional), BlipSB for boat spawns (optional)
+Config.SafeHouseLocations = {
+
+	--Los Santos Airport
+	{
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -1694.94, y = -3152.18, z = 24.32},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1469.37, y = -2967.27, z = 13.3}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	},
+	
+	--Desert Airstrip
+	{
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = 1731.94, y = 3308.24, z = 41.22}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = 1731.94, y = 3308.24, z = 41.22},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 1480.63, y = 3167.93, z = 40.99}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	},	
+	
+	--Military Base
+	
+	{
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = {x = -2108.16, y = 3275.45, z = 38.73}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -2108.16, y = 3275.45, z = 38.73},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -2451.21, y = 3134.29, z = 32.82, heading = 156.25}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = -3238.09, y = 3380.0, z = 0.18}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	},	
+
+	
+}
+
+
+--START HOSTILE AMBIENT PEDS
+
+--VALUES: 0: no hostiles, 1: hostiles have less infighting (most dangerous)
+--2: a little more infighthing between hostiles.
+--3: riot mode, virtually all peds hate each other as well. 
+Config.HostileAmbientPeds = 0
+
+--mostly melee weapons and pistols, with a few heavier weapons, also rpg + homing launcher
+Config.RandomHostileZoneWeapons = {0xDD5DF8D9,0xDFE37640,0x958A4A8F,0x92A27487,0x84BD7BFD,0xF9E6AA4B,0x440E4788,0x4E875F73,
+0xF9DCBF2D,0xD8DF3C3C,0x99B507EA,0x19044EE0,0xCD274149,0x94117305,0x3813FC08,
+0xBFE256D4,0x22D8FE39,0x99AEEB3B,0x88374054,0xD205520E,0xCB96392F,0xEF951FBB,0xA89CB99E,0x7846A318,0xBD248B55,0x394F415C,0x05FC3C11,
+0x63AB0442,0xB1CA77B1,0x84D6FAFD,0x0781FE4A,0x42BF8A85
+ }
+ --melee, pistols and some micro smg, and rpg and homing missile
+ --**they will get out of the vehicle if they have non-drive by weapons**
+Config.RandomHostileZoneVehicleWeapons = {
+0xDD5DF8D9,0xDFE37640,0x958A4A8F,0x92A27487,0x84BD7BFD,0xF9E6AA4B,0x440E4788,0x4E875F73,
+0xF9DCBF2D,0xD8DF3C3C,0x99B507EA,0x19044EE0,0xCD274149,0x94117305,0x3813FC08,
+0xBFE256D4,0x22D8FE39,0x99AEEB3B,0x88374054,0xCB96392F,0x13532244,0x13532244,0xD205520E,
+0xB1CA77B1,0x63AB0442,0x0781FE4A,0x42BF8A85 
+}
+
+
+--override for quads,bikes, bicycles and boats for compact rifle,grenade launcher and sweeper shotgun
+Config.RandomHostileZoneBikeQuadBoatVehicleWeapons = {
+0xDD5DF8D9,0xDFE37640,0x958A4A8F,0x92A27487,0x84BD7BFD,0xF9E6AA4B,0x440E4788,0x4E875F73,
+0xF9DCBF2D,0xD8DF3C3C,0x99B507EA,0x19044EE0,0xCD274149,0x94117305,0x3813FC08,
+0xBFE256D4,0x22D8FE39,0x99AEEB3B,0x88374054,0xCB96392F,0x13532244,0x13532244,0xD205520E,
+0xB1CA77B1,0x63AB0442,0x0781FE4A,0x42BF8A85,0x624FE830,0x12E82D3D
+}
+
+--END HOSTILE AMBIENT PEDS
+
+
+--START PARADROPS. (USED BY Events, see MISSION SETUP section Below) 
+
+Config.RandomParadropPeds = {"s_m_y_ammucity_01","s_m_y_xmech_02","U_M_Y_Tattoo_01","g_m_m_chicold_01","s_m_y_dealer_01","g_m_y_lost_01","g_m_y_lost_02","g_m_y_lost_03","s_m_y_xmech_02_mp","s_m_y_robber_01","g_f_y_lost_01","u_f_y_bikerchic","mp_g_m_pros_01"}
+
+Config.RandomParadropWeapons = {0x1B06D571,0xBFE256D4,0x88374054,0xCB96392F,0x5EF9FEC4,0xE284C527,0x83BF0278,0xBFEFFF6D,0xD205520E,0x13532244,
+0x2BE6766B, 0x2BE6766B, 0xEFE7E2DF,0x0A3D4D34,0xDB1AA450,0xBD248B55,0x1D073A89,0x555AF99A,0x7846A318,0xE284C527,0x9D61E50F,0x3AABBBAA,0xEF951FBB,
+ 0x12E82D3D,0x42BF8A85,0x42BF8A85,0x42BF8A85,0xC734385A,0xBFEFFF6D,0x42BF8A85,
+ 0xBFEFFF6D,0xBFEFFF6D,0x394F415C,0x394F415C,0x83BF0278,0x83BF0278,0xFAD1F1C9,0xFAD1F1C9,0xAF113F99,0xC0A3098D,0x969C3D67,0x7F229F94,0x84D6FAFD,
+ 0x624FE830,0x9D07F764,0x7FD62962,0xDBBD7280,0x61012683,0x83BF0278,0x83BF0278,0x83BF0278,0xBFEFFF6D,0xBFEFFF6D,0x394F415C,0x394F415C,0xC0A3098D,
+ 0x969C3D67,0x05FC3C11,0x05FC3C11,0x05FC3C11,0xB1CA77B1,0xB1CA77B1,0xB1CA77B1,0x63AB0442,0x63AB0442,0x63AB0442,0xB1CA77B1,0x0781FE4A,0x0781FE4A,
+ 0x0C472FE2,0x0C472FE2,0xC1B3C3D1,0xC1B3C3D1,0xEFE7E2DF,0xEFE7E2DF
+ 
+ }
+ 
+ Config.RandomParadropAircraft = {
+ "avenger","titan","cargobob"--,"cargoplane",
+ }
+
+--END PARADROPS
+
+--**RANDOM MISSION GENERATOR SETTINGS**--
+--IsRandom=true missions. 2 types:
+--IsRandomSpawnAnywhere=true will spawn anywhere on the map, including water. 
+--Else the generator will choose a location from RandomMissionPositions table
+--IsRandomSpawnAnywhere=true does not support IsDefend=true missions.
+
+
+RandomMissionGoalDestinationMinDistance —min distance to determine where a RandomMissionDestinations value is from the RandomMissionPositions value used for IsDefendTargetGotoGoal
+
+
+--spawn any where on the map:
+Config.IsRandomSpawnAnywhere=true
+
+--if so, what coordinate range to use on the map:
+Config.IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}}, --this is the whole rectangle around all land
+
+--forces only land spawns for IsRandomSpawnAnywhere=true missions
+--if false, and the mission spawns on water, NPCs in boats are spawned.  
+Config.RandomMissionDoLandBattle = true
+
+
+--chance that an Event (see MISSION SETUP Below) will happen within 200m to 1500m away from the mission epicenter (Blip) for the random mission
+Config.IsRandomEventChance= 100	
+
+
+--Generator settings:
+--Spawn Radius:
+Config.RandomMissionSpawnRadius = 25.0 --keep a float for enemy ped wandering to work
+--Max/Min NPCs to spawn:
+Config.RandomMissionMaxPedSpawns = 20
+Config.RandomMissionMinPedSpawns = 5
+
+--Max/Min NPC Vehicles to spawn:
+Config.RandomMissionMaxVehicleSpawns = 3
+Config.RandomMissionMinVehicleSpawns = 1
+
+--Chance of spawning a vehicle per try for more randomization:
+Config.RandomMissionChanceToSpawnVehiclePerTry = 75
+--Chance of spawning an aircraft:
+Config.RandomMissionAircraftChance = 25
+
+--% population of "Boss"'s from  RandomMissionBossPeds will spawn. 
+Config.RandomMissionBossChance = 5
+
+RandomIsDefendTargetWander —when IsRandom=true as well, does the target NPC to defend on foot, wander randomly if not fighting?
+
+RandomMissionDoBoats —spawn a boat if a random vehicle location is found on water?
+
+
+
+--Types of random missions to generate:
+Config.RandomMissionTypes = {"Assassinate","Objective","HostageRescue","BossRush"}
+
+--How to set the messages Based on Mission Type.
+--Can be defined **per RandomMissionPositions location as well** (See Mission12, Mission19 for examples):
+--StartMessageObj = "Capture the objective!"
+--FinishMessageObj = "Mission Completed!"
+--.MissionTitleObj = "Takeover"
+--MissionMessageObj = "Capture the objective!"	
+	
+--StartMessageAss = "Eliminate the targets!"
+--FinishMessageAss = "Mission Completed!"
+--MissionTitleAss = "Elimination"
+--MissionMessageAss = "Eliminate the targets"
+
+--This can be set per RandomMissionPositions location to cover any type of random mission, and can override both above:
+--StartMessage = "Eliminate the targets!"
+--FinishMessage = "Mission Completed!"
+--MissionTitle = "Elimination"
+--MissionMessage = "Eliminate the targets"
+
+	
+	
+--What Weapons NPCs can use:
+Config.RandomMissionWeapons = {0x1B06D571,0xBFE256D4,0x88374054,0xCB96392F,0x5EF9FEC4,0xE284C527,0x83BF0278,0xBFEFFF6D,0xD205520E,0x13532244,
+0x2BE6766B, 0x2BE6766B, 0xEFE7E2DF,0x0A3D4D34,0xDB1AA450,0xBD248B55,0x1D073A89,0x555AF99A,0x7846A318,0xE284C527,0x9D61E50F,0x3AABBBAA,0xEF951FBB,
+ 0x12E82D3D,
+ 0xBFEFFF6D,0xBFEFFF6D,0x394F415C,0x394F415C,0x83BF0278,0x83BF0278,0xFAD1F1C9,0xFAD1F1C9,0xAF113F99,0xC0A3098D,0x969C3D67,0x7F229F94,0x84D6FAFD,
+ 0x624FE830,0x9D07F764,0x7FD62962,0xDBBD7280,0x61012683,0x83BF0278,0x83BF0278,0x83BF0278,0xBFEFFF6D,0xBFEFFF6D,0x394F415C,0x394F415C,0xC0A3098D,
+ 0x969C3D67,0x05FC3C11,0x05FC3C11,0x05FC3C11,0xB1CA77B1,0xB1CA77B1,0xB1CA77B1,0x63AB0442,0x63AB0442,0x63AB0442,0xB1CA77B1
+ 
+ }
+
+--What weapons does the driver use. Needs to be a drive-by friendly single handed weapon like micro-smg. NOTE: When you add this, all passengers added via ConfigVehicleTurretSeatIds 
+--will inherit the weapon as well. 
+Config.RandomMissionVehicleWeapons = {0x13532244}
+
+--override for bike,quad,Boat only drivebyweapons
+Config.RandomMissionBikeQuadBoatWeapons = {0x13532244,0xBD248B55,0xDB1AA450,0x12E82D3D,0x624FE830,0x0781FE4A}
+
+--Randomize passenger drive by weapons?..rather than inherit passenger weapon (default) USED BY REGULAR MISSIONS TOO, WHEN PASSENGER SEATS ARE AUTO-FILLED
+Config.RandomizePassengerWeapons = true
+
+
+--What Enemy NPC models to use:
+Config.RandomMissionPeds = {"s_m_y_ammucity_01","s_m_y_xmech_02","U_M_Y_Tattoo_01","g_m_m_chicold_01"}
+
+--juggernauts will spawn with railgun others minigun:
+Config.RandomMissionBossPeds = {"ig_clay","mp_m_exarmy_01","ig_josef","ig_ramp_mex","ig_terry","mp_m_bogdangoon","mp_m_weapexp_01","csb_jackhowitzer","u_m_y_juggernaut_01","u_m_y_juggernaut_01","ig_cletus","u_m_y_juggernaut_01"}
+
+--What hostage friendly models to use:
+Config.RandomMissionFriendlies = {"a_f_m_tourist_01","a_m_y_vinewood_03","a_m_m_tourist_01","a_m_y_genstreet_01","a_f_o_genstreet_01","a_m_y_genstreet_02","a_f_y_genhot_01"}
+
+--What enemy NPC vehicles to use:
+Config.RandomMissionVehicles = {	"apc",
+	"barrage",
+	"halftrack",
+	"dune3",
+	"insurgent",
+	"insurgent3",
+	"technical",
+	"technical2",
+	"technical3",
+	"limo2",
+	"menacer",
+	"rhino",
+	"khanjali",
+	"trailersmall2",
+	"tampa3" 
+}
+
+--What enemy NPC aircraft to use:
+Config.RandomMissionAircraft = {
+"hydra",
+"lazer",
+"strikeforce"
+}
+
+
+—what aircraft to spawn around random mission objective to protect it. 
+-Config.RandomMissionGuardAircraftSpawns = {"strikeforce"}
+
+--used for IsRandomSpawnAnywhere missions, for when the random position is on water.
+Config.RandomMissionBoat = {
+"dinghy4",
+"seashark",
+"toro2",
+"jetmax",
+"technical2",
+"blazer5",
+"apc",
+}
+
+--used for IsRandomSpawnAnywhere=true missions, for when the random position is on water.
+--What NPC boats to use:
+Config.RandomMissionBoat = {
+"dinghy4",
+"seashark",
+"toro2",
+"jetmax"
+}
+
+--Used for Type="Objective" random missions
+--Spawns a prop at the objective point. 
+--If HostageRescue=true, will spawn a hostage instead. 
+Config.RandomMissionProps = {
+	"ba_prop_battle_crate_m_hazard",
+	"imp_prop_impexp_boxcoke_01",
+	"ex_prop_crate_expl_sc",
+	"sm_prop_smug_crate_l_narc",
+	"ex_prop_crate_money_sc",
+	"ex_prop_crate_jewels_racks_sc",
+	"prop_large_gold",
+	"xm_prop_crates_sam_01a",
+	"prop_drop_crate_01_set",
+	"prop_box_ammo03a_set2",
+	"prop_biotech_store",
+	"prop_air_cargo_04c",
+	"prop_air_cargo_04a",
+	"hei_prop_carrier_bombs_1",
+	"ex_prop_crate_narc_sc",
+	"prop_weed_pallet",
+	"prop_cash_crate_01",
+	"prop_box_ammo03a_set",
+	"hei_prop_heist_weed_pallet_02",
+	"hei_prop_carrier_cargo_05b"
+	
+	
+	}
+
+
+--For regular (non IsRandomSpawnAnywhere=true) random missions, pick from this location list.
+--Can define MarkerS, Blip, Blip2, Marker, MarkerS, BlipS, BlipSL, BlipSB on each location as well.
+--for IsDefend, IsDefendTarget, and Safe houses per mission location if not using SafeHouseLocations table. 
+--Also MissionTitle, MissionMessage,StartMessage, FinishMessage. 
+--'force=true' can be added to make NPC spawn underground or below buildings for the location. Beware, only use for small 
+--amount of peds to spawn, since GTA V seems to make them go invisible when many are spawned this way.
+--also 'force=true' can cause NPCs to spawn within a building and not be accessible, so the Mission Type will always become Type="Objective",
+--to allow it to be finished on time. 
+—For IsDefendTarget missions, can also have: 
+—DefendTargetInVehicle = true,
+—DefendTargetVehicleIsBoat=true,
+—DefendTargetVehicleIsAircraft=true,
+-DefendTargetVehicleMoveSpeedRatio = 0.5, --have vehicle move at 1/2 top speed etc...
+
+—See mission 26
+Config.RandomMissionPositions = { 
+
+
+
+{ x = -973.87, y = -273.67, z = 38.26, MissionTitle="Arcade"}, --cul de sac near studios
+ 
+{ x = -1102.97, y = -424.98, z = 44.37, MissionTitle="News Studio" }, --news channel/studio building roof
+{ x = -1223.9, y = -493.83, z = 31.51, MissionTitle="Back Alley" }, --news channel/studio in cul de sac
+
+{ x = 2840.52, y = -1449.96, z = 11.95, MissionTitle="The Island"}, --island
+
+{ x = 1074.41, y = 3072.94, z = 40.82, MissionTitle="Desert Airstrip"}, --desert airstrip
+
+{x = -149.29, y = -960.51, z = 269.13, MissionTitle="High Rise"}, --construction tower
+
+{ x = -1393.62, y = -2562.09, z = 13.95, MissionTitle="Airport" }, --airport
+
+{ x = 137.07, y = -3204.05, z = 5.86,  MissionTitle="Docks" }, --walkers docks
+{ x = -1828.32, y = -1218.22, z = 13.03, MissionTitle="The Pier" }, --pier
+
+{ x = -547.74, y = -1477.3, z = 10.14, MissionTitle="Freeway Hideaway" }, --center greenery	
+
+{ x = 1485.24, y = -2358.31, z = 72.44, MissionTitle="Oil Fields" }, --oilfields
+
+
+{ x = 58.43, y = -1133.28, z = 29.34, MissionTitle="Street Smart"}, --los santos road
+{ x = -808.9, y = -1302.95, z = 5.0, MissionTitle="Marina" }, --yacht club
+
+{ x = 31.0, y = -767.1, z = 44.24, MissionTitle="Business District" }, --center los santos
+
+{ x = 1874.74, y = 299.22, z = 162.82, MissionTitle="Resevoir" }, --resevoir
+
+{ x = 1373.59, y = -739.58, z = 67.23, MissionTitle="Suburban Sprawl"}, --cul de sac
+
+{ x = 1150.09, y = 124.3, z = 82.12, MissionTitle="Race Track"}, --race track
+
+--'force = true' stops ray trace checking for spawn points for peds and vehicles, so peds/vehicles can spawn underneath structures... near the spawn location 
+--this also means that peds/vehicles can spawn hidden in buildings, so this forces the mission type to be "Objective"
+--{ x = -177.69, y = -165.11, z = 44.03, force=true }, --hotel north los santos 
+
+{ x = -2237.38, y = 266.45, z = 174.62, MissionTitle="The Ritz" },
+ --ritz hotel
+
+{ x = -412.9, y = 1170.53, z = 325.84, MissionTitle="Observatory"}, --observatory
+
+{ x = 756.1, y = 1284.89, z = 360.3, MissionTitle="Vinewood" }, --vinewood sign
+
+{ x = -1907.85, y = 2037.05, z = 140.74, MissionTitle="Wine Country"}, --vineyard
+
+{ x = -1833.24, y = 2152.89, z = 115.7, MissionTitle="Vinery"}, --vineyard 2
+
+{ x = -2548.21, y = 2705.28, z = 2.84, MissionTitle="Secret Bunker" }, --outside base
+
+{ x = -2405.68, y = 4253.63, z = 9.82, MissionTitle="Point Break"}, --nw beach
+
+{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+{ x = 1816.42, y = 3794.64, z = 33.65, MissionTitle="Dust Bowl"}, --south salton
+{ x = 1313.35, y = 4327.67, z = 38.21, MissionTitle="Fish Monger" }, --north salton
+
+{ x = 3572.73, y = 3665.03, z = 33.89, MissionTitle="The Complex"}, --humane labs
+
+{ x = 3803.26, y = 4462.52, z = 4.75, MissionTitle="Getaway" }, --north east coast
+
+{ x = -1122.74, y = 4924.89, z = 218.67, MissionTitle="Compound"  }, --cult
+
+{ x = -578.96, y = 5321.1, z = 70.21, MissionTitle="Sawmill" }, --sawmill
+
+{ x = -31.49, y = 6441.9, z = 31.43, MissionTitle="Community Chest"  }, --parking lot uppoer NW
+
+{ x = 28.76, y = 6216.7, z = 31.54, MissionTitle="Railyard"  }, --by railyard upper nw
+{ x = 1429.43, y = 6517.94, z = 18.91, MissionTitle="Scenic Route"  }, --uppper coast
+
+}
+
+
+—used for IsDefendTargetGotoGoal. Can have SpawnAt attribute that defines coordinates for NPCs to spawn at. See Mission26
+
+Config.RandomMissionDestinations = { 
+
+{ x = -973.87, y = -273.67, z = 38.26, MissionTitle="Arcade"}, --cul de sac near studios
+ 
+{ x = -1102.97, y = -424.98, z = 44.37, MissionTitle="News Studio" }, --news channel/studio building roof
+{ x = -1223.9, y = -493.83, z = 31.51, MissionTitle="Back Alley" }, --news channel/studio in cul de sac
+
+{ x = 2840.52, y = -1449.96, z = 11.95, MissionTitle="The Island"}, --island
+
+{ x = 1074.41, y = 3072.94, z = 40.82, MissionTitle="Desert Airstrip"}, --desert airstrip
+
+--{x = -149.29, y = -960.51, z = 269.13, MissionTitle="High Rise"}, --construction tower
+
+{ x = -1393.62, y = -2562.09, z = 13.95, MissionTitle="Airport" }, --airport
+
+{ x = 137.07, y = -3204.05, z = 5.86,  MissionTitle="Docks" }, --walkers docks
+{ x = -1828.32, y = -1218.22, z = 13.03, MissionTitle="The Pier" }, --pier
+
+{ x = -547.74, y = -1477.3, z = 10.14, MissionTitle="Freeway Hideaway" }, --center greenery	
+
+{ x = 1485.24, y = -2358.31, z = 72.44, MissionTitle="Oil Fields" }, --oilfields
+
+
+{ x = 58.43, y = -1133.28, z = 29.34, MissionTitle="Street Smart"}, --los santos road
+{ x = -808.9, y = -1302.95, z = 5.0, MissionTitle="Marina" }, --yacht club
+
+{ x = 31.0, y = -767.1, z = 44.24, MissionTitle="Business District" }, --center los santos
+
+{ x = 1874.74, y = 299.22, z = 162.82, MissionTitle="Resevoir" }, --resevoir
+
+{ x = 1373.59, y = -739.58, z = 67.23, MissionTitle="Suburban Sprawl"}, --cul de sac
+
+{ x = 1150.09, y = 124.3, z = 82.12, MissionTitle="Race Track"}, --race track
+
+--'force = true' stops ray trace checking for spawn points for peds and vehicles, so peds/vehicles can spawn underneath structures... near the spawn location 
+--this also means that peds/vehicles can spawn hidden in buildings, so this forces the mission type to be "Objective"
+{ x = -177.69, y = -165.11, z = 44.03, MissionTitle="Concierge Service", force=true}, --hotel north los santos 
+
+--{ x = -2237.38, y = 266.45, z = 174.62, MissionTitle="The Ritz" },
+ --ritz hotel
+
+{ x = -412.9, y = 1170.53, z = 325.84, MissionTitle="Observatory"}, --observatory
+
+{ x = 756.1, y = 1284.89, z = 360.3, MissionTitle="Vinewood" }, --vinewood sign
+
+{ x = -1907.85, y = 2037.05, z = 140.74, MissionTitle="Wine Country"}, --vineyard
+
+{ x = -1833.24, y = 2152.89, z = 115.7, MissionTitle="Vinery"}, --vineyard 2
+
+{ x = -2548.21, y = 2705.28, z = 2.84, MissionTitle="Secret Bunker" }, --outside base
+
+{ x = -2405.68, y = 4253.63, z = 9.82, MissionTitle="Point Break"}, --nw beach
+
+{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+{ x = 1816.42, y = 3794.64, z = 33.65, MissionTitle="Dust Bowl"}, --south salton
+{ x = 1313.35, y = 4327.67, z = 38.21, MissionTitle="Fish Monger" }, --north salton
+
+--{ x = 3572.73, y = 3665.03, z = 33.89, MissionTitle="The Complex"}, --humane labs
+
+{ x = 3803.26, y = 4462.52, z = 4.75, MissionTitle="Getaway" }, --north east coast
+
+{ x = -1122.74, y = 4924.89, z = 218.67, MissionTitle="Compound"  }, --cult
+
+{ x = -578.96, y = 5321.1, z = 70.21, MissionTitle="Sawmill" }, --sawmill
+
+{ x = -31.49, y = 6441.9, z = 31.43, MissionTitle="Community Chest"  }, --parking lot uppoer NW
+
+{ x = 28.76, y = 6216.7, z = 31.54, MissionTitle="Railyard"  }, --by railyard upper nw
+{ x = 1429.43, y = 6517.94, z = 18.91, MissionTitle="Scenic Route"  }, --uppper coast
+
+
+}
+
+
+--Random Missions that use RandomMissionPositions locations can also use IsDefend=true and IsDefendTarget=true
+--You need to define a 'Blip2' and optional 'Blip' for the location in RandomMissionPositions.
+--Blip2 is where the friendly target NPC spawns for IsDefendTarget=true. Else, for just IsDefend=true, 
+--Blip2 will use the Marker defined to create a defend zone where NPCs which players must stop enemy  NPCs from getting to. 
+--For Random missions with IsDefendTarget=true, you can define if the friendly Target NPC is in a vehicle or not via:
+--DefendTargetInVehicle=true. See Mission18 for an example. 
+--(Also, DefendTargetInAircraft=true, DefendTargetInBoat=true per location, may or may not work)
+
+--***NOTE, IsDefend (and IsDefendTarget) missions work best as Type="Assassinate". 
+--You also need tell the random mission generator to just use "Assassinate", so you need to set 
+--RandomMissionTypes = {"Assassinate"} 
+--as well for the random missions of these type***
+
+--(See MISSION SETUP section below as well) 
+
+--Random friendly target spawns:
+Config.IsDefendTargetRandomPeds = {"ig_bankman","a_f_y_business_02","u_f_y_princess","ig_tomepsilon"}
+
+--Random friendly target weapons: 
+Config.IsDefendTargetRandomPedWeapons = {0xE284C527,0x83BF0278,0xBFEFFF6D}
+
+--Random friendly target vehicles:
+Config.IsDefendTargetRandomVehicles = {	"windsor",
+"fbi2",
+"chino",
+"nightblade",
+"cavalcade",
+"riot",
+
+}
+
+--Random friendly target aircraft (may or may not work)
+Config.IsDefendTargetRandomAircraft = {
+"hydra",
+"lazer",
+"strikeforce"
+}
+
+--Random friendly target boat (may or may not work)
+Config.IsDefendTargetRandomBoat = {
+"dinghy4",
+"seashark",
+"toro2",
+"marquis",
+"jetmax"
+}
+
+--**START IsBountyHunt Random mission type of Assassinate missions Settings
+--SEE Mission4,Mission5,Mission6 and Mission7 in missions.lua
+--Essentially setting IsBountyHunt=true on a IsRandom=true,IsRandomSpawnAnywhere=true mission
+--Allows a squad of peds to also spawn with the regular peds and vehicles, whose numbers are defined
+--in the mission or global settings.
+--NOTES: ***By default peds will try and spawn at the lowest flat surface rather than roofs, so typically only on roads
+--The squads with IsBountyHunt=true will spawn at the first flat surface (GroundZ)... so roofs. 
+--I found it was hard to get peds to spawn properly always around Mt Chiliad and other similar areas, by the default method, 
+--and they would spawn under tha map frequently, showing up at the nearest road. 
+--So spawning with squads this way may be better suited for more natural areas. ***
+
+--IsBountyHunt=true guardian Peds, since when this is true, RandomMissionPeds should be set
+--per mission for special peds that are the actual bounty/targets
+Config.RandomMissionBountyPeds = {"s_m_y_ammucity_01","s_m_y_xmech_02","U_M_Y_Tattoo_01","g_m_m_chicold_01","s_m_y_dealer_01","g_m_y_lost_01","g_m_y_lost_02","g_m_y_lost_03","s_m_y_xmech_02_mp","s_m_y_robber_01","g_f_y_lost_01","u_f_y_bikerchic","mp_g_m_pros_01"}
+
+Config.RandomMissionBountyBossChance=15 -- % of squad that will be bosses, 
+										--set RandomMissionBossChance =0 for the mission to not make Bosses a bounty/target
+Config.IsBountyHuntMaxSquadSize = 12	--squad will be a max of this size, 
+										--spawned with a bounty target
+
+Config.IsBountyHuntMinSquadSize = 1	--squad will be a min of this size, 
+										--spawned with a bounty target		
+
+Config.IsBountySquadMinRadius = 25	--squad will spawn around a max radius  of this size, 
+										
+
+Config.IsBountySquadMaxRadius = 150	--squad will spawn around a max radius of this size, 
+
+Config.IsBountyHuntDoBoats = false --spawn enemies in boats as well as on land?
+																				
+--this is a HACK to not have the same 
+					--identical 'boss' models like in a multi-seat vehicle
+					--since the turrets subroutine I never felt
+					--I fixed correctly to place random passengers										
+Config.RandomMissionIsBountyOverrideVehPeds = {"hc_hacker","hc_gunman","u_m_m_bankman","u_m_m_jewelsec_01","s_m_m_highsec_02","a_m_m_og_boss_01","u_m_m_jewelthief","s_m_m_movprem_01","g_m_m_korboss_01","g_m_m_armboss_01","g_m_m_chiboss_01","g_m_m_mexboss_01","g_m_m_mexboss_02","g_m_y_salvaboss_01","s_m_m_ammucountry","u_m_y_babyd","u_m_y_militarybum","a_m_y_musclbeac_02","s_m_y_pestcont_01","u_m_o_taphillbilly","a_f_y_femaleagent","g_m_importexport_01","g_f_importexport_01","mp_f_cardesign_01","mp_f_chbar_01","mp_f_cocaine_01","mp_f_execpa_01","mp_f_forgery_01","mp_f_meth_01","mp_f_weed_01","mp_m_cocaine_01","mp_m_counterfeit_01","mp_m_execpa_01","mp_m_forgery_0","mp_m_meth_01","mp_m_weapwork_01","mp_m_weed_01","a_m_y_breakdance_01","g_f_y_vagos_01","mp_m_g_vagfun_01","a_m_y_vindouche_01","a_m_m_tranvest_01","g_m_y_strpunk_01","g_m_y_strpunk_02","s_m_m_strpreach_01","a_m_y_gay_01","a_f_m_bodybuild_01",
+		}	
+									
+										
+--**END IsBountyHunt mission random type of Assassinate missions Settings
+
+--**END RANDOM MISSION GENERATOR SETTINGS**--
+
+
+--**MISSION SETUP**-
+--Regular missions, that do not have IsRandom=true, can be used to setup very specific missions, with specific NPCs, vehicles and NPC behaviors,
+--and locations. IsRandom=true will use the Random Mission Generator which can be configured per mission, so you can a variety of different 
+--types of random missions in rotation as well. Mission1 through Mission11 are regular missions. Mission12 is a regular IsRandom mission, 
+--Mission17 is a IsRandom,IsRandomSpawnAnywhere mission, Mission19 is a IsRandom,IsRandomSpawnAnywhere mission with larger spawns etc..
+
+--IsDefend, IsDefendTarget missions should be used with Type="Assassinate" missions. Mission10, Mission16 are IsDefend=true. 
+-- Mission13 to Mission15 and Mission20 are IsDefend, IsDefendTarget missions. IsDefend requires a Blip2 to define where the zone is to
+--defend from enemy NPCs. It uses the size of the Marker to define the zone on the map. IsDefendTarget=true needs IsDefend=true, and overrides the zone,
+-- and uses Blip2 to define where the friendly NPC target that needs to be rescued goes. 
+--IsDefend=true will override NPC behavior to make them drive/walk to the Blip2 zone. **NPCs need to be in vehicles for this to work properly from across the map**
+--IsDefendTarget also has 2 more settings for missions, for NPC behavior, which overrides default NPC behaviors defined by attributes (see below) in most cases. 
+--It also overrides IsDefend behaviors. 
+--These are: 
+--IsDefendTargetChase = true, which makes enemy NPC ped and vehicles chase after the friendly Target NPC. NOTE: Only good for when Players are nearby (<300 to 500m), else they do nothing. 
+--IsDefendTargetGotoBlip = true, which makes NPCs move to 'Blip'. Target friendly NPC will also move to 'Blip' from 'Blip2'. Works long range for NPCs in vehicles. 
+—SEE FURTHER UP AS WELL, MORE IsDefendTarget settings explained above.
+
+--'Blip' defines the mission location blip
+--'Marker' defines the capture zone for Type="Ojective" missions
+--'Blip2' defines a secondary mission location blip, or if IsDefend where the defend zone is. Uses Marker to define the size of the zone (see Mission10/Mission16), 
+--	if IsDefendTarget=true, is where the friendly target NPC spawns.
+--'BlipS','MarkerS', 'BlipSL','BLipSB' define safe house blips/zones for the mission. 'Blips' allows for any number of extra blip locations, See Mission7 of SHADOW STATE mission pack
+
+--'Props', for regular missions, which prop model, location, etc... to spawn at. 'id' needs to be 1, 2, 3, with no gaps for multiple props.
+--Props have attributes:
+--	'isObjective=true' This makes the prop an objective for $ reward, and for ObjectiveRescue missions, will need to be captured for mission completion.
+-- 'Freeze=true' Makes the prop frozen at the coordinates it is set at.
+
+--MissionPickups, for regular missions, where on the ground pickups spawn at mission start. Use Safe Houses or 'Direct pickups' instead where weapons are given to player at start
+
+--Pickups, for regular missions, where on the ground pickups spawn at mission completion. Use Safe Houses or 'Direct pickups' instead where weapons are given to player at mission completion
+
+
+--'Peds', for regular missions, you define what model, weapon, location etc.. 'id' needs to be 1, 2, 3, with no gaps for multiple props. 
+--Peds have behavioral flags: 
+-- 	'target=true' makes them an enemy target to be killed. At least one ped needs this for Assassinate missions.
+--      'isBoss=true', will make the NPC a 'boss', which means extra health etc.. and gives them a full auto minigun if no weapon is specified
+-- 	'friendly=true' makes a friendly 'hostage' ped that can be rescued. 
+-- 	'dead=true' makes NPC a corpse for prop effect
+--	'outside=true' Use for when 'IndoorsMission=-true' is set, to make the Ped spawn at mission start, not dynamically
+--      'invincible=true' good for friendly prop npcs that would ruin plot if killed
+--	'movespeed=5.0' speed to move at for below attributes. If left out, will use 20.0 by default a fast speed
+-- 	'wanderinarea=true' makes NPC wander within  25 meter radius of their spawn position. Works when players are not far away. 
+-- 	'wander=true' makes NPC wander to wherever...  Works when players are not far away.
+-- 	'movetocoord={ x = 1453.72, y = -2282.69, z = 67.47}' Makes the NPC walk to the X,Y,Z location specified. Works when players are not far away.
+--	'conqueror=true' this is used for IsDefend=true missions to make the NPC neutral to everyone (but IsDefendTarget NPC) so they will go straight to 'Blip2' 
+--	'notzed=true' When using the models: 's_m_m_movalien_01' and 'u_m_y_zombie_01' and 'ig_orleans' the resource will add special Ped attributes, to make a zombie
+--      act like a zombie. Use notzed=true to override this for the models. 
+—-	SetBlockingOfNonTemporaryEvents=true, make peds stick to task, oblivious to events around them
+
+--'Vehicles', for regular missions, you define what model, weapon, location etc.. 'id' needs to be 1, 2, 3, with no gaps for multiple vehicles. 'id2' defines the NPC driver.
+--	'id2' needs to be 1, 2, 3 with no gaps as well. 'Weapon' defines driver weapon, modelhash the Ped driver model. 
+--	NOTE: LEAVE OUT THE id2 ATTRIBUTE TO SPAWN A PLAYER VEHICLE with no NPC. With safe houses on, this will become a safe house vehicle. 
+--Vehicles have attributes as well:
+--	'outside=true' Use for when 'IndoorsMission=-true' is set, to make the Vehicle spawn at mission start, not dynamically
+--	'nomods=true', Do not call 'doVehicleMods' for the vehicle in client.lua, to buff the vehicle up (only certain vehicles doVehicleMods will work on anyways)
+--	'noFill=true', All vehicles added to a mission will have all seats auto-filled. This disables that, so only ExtraPeds (see below) can be used (Or use Config.VehicleTurretSeatIds)
+--	'target=true' makes vehicle driver an enemy target. Necessary to have at least one NPC, in Peds, or Vehicles to have this for Assassinate type missions.
+--      'invincible=true' good for friendly prop npcs that would ruin plot if killed
+--       'driverfiringpattern=' --hash to use for the driver firing pattern
+--       'turretfiringpattern=' --hash to use for the passnger/turret firing pattern
+--	'flee=true' makes the enemy vehicle driver less combative and more prone to flee, which can make better chase missions
+--	'driving=true' makes the driver drive to wherever. Works when players are a long way away as well. 
+--	'movetocoord={ x = 1453.72, y = -2282.69, z = 67.47}' Makes the drive to the X,Y,Z location specified. Works when players are far away as well.
+--	'isAircraft=true' must use this on aircraft vehicles. This will help them spawn better in the air. z coordinate is then taken care of. Also set driving=true and movespeed=120.0 or aircaft. 
+--	'ExtraPeds={{id=1,seatid=0},{id=2,seatid=1}}' Used to add NPCs with ids from the Peds table to be added to he seatids of the vehicle. Use VehicleTurretSeatIds function instead 
+-- 	if you have the same amount of passengers for the vehicle in every mission.
+--	'conqueror=true' this is used for IsDefend=true missions to make the NPC neutral to everyone (but IsDefendTarget NPC) so they will go straight to 'Blip2' 
+--	'notzed=true' When using the models: 's_m_m_movalien_01' and 'u_m_y_zombie_01' and 'ig_orleans' the resource will add special Ped attributes, to make a zombie
+--       act like a zombie. Use notzed=true to override this for the models. 
+—-	SetBlockingOfNonTemporaryEvents=true, make peds stick to task, oblivious to events around them	
+
+--	'IsDefendTargetEntity' Used in IsDefend=true->IsDefendTarget=true regular missions, to define the target friendly NPC. Can be Ped only type NPC, like in Peds, or a Ped driver in Vehicle, 
+--	like in 'Vehicles' with an 'id2' attribute. See Mission14 below as an example. has attributes like movetocoord, driving, as well to define the npc behavior. Also SpawnAt attribute 
+—- 	to define coords to spawn at if not the Blip coords. 
+--'Events',This is basically a trigger than spawns something when a player is within a certain distance away. 
+--      Used in *both* Regular and IsRandom Mission. 5 Event types: Paradrop, Squad, Vehicle and Aircraft and Boat
+--      For IsRandom missions, used with IsRandomEvent=true as well. This setting will generate a single Event of Type either Paradrop, Squad, Vehicle. within 200m to 1500m from the mission Blip
+--      Like for Props, Vehicle, and Peds with IsRandom missions, you need a "stub" Events entry for this. You can also define custom Events beyond the default first Event for IsRandom as well, using both
+--	 IsRandomEvent=true event and regular events together if you wish. 
+--	Common attributes: 
+--	Message='' --any custom message to notify players with when event is spawned? 
+--	'Position = {x=, y=, z= }' Where the event is placed, and where entities will spawn (unless it is a paradrop, it will spawn at the player position that triggered the event)
+--      'Size = {radius=1000.0},' radius defines how far away a player must be to trigger the Event  
+--	'SpawnAt = {x=, y=, z= }' Allows the entities that spawned to spawn somehere else than the Event's Position, this also includes Paradrops. If not added, it will default to Position of the Event.
+--      'Target=true', makes the spawned peds become enemy targets, same as 'target=true' for Peds and vehicles (should make this attribute lower case as well)
+--       'driverfiringpattern=' --hash to use for the driver firing pattern (Type = Vehicle or Aircraft)
+--       'turretfiringpattern=' --hash to use for the passnger/turret firing pattern  (Type = Vehicle or Aircraft)
+--	'nomods=true', Do not call 'doVehicleMods' for the vehicle in client.lua, to buff the vehicle up (only certain vehicles doVehicleMods will work on anyways)  (Type = Vehicle or Aircraft)
+--       'FacePlayer=true' Face direction of the triggering player? Else random heading. (Type = Squad, Vehicle or Aircraft)
+--       'Weapon', 'modelHash', same as for 'Vehicles' What ped model and weapon is the ped, or driver? If false or not set, will use random mission weapon, ped and vehicle array. 
+--	        Else for Paradrop, will use the paradrop ped, vehicle and weapon arrays. RandomMissionBossChance is also used to spawn % "Boss" peds
+--        'isBoss'. used to spawn a "Boss", which means buffed up peds 
+--      'NumberPeds' Number of peds to spawn, if not set, 4 to 10 peds are spawn (Type = Squad and Paradrop)
+--	'SquadSpawnRadius', what radius to spawn the peds around the Event (Type = Squad)
+--      'CheckGroundZ=true', Recommended for any SquadSpawnRadius > 1m (Type = Squad)
+--      'SpawnHeight', what extra height above the event (typically water/ground) to spawn the aircraft (Type = Aircraft)
+—-	DoSetBlockingOfNonTemporaryEvents=true, —make npcs stick to task, oblivious to events around them
+—-	DoIsDefendBehavior=true, —make  npcs take on is defend tasks
+—- 	IsDefendTargetTriggersEvent = true,— IsDefendTarget NPC can trigger the event
+
+
+--IsRandom=true missions are easier to set up, they are missions: Mission12, Mission17, Mission19, Mission18 and Mission20
+
+--Example Per Mission Configurations: 
+
+Config.Missions = {
+
+  Mission1 = {
+    --only around 98 characters will display for these messages
+    StartMessage = "Mercenaries for hire have taken over a construction site~n~for ransom. Secure it!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Blackwater",
+	MissionMessage = "Go to the construction site and secure it from the mercenaries",
+	MissionSpaceTime = 10000,
+	Type = "Objective",
+	--FinishedObjectiveReward = 10000,
+	--KillReward = 150,
+	--SpawnMissionPickups = {"WEAPON_CARBINERIFLE","WEAPON_COMBATPISTOL","WEAPON_KNIFE","GADGET_NIGHTVISION"},
+	--SpawnRewardPickups = {"WEAPON_RPG","WEAPON_COMBATPISTOL","WEAPON_KNIFE","GADGET_PARACHUTE"},    
+	--SpawnMissionComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL"}, --space between attachment/component and weapon it goes on
+	--SpawnRewardComponents = {"COMPONENT_AT_PI_FLSH WEAPON_COMBATPISTOL"},   --space between attachment/component and weapon it goes on
+
+
+    Blip = {
+      Title = "Objective",
+      Position = { x = -146.84, y = -1080.72, z = 42.02 },
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -146.84, y = -1080.72, z = 41.02 },
+      Size     = {x = 5.0, y = 5.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+	},	
+		MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+	},
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1469.37, y = -2967.27, z = 13.3}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+	},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+	},
+	
+	Events = {
+
+	   { 
+		  Type="Paradrop",
+		  Position = {  x = -146.84, y = -1080.72, z = 42.02 }, 
+		  Size     = {radius=100.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=10,
+		},
+	
+	},	
+	
+    Peds = {
+        -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+        {id = 1, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -187.2, y = -1091.96, z = 27.16, heading = 27.16},
+        {id = 2, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -179.47, y = -1078.39, z = 30.14, heading = 82.01,wanderinarea=true},
+        {id = 3, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -173.8, y = -1062.78, z = 30.14, heading = 60.94,wanderinarea=true},
+        {id = 4, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -160.2, y = -1067.93, z = 30.14, heading = 3.31448912620544,},
+        {id = 5, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -165.83, y = -1083.26, z = 30.14, heading = 3.31448912620544},
+        {id = 6, Weapon = 0xB1CA77B1, modelHash = "s_m_y_ammucity_01", x = -179.47, y = -1078.39, z = 36.13, heading = 82.01,},
+        {id = 7, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -173.8, y = -1062.78, z = 36.13, heading = 60.94,wanderinarea=true},
+        {id = 8, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -160.2, y = -1067.93, z = 36.13, heading = 3.31448912620544},
+        {id = 9, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -165.83, y = -1083.26, z = 36.13, heading = 3.31448912620544,wanderinarea=true},
+        {id = 10, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -179.47, y = -1078.39, z = 42.13, heading = 82.01,wanderinarea=true},
+        {id = 11, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -173.8, y = -1062.78, z = 42.13, heading = 60.94,},
+        {id = 12, Weapon = 0x63AB0442, modelHash = "s_m_y_ammucity_01", x = -160.2, y = -1067.93, z = 42.13, heading = 3.31448912620544},
+        {id = 13, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = -165.83, y = -1083.26, z = 42.13, heading = 3.31448912620544},
+		
+    },
+
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+      {id = 1, id2 = 1, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01", x = -203.92, y = -1096.21, z = 21.16, heading = 143.9},
+	  {id = 2, id2 = 2, Vehicle = "trailersmall2", modelHash = "s_m_y_ammucity_01", x = -187.1, y = -1100.09, z = 42.14, heading = 68.51},
+	 {id = 3, id2 = 3, Vehicle = "trailersmall2", modelHash = "s_m_y_ammucity_01", x = -140.47, y = -1091.98, z = 42.14, heading = 250.11},
+	  {id = 4, id2 = 4, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = -161.65, y = -1077.89, z = 42.14+20, heading = 70.54,driving=true,pilot=true,isAircraft=true},
+	  {id = 5, id2 = 5, Vehicle = "trailersmall2", modelHash = "s_m_y_ammucity_01", x = -175.84, y = -1060.36, z = 42.14, heading = 20.14},
+   
+   	  --{id = 6,  Vehicle = "insurgent",x = 2929.89, y = 4715.79, z = 50.24, heading = -27.45},
+	 -- {id = 7,  Vehicle = "blazer4",  x = 2907.93, y = 4703.54, z = 49.38, heading = 287.97},
+   
+   }
+  },
+  Mission2 = {
+    
+    StartMessage = "The Church of Chantixology are holding~n~TV nature specialist Des Proud captive~n~Go rescue him!",
+	FinishMessage = "Des Proud is free!",
+	MissionTitle = "OT VIII",
+	MissionMessage = "Rescue TV celebrity Des Proud. He is being held captive at a Church of Chantixology mansion",	
+	Type = "HostageRescue",	
+	--TargetKillReward = 1500, 
+	--KillReward = 150,
+
+    Blip = {
+      Title = "Objective",
+      Position = { x = -138.08, y = 869.04, z = 232.69},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -138.08, y = 869.04, z = 231.69}, -- x = -138.08, y = 869.04, z = 231.69 --{ x = -2953.18, y = 9.74, z = 7.5 }, x = -2948.57, y = 2.08, z = 7.45
+      Size     = {x = 5.0, y = 5.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = 1731.94, y = 3308.24, z = 41.22}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+	},	
+	MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = 1731.94, y = 3308.24, z = 40.22},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+	},
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 1480.63, y = 3167.93, z = 40.99}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+	},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+	},
+	
+	Events = {
+
+	   { 
+		  Type="Squad",
+		  Position = {  x = -137.68, y = 883.01, z = 233.76, heading = 297.23}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=25,
+		  SquadSpawnRadius=50.0,
+		  modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,		  
+		},
+	
+	},		
+	
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+	
+    },
+
+	Pickups = {
+		--{ id=1, Name = "PICKUP_WEAPON_ASSAULTRIFLE", Amount = 1.0, Position = { x = -2953.06, y = 10.81, z = 7.96, heading = 232.22 }},
+	},
+	MissionPickups = {
+	--{ id=1, Name = "PICKUP_WEAPON_COMBATMG", Amount = 1.0, Position = { x = -2944.06, y = 10.81, z = 7.96, heading = 232.22 }},
+		
+		
+	},	
+		
+	
+
+    Peds = {
+        
+        {id = 1, modelHash = "ig_orleans", x = -131.59, y = 867.9, z = 232.69, heading = 118.57,friendly=true,invincible=true},
+		{id = 2,   modelHash = "ig_hunter",x = -134.69, y = 870.42, z = 232.69, heading = 120.14,friendly=true,invincible=true},
+		
+		{id = 3,  Weapon= 0xE284C527,  modelHash = "mp_m_boatstaff_01",x = -139.44, y = 869.89, z = 232.7, heading = 234.04,wanderinarea=true},
+		
+		{id = 4,Weapon= 0x83BF0278,   modelHash = "mp_m_boatstaff_01",x = -131.01, y = 858.56, z = 232.7, heading = 83.48},
+		
+		{id = 5, Weapon= 0x05FC3C11,  modelHash = "mp_m_boatstaff_01",x = -152.33, y = 885.71, z = 233.46, heading = 204.08 },
+		
+		{id = 6, Weapon= 0x05FC3C11, modelHash = "mp_m_boatstaff_01",x = -169.3, y = 895.02, z = 233.47, heading = 75.65,wanderinarea=true},
+		
+		{id = 7, Weapon= 0x63AB0442,  modelHash = "mp_m_boatstaff_01",x = -133.26, y = 899.14, z = 235.66, heading = 272.01},
+		
+		{id = 8, Weapon= 0xBFEFFF6D,  modelHash = "mp_m_boatstaff_01",x = -128.11, y = 903.51, z = 235.76, heading = 247.05,wanderinarea=true},
+		
+   
+    },
+
+    Vehicles = {
+    
+   	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2  
+		{id = 1, id2 = 1, Vehicle = "trailersmall2", nomods=true, modelHash = "mp_m_boatstaff_01",  x = -180.47, y = 854.62, z = 232.7, heading = 136.03},	  
+	  --{id = 1, id2 = 1, Vehicle = "khanjali", modelHash = "s_m_y_ammucity_01",  x = -2970.94, y = 5.36, z = 6.6, heading = 244.62,driving=true,pilot=true},
+	  --{id = 1, id2 = 1, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",  x = -2970.94, y = 5.36, z = 6.6, heading = 244.62,driving=true,pilot=true},
+	  --{id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true,flee=true},
+    }
+  } ,
+  Mission3 = {
+    
+    StartMessage = "Mercenaries are assembling~n~to take over Fort Zancudo!~n~Eliminate them",
+	FinishMessage = "Mission Accomplished!",
+	Type = "Assassinate",
+	MissionTitle = "Battle for Fort Zancudo",
+	MissionMessage = "Stop the mercenaries from taking over Fort Zancudo",		
+	--TargetKillReward = 1500, 
+	--KillReward = 150,
+
+    Blip = {
+      Title = "Mission Start",
+      Position = { x = -2074.59, y = 1475.03, z = 275.15 },
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -2074.59, y = 1475.03, z = 274.15  },
+      Size     = {x = 5.0, y = 5.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = {x = -2108.16, y = 3275.45, z = 38.73}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+	},	
+	MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -2108.16, y = 3275.45, z = 37.73},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+	},
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -2451.21, y = 3134.29, z = 32.82, heading = 156.25}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+	},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = -3238.09, y = 3380.0, z = 0.18}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+	},
+	
+	Events = {
+
+	   { 
+		  Type="Squad",
+		  Position = { x = -2074.59, y = 1475.03, z = 275.15}, 
+		  Size     = {radius=1000.0},
+		  --SpawnHeight = 200.0,
+		 -- FacePlayer = true,
+		  NumberPeds=25,
+		  SquadSpawnRadius=50.0,
+		  modelHash="s_m_y_ammucity_01",
+		  CheckGroundZ=true,		  
+		},
+	
+
+	   { 
+		  Type="Aircraft",
+		  Position = {  x = -2096.12, y = 1483.89, z = 279.16, heading = 97.67}, 
+		  Size     = {radius=1000.0},
+		  SpawnHeight = 50.0,
+		 -- FacePlayer = true,
+		 -- NumberPeds=25,
+		  --SquadSpawnRadius=50.0,
+		  modelHash="s_m_y_ammucity_01",
+		  Vehicle="hydra"
+		  --CheckGroundZ=true,		  
+		},
+		
+	   { 
+		  Type="Aircraft",
+		  Position = {  x = -1971.82, y = 1460.12, z = 268.38, heading = 252.11}, 
+		  Size     = {radius=1000.0},
+		  SpawnHeight = 50.0,
+		 -- FacePlayer = true,
+		 -- NumberPeds=25,
+		  --SquadSpawnRadius=50.0,
+		  modelHash="s_m_y_ammucity_01",
+		  Vehicle="valkyrie"
+		  --CheckGroundZ=true,		  
+		},		
+	
+	},			
+
+    Peds = {
+        
+        {id = 1, Weapon = 0x687652CE, modelHash = "s_m_y_ammucity_01", x = -1980.96, y = 1469.05, z = 268.92, heading = 265.89, target=true,wanderinarea=true},
+		{id = 2, Weapon = 0x687652CE, modelHash = "s_m_y_ammucity_01", x = -2022.59, y = 1478.8, z = 272.15, heading = 104.57, target=true,wanderinarea=true},
+		{id = 3, Weapon = 0x687652CE, modelHash = "s_m_y_ammucity_01", x = -2014.97, y = 1451.01, z = 271.92, heading = 206.34, target=true,wanderinarea=true},
+		
+   
+    },
+
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+	  
+	  --id2 is the primary ped for the vehicles, which gets set to seatid=-1, which is typically the default for a vehicle for the driver.
+	  --ExtraPeds will take Peds from the Peds array above and put them in a seatid in this vehicle to partner with the primary ped, as a passenger. 
+	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2
+      {id = 1, id2 = 1, Vehicle = "trailersmall2", modelHash = "s_m_y_ammucity_01", x = -2060.33, y = 1522.0, z = 281.4, heading = 347.35, target=true},
+	  {id = 2, id2 = 2, Vehicle = "trailersmall2", modelHash = "s_m_y_ammucity_01",  x = -2049.6, y = 1430.96, z = 275.81, heading = 212.78, target=true},
+	  {id = 3, id2 = 3, Vehicle = "trailersmall2", modelHash = "s_m_y_ammucity_01",  x = -2127.29, y = 1470.08, z = 284.56, heading = 240.86, target=true},
+	  
+	  {id = 4, id2 = 4, Vehicle = "khanjali", modelHash = "s_m_y_ammucity_01",  x = -2103.88, y = 1494.37, z = 282.54, heading = 240.44, target=true,driving=true},
+	  {id = 5, id2 = 5, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01",  x = -2034.77, y = 1497.24, z = 276.13, heading = 147.64, target=true,driving=true},
+	  
+	 -- {id = 6, id2 = 6, Vehicle = "valkyrie", modelHash = "s_m_y_ammucity_01",  x = -1971.82, y = 1460.12, z = 268.38 + 50, heading = 252.11,driving=true,pilot=true, target=true,isAircraft=true},
+	  --{id = 7, id2 = 7, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",  x = -2096.12, y = 1483.89, z = 279.16 + 50, heading = 97.67,driving=true,pilot=true, target=true,isAircraft=true},
+	  {id = 6, Vehicle = "barrage", modelHash = "s_m_y_ammucity_01",  x = -2053.69, y = 1557.33, z = 274.87, heading = 70.73},	  --leave out the id2, and the vehicle the player can use. It will disappear when the mission is over.
+	  
+	 
+    }
+  },
+  
+   Mission4 = {
+    
+    StartMessage = "Mercenaries for hire have captured another~n~construction site for ransom. Eliminate them!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Takedown",
+	MissionMessage = "Eliminate the mercenaries who have held the construction site for ransom",	
+	Type = "Assassinate",	
+
+    Blip = {
+      Title = "Objective",
+      Position = { x = 0.30, y = -399.48, z = 39.43 },
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = 0.30, y = -399.48, z = 38.43 },
+      Size     = {x = 5.0, y = 5.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1469.37, y = -2967.27, z = 13.3}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+
+    Peds = {
+        -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+        {id = 1, Weapon = 0x63AB0442, modelHash = "s_m_y_ammucity_01", x = 4.82, y = -393.00, z = 39.40, heading = 338.78, armor=100, target=true},
+       {id = 2, Weapon =  0xB1CA77B1, modelHash = "s_m_y_ammucity_01", x = 3.56, y = -387.80, z = 39.43, heading = 289.46, heading = 82.01, armor=100,target=true},
+        {id = 3, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = 7.51, y = -386.08, z = 39.33, heading = 308.95, armor=100, target=true},
+		{id = 4, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = 8.51, y = -386.08, z = 39.33, heading = 308.95, armor=100, target=true},
+		{id = 5, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = 9.51, y = -386.08, z = 39.33, heading = 308.95, armor=100, target=true},
+		{id = 6, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = 10.51, y = -386.08, z = 39.33, heading = 308.95, armor=100, target=true},
+		{id = 7, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = 11.51, y = -386.08, z = 39.33, heading = 308.95, armor=100, target=true},
+		{id = 7, Weapon = 0x83BF0278, modelHash = "s_m_y_ammucity_01", x = 11.51, y = -386.08, z = 39.33, heading = 308.95, armor=100, target=true},
+		{id = 8, Weapon = 0x63AB0442, modelHash = "s_m_y_ammucity_01", x = 12.51, y = -386.08, z = 39.33, heading = 308.95, armor=100, target=true},
+ 
+    },
+
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+	  
+	  --id2 is the primary ped for the vehicles, which gets set to seatid=-1, which is typically the default for a vehicle for the driver.
+	  --ExtraPeds will take Peds from the Peds array above and put them in a seatid in this vehicle to partner with the primary ped, as a passenger. 
+	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2
+      {id = 1, id2 = 1, Vehicle = "insurgent3",Weapon=0x13532244, modelHash = "s_m_y_ammucity_01", x = 0.30, y = -399.48, z = 39.43, heading = 10.41, armor=100, movespeed=20.0, target=true, flee=true, driving=true, conqueror=true},
+    }
+  },
+  
+  Mission5 = {
+    
+    StartMessage = "A maniac on coke has stolen a supercar~n~and an exotic dancer and is running over people~n~Stop him!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Wonderland",
+	MissionMessage = "Take out the maniac hit and run driver and rescue the stripper if possible",		
+	Type = "Assassinate",	
+
+    Blip = {
+      Title = "Mission Start",
+      Position = {x = 275.7607, y = 1686.501, z = 237.8363},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = 275.7607, y = 1686.501, z = 236.8363 },
+      Size     = {x = 5.0, y = 5.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = 1731.94, y = 3308.24, z = 41.22}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = 1731.94, y = 3308.24, z = 40.22},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 1480.63, y = 3167.93, z = 40.99}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+
+    Peds = {
+        -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+        {id = 1, modelHash = "S_F_Y_StripperLite", x = 275.7607, y = 1686.501, z = 237.8363, heading = 338.78, armor=100, friendly=true},
+ 
+    },
+
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+	  
+	  --id2 is the primary ped for the vehicles, which gets set to seatid=-1, which is typically the default for a vehicle for the driver.
+	  --ExtraPeds will take Peds from the Peds array above and put them in a seatid in this vehicle to partner with the primary ped, as a passenger. 
+	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2
+      {id = 1, id2 = 1, Weapon =0x2BE6766B, Vehicle = "kuruma2", noFill=true, modelHash = "IG_TylerDix",ExtraPeds={{id=1,seatid=0}}, x = 275.7607, y = 1686.501, z = 237.8363, heading = 162.26272, armor=100, target=true, driving=true, movespeed=120.0, flee=true,conqueror=true},
+    }
+  },
+  
+  Mission6 = {
+    
+    StartMessage = "Rescue the Governor!~n~Find his secret dossier before the radicals do!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Escape From Los Santos",
+	MissionMessage = "The Governor's plane was brought down by radicals. Retrieve his secret dossier for ransom",	
+	Type = "ObjectiveRescue",	
+	--TargetKillReward = 1500, 
+	--KillReward = 150,
+	HostageKillPenalty=5000,
+	HostageRescueReward = 5000,
+	ObjectiveRescueShortRangeBlip = true,
+    Blip = {
+      Title = "Objective",
+      Position = {x = -184.57, y = -893.92, z = 29.34}, 
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = {x = -184.57, y = -893.92, z = 27.34}, 
+      Size     = {x = 7.0, y = 7.0, z = 4.5},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1469.37, y = -2967.27, z = 13.3}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+		{ id=1,  Name = "apa_mp_apa_crashed_usaf_01a", Position = { x = -184.57, y = -893.92, z = 29.34, heading = 67.37 },dontsetheading=true},
+		{ id=2,  Name = "prop_jet_bloodsplat_01", Position = { x = -184.96, y = -901.75, z = 29.34, heading = 361.48 },dontsetheading=true},
+		{ id=3,  Name = "bkr_prop_biker_case_shut",isObjective=true, Position = { x = -187.42, y = -892.78, z = 29.34, heading = 257.95 },dontsetheading=true},
+		{ id=3,  Name = "xm_prop_x17_corpse_01", Position = {x = -182.48, y = -891.75, z = 29.34, heading = -1.28 },dontsetheading=true},
+		{ id=4,  Name = "xm_prop_x17_bag_01c",isObjective=true, Position = {x = -126.28, y = -872.33, z = 44.22, heading = 229.71}},
+		{ id=5,  Name = "prop_amb_phone",isObjective=true, Position = {x = -232.15, y = -913.48, z = 32.31, heading = 337.21}},
+    },
+
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},
+Events = {
+
+	   { 
+		  Type="Squad",
+		  Position = {x = -184.57, y = -893.92, z = 29.34}, 
+		  Size     = {radius=500.0},
+		  --SpawnHeight = 200.0,
+		 -- FacePlayer = true,
+		  NumberPeds=20,
+		  SquadSpawnRadius=100.0,
+		 -- modelHash="s_m_y_ammucity_01",
+		  CheckGroundZ=true,		  
+		},
+	
+
+	   { 
+		  Type="Vehicle",
+		  Position = { x = -193.63, y = -874.79, z = 29.26}, 
+		  Size     = {radius=500.0},
+		  --SpawnHeight = 50.0,
+		 FacePlayer = true,
+		 -- NumberPeds=25,
+		  --SquadSpawnRadius=50.0,
+		  --modelHash="s_m_y_ammucity_01",
+		 -- Vehicle="hydra"
+		  --CheckGroundZ=true,		  
+		},
+		
+	
+	},				
+		
+
+    Peds = {
+        -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+        {id = 1,  modelHash = "IG_Paper",  x = -186.03, y = -891.08, z = 29.34, heading = 49.44, friendly=true},
+		{id = 2,  realId=2, Weapon = 0x05FC3C11, modelHash = "G_M_M_ChiCold_01", x = -228.69, y = -914.71, z = 32.31, heading = 295.14},
+		{id = 3,  realId=3, Weapon = 0xBFEFFF6D, modelHash = "s_m_y_xmech_02", x = -228.69, y = -914.71, z = 32.31, heading = 295.14},
+       {id = 4, Weapon = 0x05FC3C11, modelHash = "G_M_M_ChiCold_01",  x = -134.69, y = -873.15, z = 44.21, heading = 103.3},
+      {id = 5, Weapon = 0xB1CA77B1, modelHash = "s_m_y_xmech_02",x = -137.42, y = -867.44, z = 44.21, heading = 97.35},
+	   {id = 6, Weapon = 0x83BF0278, modelHash = "U_M_Y_Tattoo_01", x = -149.76, y = -855.38, z = 45.03, heading = 4.42},
+       {id = 7, Weapon = 0xEFE7E2DF, modelHash = "G_M_M_ChiCold_01", x = -141.88, y = -835.48, z = 44.14, heading = 59.95},
+       {id = 8, Weapon = 0xBFEFFF6D, modelHash = "IG_Terry",x = -146.09, y = -857.15, z = 44.24, heading = 149.91},
+        {id = 9, Weapon = 0xAF113F99, modelHash = "G_M_M_ChiCold_01", x = -126.59, y = -889.57, z = 44.2, heading = 180.91},
+        {id = 10, Weapon = 0x63AB0442, modelHash = "U_M_Y_MilitaryBum", x = -106.92, y = -896.75, z = 45.58, heading = 212.85},
+        {id = 11, Weapon = 0x83BF0278, modelHash = "U_M_Y_Tattoo_01",  x = -91.24, y = -905.26, z = 44.34, heading = 179.98},
+       {id = 12, Weapon = 0x83BF0278, modelHash = "s_m_y_xmech_02",  x = -222.45, y = -925.26, z = 30.15, heading = 247.56},
+       {id = 13, Weapon =  0x83BF0278, modelHash = "G_M_M_ChiCold_01", x = -165.96, y = -931.28, z = 32.99, heading = 134.78},
+       
+	   {id = 14, Weapon =  0x0C472FE2, modelHash = "CSB_Chin_goon", x = -91.79, y = -893.78, z = 44.22, heading = 331.01 },
+        {id = 15, Weapon = 0x83BF0278, modelHash = "G_M_M_ChiCold_01", x = -129.99, y = -852.73, z = 44.22, heading = 307.19},
+		
+       {id = 16, Weapon = 0x05FC3C11, modelHash = "U_M_Y_Tattoo_01", x = -192.68, y = -830.22, z = 30.83, heading = 309.78},		
+		{id = 17, Weapon = 0xAF113F99, modelHash = "CSB_Cletus", x = -202.63, y = -860.75, z = 30.27, heading = 231.88},		
+		{id = 18, Weapon = 0x05FC3C11, modelHash = "U_M_Y_MilitaryBum", x = -231.49, y = -851.53, z = 30.68, heading = 154.04},		
+		 {id = 19, Weapon = 0x42BF8A85, modelHash = "CSB_Chin_goon", x = -162.67, y = -924.13, z = 29.29, heading = 41.64},		
+		 {id = 20, Weapon = 0x687652CE, modelHash = "s_m_y_xmech_02", x = -135.33, y = -928.82, z = 29.24, heading = 280.32},		
+		 {id = 21, Weapon = 0xB1CA77B1, modelHash = "U_M_Y_Tattoo_01", x = -101.75, y = -898.91, z = 29.26, heading = 169.85 },		
+		 {id = 22, Weapon = 0x05FC3C11, modelHash = "U_M_Y_MilitaryBum",  x = -122.46, y = -888.78, z = 29.33, heading = 111.7},
+
+		 {id = 23, Weapon = 0x05FC3C11, modelHash = "IG_Wade", x = -176.88, y = -892.69, z = 29.34, heading = 253.02},	
+		 {id = 24, Weapon = 0x5EF9FEC4, modelHash = "A_M_Y_SouCent_03",   x = -188.44, y = -888.66, z = 29.35, heading = 80.19},	
+		 {id = 25, Weapon = 0x05FC3C11, modelHash = "G_M_M_ChiCold_01",   x = -188.3, y = -905.77, z = 29.36, heading = 162.03},
+
+		 {id = 25, Weapon = 0x7FD62962, modelHash = "CSB_Cletus",  x = -143.8, y = -862.58, z = 29.99, heading = 129.62},
+		{id = 26, Weapon =  0x2BE6766B, modelHash = "A_M_Y_SouCent_03",  x = -133.85, y = -878.61, z = 29.58, heading = 125.04},	
+		
+		{id = 27, Weapon =  0x2BE6766B, modelHash = "s_m_y_ammucity_01",  x = -190.4, y = -891.32, z = 29.34, heading = 312.46, dead=true },	
+		{id = 28, Weapon =  0x2BE6766B, modelHash = "s_m_y_ammucity_01", x = -187.69, y = -885.32, z = 29.4, heading = 1.64,dead=true},	
+		{id = 29, Weapon =  0x2BE6766B, modelHash = "s_m_y_ammucity_01",  x = -178.75, y = -901.38, z = 29.36, heading = 186.85,dead=true},	
+		
+		
+		
+    },
+
+
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+   	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
+	  --{id = 1, id2 = 1, Vehicle = "cavalcade", modelHash = "s_m_y_ammucity_01",  x = -2970.94, y = 5.36, z = 6.6, heading = 244.62},
+	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
+    }
+  } ,
+  
+   Mission7 = {
+    
+    StartMessage = "A UFO crashed where that UFO cult worships~n~Check it out before the FIB does!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Bad Taste",
+	MissionMessage = "Investigate the UFO crash site and take what you can before the FIB gets there",	
+	Type = "Objective",	
+	--TargetKillReward = 1500, 
+	--KillReward = 150,
+	SpawnRewardPickups = {"weapon_railgun"},    
+
+    Blip = {
+      Title = "Objective",
+      Position = {x = 1657.106, y = 428.6742, z = 245.6912},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = {x = 1657.106, y = 428.6742, z = 244.6912}, 
+      Size     = {x = 7.0, y = 7.0, z = 10.5},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = 1731.94, y = 3308.24, z = 41.22}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = 1731.94, y = 3308.24, z = 40.22},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 1480.63, y = 3167.93, z = 40.99}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+		{ id=1, realId=1, Name = "gr_prop_damship_01a", Position = {x = 1657.106, y = 428.6742, z = 245.6912, heading = 224.7846},dontsetheading=true},
+		
+		--gibs
+		{ id=2, Name = "v_ilev_body_parts", Position = { x = 1630.22, y = 428.15, z = 251.69, heading = 353.62}},
+		{ id=3, Name = "xm_prop_x17_corpse_03", Position = {x = 1635.0, y = 438.27, z = 250.07, heading = 79.43}},
+		{ id=4,  Name = "v_ilev_body_parts", Position = {x = 1664.32, y = 428.17, z = 244.51, heading = 248.94}},
+		{ id=5,  Name = "xm_prop_x17_corpse_03", Position = {x = 1673.0, y = 402.67, z = 245.63, heading = 238.18 }},
+		{ id=6, Name = "v_ilev_body_parts", Position = {x = 1661.93, y = 437.68, z = 245.38, heading = 261.63 }},
+		{ id=7, Name = "v_ilev_body_parts", Position = { x = 1652.93, y = 443.85, z = 247.71, heading = 73.47}},
+		{ id=8, Name = "xm_prop_x17_corpse_03", Position = {x = 1656.9, y = 418.33, z = 246.06, heading = 170.5}},
+		{ id=9,  Name = "prop_alien_egg_01", Position = { x = 1655.69, y = 427.67, z = 245.93, heading = 378.88}},
+		{ id=10,  Name = "prop_alien_egg_01", Position = {x = 1657.02, y = 431.15, z = 245.82, heading = 225.31 }},
+		{ id=11, Name = "prop_alien_egg_01", Position = { x = 1659.31, y = 428.12, z = 245.31, heading = 54.46 }},		
+    },
+	
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},	
+		
+    Peds = {
+	
+
+
+	
+	
+	
+        -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+		{id = 1,  Weapon = 0x6D544C99,  modelHash = "s_m_m_movalien_01",   x = 1659.31, y = 428.12, z = 245.31, heading = 54.46 },
+		{id = 2,  Weapon = 0x6D544C99,  modelHash = "s_m_m_movalien_01",   x = 1645.85, y = 423.42, z = 248.08, heading = 114.23},
+		{id = 3,  Weapon = 0x6D544C99,  modelHash = "s_m_m_movalien_01",   x = 1655.56, y = 436.08, z = 246.49, heading = 377.0},
+		{id = 4,  Weapon = 0x6D544C99,  modelHash = "s_m_m_movalien_01",   x = 1666.97, y = 426.35, z = 244.23, heading = 258.76},
+		{id = 5,  Weapon = 0x6D544C99,  modelHash = "s_m_m_movalien_01",   x = 1707.88, y = 374.8, z = 235.5, heading = 163.28},
+		{id = 6,  Weapon = 0x6D544C99,  modelHash = "s_m_m_movalien_01",   x = 1636.67, y = 390.01, z = 254.54, heading = 231.38},
+		{id = 7,  Weapon = 0x6D544C99,  modelHash = "s_m_m_movalien_01",   x= 1632.32, y = 458.72, z = 250.38, heading = 36.5},
+		{id = 8,  Weapon = 0x6D544C99,  modelHash = "s_m_m_movalien_01",   x = 1664.22, y = 462.28, z = 247.59, heading = 317.14},
+		
+		{id = 9,  modelHash = "A_F_M_FatCult_01",  x = 1649.88, y = 436.38, z = 247.5, heading = 265.43, dead=true},
+		{id = 10,  modelHash = "A_M_M_ACult_01",  x = 1649.88, y = 436.38, z = 247.5, heading = 265.43, dead=true},
+		{id = 11,  modelHash = "A_M_Y_ACult_02",  x = 1649.88, y = 436.38, z = 247.5, heading = 265.43, dead=true},
+		{id = 12,  modelHash = "A_M_Y_ACult_02",  x = 1649.88, y = 436.38, z = 247.5, heading = 265.43, dead=true},
+		{id = 13,  modelHash = "A_M_M_ACult_01",  x = 1649.88, y = 436.38, z = 247.5, heading = 265.43, dead=true},
+		
+		
+   
+		
+    },
+	
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+   	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
+    }
+  } ,
+  
+   Mission8 = {
+    
+    StartMessage = "A corporate jet trafficking drugs was shot down~n~by a rival faction~n~Secure the narcotics!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Contra III: The Drug Wars",
+	MissionMessage = "Secure the narcotics from the smuggler's jet that was shot down",	
+	Type = "Objective",	
+	--TargetKillReward = 1500, 
+	--KillReward = 150,
+
+    Blip = {
+      Title = "Objective",
+      Position = {x = 302.86, y = 4373.86, z = 51.61},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = {x = 302.86, y = 4373.86, z = 50.61}, 
+      Size     = {x = 7.0, y = 7.0, z = 4.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = 1731.94, y = 3308.24, z = 41.22}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = 1731.94, y = 3308.24, z = 40.22},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 1480.63, y = 3167.93, z = 40.99}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},	
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+	
+	{ id=1,  Name = "prop_shamal_crash", Position = {x = 302.86, y = 4373.86, z = 51.61, heading = 68.35},dontsetheading=true},
+	{ id=2,  Name = "prop_drug_package", Position = { x = 299.68, y = 4376.15, z = 51.39, heading = 84.56 }},	
+	{ id=3,  Name = "prop_drug_package", Position = { x = 300.2, y = 4374.17, z = 51.38, heading = 33.03 }},
+	{ id=4,  Name = "prop_drug_package", Position = { x = 305.34, y = 4374.89, z = 52.0, heading = 209.16 }},	
+
+    },
+	Events = {
+
+	   { 
+		  Type="Paradrop",
+		  Position = { x = 302.86, y = 4373.86, z = 51.61 }, 
+		  Size     = {radius=100.0},
+		  SpawnHeight = 200.0,
+		  --FacePlayer = true,
+		  NumberPeds=15,
+		},
+	
+	},		
+	
+
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},	
+		
+    Peds = {
+	
+        -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+		{id = 1,  Weapon = 0x687652CE,  modelHash = "G_M_M_ChiCold_01",   x = 308.16, y = 4385.77, z = 55.02, heading = 156.5,wanderinarea=true },
+		{id = 2,  Weapon = 0x83BF0278,  modelHash = "A_M_M_EastSA_02",   x = 308.16, y = 4385.77, z = 55.02, heading = 156.5 },
+		
+		{id = 3,  Weapon = 0x83BF0278,  modelHash = "s_m_y_xmech_02",   x = 285.49, y = 4351.96, z = 49.05, heading = 326.71 },
+		
+		{id = 4,  Weapon = 0x05FC3C11,  modelHash = "A_M_M_EastSA_02",   x = 307.16, y = 4385.77, z = 55.02, heading = 156.5,wanderinarea=true },
+		
+		{id = 5,  Weapon = 0x63AB0442,  modelHash = "CSB_Chin_goon",   x = 305.16, y = 4385.77, z = 55.02, heading = 56.5 },
+		
+		{id = 6,  Weapon = 0xB1CA77B1,  modelHash = "A_M_Y_SouCent_03",   x = 308.16, y = 4382.77, z = 55.02, heading = 156.5 },
+	
+    },
+	
+    Vehicles = {
+	
+      
+   	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
+	  {id = 1, id2 = 1, Weapon = 0x687652CE, Vehicle = "barrage", modelHash = "G_M_M_ChiCold_01", ExtraPeds={{id=2,seatid=0}}, x = 295.32, y = 4350.68, z = 49.71, heading = 366.66},
+	
+    }
+  } ,
+  
+  Mission9 = {
+    
+    StartMessage = "A mercenary helicoptor was shot down hauling ammo~n~Get the ammunition before the mercs do!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Anyone in Cherno?",
+	MissionMessage = "Get the supplies from the crashed helicopter before the mercs secure it",	
+	Type = "Objective",	
+	--TargetKillReward = 1500, 
+	--KillReward = 150,
+
+    Blip = {
+      Title = "Objective",
+      Position = { x = -1161.0, y = 4569.94, z = 142.64},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -1161.0, y = 4569.94, z = 141.64}, 
+      Size     = {x = 6.0, y = 6.0, z = 4.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = {x = -2108.16, y = 3275.45, z = 38.73}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -2108.16, y = 3275.45, z = 37.73},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -2451.21, y = 3134.29, z = 32.82, heading = 156.25}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = -3238.09, y = 3380.0, z = 0.18}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+	
+		{ id=1,  Name = "sm_prop_smug_heli", Position = { x = -1161.0, y = 4569.94, z = 142.64, heading = 145.22 }},
+		{ id=2,  Name = "hei_prop_heist_ammo_box", Position = { x = -1159.15, y = 4568.47, z = 142.55, heading = 150.05 }},
+		{ id=3,  Name = "hei_prop_heist_ammo_box", Position = { x = -1162.83, y = 4571.43, z = 142.91, heading = 337.43 }},
+		{ id=4,  Name = "hei_prop_heist_ammo_box", Position = { x = -1163.04, y = 4568.09, z = 142.67, heading = 254.89 }},
+	
+	
+    },
+	
+	
+	Events = {
+
+	   { 
+		  Type="Paradrop",
+		  Position = { x = -1161.0, y = 4569.94, z = 142.64 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight = 200.0,
+		  --FacePlayer = true,
+		  NumberPeds=15,
+		},
+	
+	},			
+
+
+
+	
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},	
+		
+	
+
+    Peds = {
+	
+		{id = 1,  Weapon = 0x05FC3C11,  modelHash = "S_M_M_ChemSec_01",   x = -1170.34, y = 4597.04, z = 177.27, heading = 280.45 },
+		{id = 2,  Weapon = 0x05FC3C11,  modelHash = "S_M_M_ChemSec_01",   x = -1209.82, y = 4585.97, z = 196.22, heading = 37.46},
+		{id = 3,  Weapon = 0x05FC3C11,  modelHash = "S_M_M_ChemSec_01",   x = -1181.61, y = 4611.21, z = 172.68, heading = 57.46 },
+		{id = 4,  Weapon = 0x687652CE,  modelHash = "S_M_M_ChemSec_01",  x = -1127.46, y = 4617.7, z = 153.66, heading = 161.84},
+		{id = 5,  Weapon = 0x63AB0442,  modelHash = "S_M_M_ChemSec_01",  x = -1122.56, y = 4585.95, z = 137.82, heading = 234.6},
+		{id = 6,  Weapon = 0xBFEFFF6D,  modelHash = "S_M_M_ChemSec_01",   x = -1159.03, y = 4555.89, z = 140.66, heading = 283.2},
+		{id = 7,  Weapon = 0xAF113F99,  modelHash = "S_M_M_ChemSec_01",  x = -1173.78, y = 4564.25, z = 140.33, heading = 273.92 },
+		{id = 8,  Weapon = 0x83BF0278,  modelHash = "S_M_M_ChemSec_01",    x = -1165.78, y = 4570.29, z = 142.66, heading = 254.67},
+		{id = 9,  Weapon = 0xBFEFFF6D,  modelHash = "S_M_M_ChemSec_01",    x = -1157.42, y = 4573.4, z = 142.85, heading = 204.36},
+
+		
+    },
+	
+	
+
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+   	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
+	  {id = 1, id2 = 1, Vehicle = "valkyrie", modelHash = "S_M_M_ChemSec_01",  x = -1166.42, y = 4641.5, z = 145.11, heading = 210.07,driving=true,pilot=true,isAircraft=true},
+	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
+    }
+  } ,
+  
+  Mission10 = {
+    
+	StartMessage = "Stop the bandits from taking over the oil fields!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Fury Road",
+	MissionMessage = "Stop the bandits from taking over the oil fields",	
+	--Type = "Assassinate",	
+	Type = "Assassinate",	
+	--TargetKillReward = 150, 
+	--KillReward = 150,
+	IsDefend = true,
+
+    Blip2 = {
+      Title = "Mission End",
+      Position = {x = 1453.72, y = -2282.69, z = 67.47}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+	Blip = {
+      Title = "Bandit Location",
+      Position = { x = 1564.8, y = 3221.98, z = 40.4}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = -1694.94, y = -3152.18, z = 22.32}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1469.37, y = -2967.27, z = 13.3}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+
+    Marker = {
+      Type     = 1,
+      Position = {x = 1453.72, y = -2282.69, z = 67.47},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 150.0, y = 150.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 200.0,
+    },
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+	
+	
+    },
+	
+
+	
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},	
+		
+	
+
+    Peds = {
+	
+		{id = 1,  Weapon = 0x13532244,  modelHash = "u_m_y_zombie_01",  x = 1046.11, y = 3061.58, z = 41.93, heading = 372.55,notzed=true,target=true,},
+		{id = 2,  Weapon = 0x13532244,  modelHash = "u_m_y_zombie_01",   x = 1047.11, y = 3061.58, z = 41.93, heading = 372.55,notzed=true,target=true},
+		{id = 3,  Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",  x = 1048.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true},
+		{id = 4,  Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",  x = 1049.11, y = 3061.58, z = 41.93, heading = 372.55,notzed=true,target=true},
+		{id = 5,  Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",  x = 1050.11, y = 3061.58, z = 41.93, heading = 372.55,notzed=true,target=true},
+		{id = 6,  Weapon = 0x13532244,  modelHash = "u_m_y_zombie_01",  x = 1051.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true},
+		{id = 7, Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",   x = 1052.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true},
+		--{id = 8, Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",   x = 1053.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true,conqueror=true},
+		--{id = 9, Weapon = 0x2BE6766B, modelHash = "u_m_y_zombie_01",   x = 1054.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true,conqueror=true},
+		--{id = 10, Weapon = 0x2BE6766B, modelHash = "u_m_y_zombie_01",   x = 1055.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true,conqueror=true},
+			
+
+		
+		
+    },
+	
+	
+
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+   	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
+	{id = 1, id2 = 1, Weapon= 0x13532244, Vehicle = "phantom2", modelHash = "u_m_y_zombie_01",ExtraPeds={{id=1,seatid=0}}, x = 1693.43, y = 3252.58, z = 40.91, heading = 283.22,notzed=true,target=true,conqueror=true}, --movetocoord={ x = 1453.72, y = -2282.69, z = 67.47},
+	{id = 2, id2 = 2, Weapon= 0x13532244, Vehicle = "limo2", modelHash = "u_m_y_zombie_01",  x = 1716.09, y = 3263.64, z = 41.14, heading = 287.06,notzed=true,target=true,conqueror=true},
+	{id = 3, id2 = 3, Weapon= 0x13532244, Vehicle = "barrage", modelHash = "u_m_y_zombie_01",x = 1675.94, y = 3235.49, z = 40.71, heading = 280.06, notzed=true,target=true,conqueror=true},
+	{id = 4, id2 = 4, Weapon= 0x13532244, Vehicle = "gargoyle", modelHash = "u_m_y_zombie_01",  x = 1633.08, y = 3235.96, z = 40.41, heading = 280.53, notzed=true,target=true,conqueror=true},
+	{id = 5, id2 = 5, Weapon= 0x13532244, Vehicle = "dukes2", modelHash = "u_m_y_zombie_01", ExtraPeds={{id=2,seatid=0}}, x = 1601.39, y = 3219.89, z = 40.41, heading = 281.29, notzed=true,target=true,conqueror=true},
+	{id = 6, id2 = 6, Weapon= 0x13532244, Vehicle = "tampa3", modelHash = "u_m_y_zombie_01", x = 1564.8, y = 3221.98, z = 40.44, heading = 279.78, notzed=true,target=true,conqueror=true},
+	{id = 7, id2 = 7, Weapon= 0x13532244, Vehicle = "ratbike", modelHash = "u_m_y_zombie_01",  x = 1530.94, y = 3195.49, z = 40.43, heading = 283.06, notzed=true,target=true,conqueror=true},
+	{id = 8, id2 = 8, Weapon= 0x13532244, Vehicle = "sanctus", modelHash = "u_m_y_zombie_01",  x = 1507.08, y = 3207.04, z = 40.45, heading = -80.67, notzed=true,target=true,conqueror=true},
+{id = 9, id2 = 9, Weapon= 0x13532244, Vehicle = "dune4", modelHash = "u_m_y_zombie_01", ExtraPeds={{id=3,seatid=0}}, x = 1718.96, y = 3258.17, z = 41.13, heading = 284.77 , notzed=true,target=true,conqueror=true},
+		{id = 10, id2 = 10, Weapon= 0x13532244, Vehicle = "dune3", modelHash = "u_m_y_zombie_01",ExtraPeds={{id=4,seatid=0}}, x = 1480.56, y = 3181.15, z = 40.44, heading = 279.9, notzed=true,target=true,conqueror=true},
+		{id = 11, id2 = 11, Weapon= 0x13532244, Vehicle = "dune2", modelHash = "u_m_y_zombie_01", ExtraPeds={{id=5,seatid=0}},x = 1443.97, y = 3190.27, z = 40.45, heading = 281.69, notzed=true,target=true,conqueror=true},
+		{id = 12, id2 = 12, Weapon= 0x13532244, Vehicle = "dune", modelHash = "u_m_y_zombie_01", ExtraPeds={{id=6,seatid=0}}, x = 1062.02, y = 3084.72, z = 41.17, heading = 286.88, heading = 278.93, notzed=true,target=true,conqueror=true},
+		{id = 13, id2 = 13, Weapon= 0x13532244, Vehicle = "technical2", modelHash = "u_m_y_zombie_01",  x = 1421.18, y = 3162.42, z = 40.47, heading = 280.8 , notzed=true,target=true,conqueror=true},
+		{id = 14, id2 = 14, Weapon= 0x13532244, Vehicle = "technical2", modelHash = "u_m_y_zombie_01",ExtraPeds={{id=7,seatid=0}},x = 1376.34, y = 3172.96, z = 40.46, heading = 280.96, notzed=true,target=true,conqueror=true},
+	{id = 15, id2 = 15, Weapon= 0x13532244, Vehicle = "boxville5", modelHash = "u_m_y_zombie_01",x = 1345.56, y = 3142.1, z = 40.47, heading = -78.9, notzed=true,target=true,conqueror=true},
+	
+	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
+    }
+  },
+  
+
+  
+   Mission11 = {
+    
+	StartMessage = "The miners dug too greedily.~n~They awoke something in the darkness~n~Find the lost treasure!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Hollow Earth Theory",
+	MissionMessage = "Find and retrieve the legendary lost treasure from the abandoned mine",	
+	Type = "Objective",	
+	--TargetKillReward = 150, 
+	--KillReward = 150,
+	SpawnRewardPickups = {"weapon_rayminigun","weapon_raypistol","weapon_firework"},    
+
+    Blip = {
+      Title = "Objective",
+      Position = {  x = -595.88, y = 2088.7, z = 131.41},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -423.38, y = 2064.82, z = 118.99}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = 1731.94, y = 3308.24, z = 41.22}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = 1731.94, y = 3308.24, z = 40.22},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 1480.63, y = 3167.93, z = 40.99}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+		{ id=1, realId=1, Name = "prop_idol_01_error", Position = {x = -423.91, y = 2064.71, z = 120.03, heading = 278.44}}, --prop_idol_case
+	
+    },
+	
+
+	
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},	
+		
+	
+
+    Peds = {
+	
+		{id = 1,  Weapon = 0x476BF155,  modelHash = "ig_orleans",  x = -461.9, y = 2057.86, z = 121.63, heading = 203.57,armor=500},
+		{id = 2,  Weapon = 0xAF3696A1,  modelHash = "ig_orleans",  x = -463.17, y = 2056.08, z = 121.79, heading = 205.38,armor=500},
+		{id = 3,  Weapon = 0x476BF155, modelHash = "ig_orleans",   x = -456.42, y = 2052.18, z = 122.36, heading = 154.51,armor=500 },
+		{id = 4,  Weapon = 0xAF3696A1, modelHash = "ig_orleans",   x = -449.67, y = 2057.85, z = 122.07, heading = 120.81,armor=500},
+		{id = 5,  Weapon = 0x476BF155, modelHash = "ig_orleans",   x = -436.34, y = 2062.19, z = 121.36, heading = 101.34 ,armor=500},
+	{id = 6,  Weapon = 0xAF3696A1,  modelHash = "ig_orleans",x = -428.27, y = 2064.24, z = 120.64, heading = 106.58 ,armor=500},
+		{id = 7, Weapon = 0x476BF155, modelHash = "ig_orleans", x = -428.8, y = 2063.0, z = 120.72, heading = 100.6,armor=500},
+
+		
+    },
+	
+	
+
+    Vehicles = {
+
+	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
+    }
+  },
+
+
+	
+ Mission12 = {
+    
+	StartMessage = "Rescue the hostages",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Rescue",
+	MissionMessage = "Rescue the hostages!",	
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Capture the objective!",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Takeover",
+	MissionMessageObj = "Capture the objective!",	
+	
+	StartMessageAss = "Eliminate the targets!",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Elimination",
+	MissionMessageAss = "Eliminate the targets",	
+	RandomMissionDoLandBattle=false, --needed for pier npcs to spawn!
+	Type = "Objective",	
+	--RandomMissionTypes ={"Objective","HostageRescue"},
+	IsRandomEvent=true,
+	IsRandom = true,
+	--RandomMissionTypes ={"Objective"},	
+	--Config.RandomMissionPositions = { 
+--{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+--}
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Objective",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	 
+	Events = {
+		--**need a stub entry set for the random default event**
+		--add custom events for mission with id=1 onwards
+      {id = 1, 
+		Position = { x = 50000.0, y = 50000.0, z = 50000.0, heading = 0 },
+	  	  Size     = {radius=1000.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  --NumberPeds=1,
+		  isBoss=false,
+		  Target=false,
+		  SquadSpawnRadius=25.0,
+		  
+	  
+	  },
+     },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  },
+  
+  
+   Mission13 = {
+    
+	StartMessage = "Rescue the witness from the police station!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Assault on Precinct 13",
+	MissionMessage = "Stop the terrorists from eliminating the important witness",	
+	Type = "Assassinate",	
+	--TargetKillReward = 150, 
+	--KillReward = 150,
+	IsDefend = true,
+	IsDefendTarget = true,
+	IsDefendTargetRescue = true,
+	IsDefendTargetChase = true,	
+	
+
+  
+	 Blip2 = {
+      Title = "Protect the witness",
+      Position = { x = 459.26, y = -997.97, z = 24.91},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -423.38, y = 2064.82, z = 118.99}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = -1694.94, y = -3152.18, z = 22.32}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1469.37, y = -2967.27, z = 13.3}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+		{ id=1, realId=1, Name = "prop_idol_01_error", Position = {x = -423.91, y = 2064.71, z = 120.03, heading = 278.44}}, --prop_idol_case
+	
+    },
+	
+
+	
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},
+	IsDefendTargetEntity = { --**Uses Blip2 location to spawn... except for heading**
+		--Only define 1, Add 'id2' w. 'Vehicle' to add ped to vehicle.
+		{id = 1,  Weapon = 0x2BE6766B,  modelHash = "u_f_y_princess", heading = 258.54},
+		--{id = 1, id2 = 1, Weapon= 0x2BE6766B, Vehicle = "windsor", modelHash = "ig_bankman",heading = 283.22,}, --movetocoord={  x = 1564.8, y = 3221.98, z = 40.4}
+	
+	},	
+		
+
+
+    Peds = {
+	
+		{id = 1,  Weapon = 0x1B06D571,  modelHash = "g_m_y_lost_01", x = 392.22, y = -948.11, z = 29.4, heading = 235.57,armor=500,movespeed=1.0,target=true},
+		{id = 2,  Weapon = 0x99B507EA,  modelHash = "g_m_y_lost_02", x = 452.02, y = -939.25, z = 28.52, heading = 174.14,armor=500,movespeed=1.0,target=true},
+		{id = 3,  Weapon = 0xCD274149, modelHash = "g_m_y_lost_03", x = 491.22, y = -962.64, z = 27.24, heading = 121.6,armor=500,movespeed=1.0,target=true },
+		{id = 4,  Weapon = 0x1B06D571, modelHash = "g_f_y_lost_01", x = 504.32, y = -1019.43, z = 28.01, heading = 90.92,armor=500,movespeed=1.0,target=true},
+		{id = 5,  Weapon = 0x99B507EA,  modelHash = "g_m_y_lost_01", x = 479.23, y = -1067.98, z = 29.21, heading = 69.27,armor=500,movespeed=1.0,target=true},
+		{id = 6,  Weapon = 0xCD274149,  modelHash = "g_m_y_lost_02",x = 407.46, y = -1068.29, z = 29.36, heading = 355.52 ,armor=500,movespeed=1.0,target=true},
+		{id = 7,  Weapon = 0x1B06D571, modelHash = "g_m_y_lost_03", x = 379.15, y = -1033.22, z = 29.31, heading = 313.98,armor=500,movespeed=1.0,target=true },
+		--{id = 4,  Weapon = 0x2BE6766B, modelHash = " g_f_y_lost_01",   x = 451.2, y = -984.93, z = 43.69, heading = 274.59,armor=500,movespeed=1},
+		--{id = 5,  Weapon = 0x476BF155, modelHash = "ig_orleans",   x = -436.34, y = 2062.19, z = 121.36, heading = 101.34 ,armor=500},
+	--{id = 6,  Weapon = 0xAF3696A1,  modelHash = "ig_orleans",x = -428.27, y = 2064.24, z = 120.64, heading = 106.58 ,armor=500},
+		--{id = 7, Weapon = 0x476BF155, modelHash = "ig_orleans", x = -428.8, y = 2063.0, z = 120.72, heading = 100.6,armor=500},
+
+		
+    },
+	
+
+    Vehicles = {
+
+	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
+    }
+  },
+
+
+  Mission14 = {
+    
+	StartMessage = "Help the road warrior survive the bandits!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "The Road Warrior",
+	MissionMessage = "Help the road warrior survive the bandits!",	
+	--Type = "Assassinate",	
+	Type = "Assassinate",	
+	--TargetKillReward = 150, 
+	--KillReward = 150,
+	IsDefend = true,
+	IsDefendTarget = true,
+	--IsDefendTargetChase = true, --**Peds and vehicles chase target. NOTE: for vehicles to chase, target needs to be in a vehicle**
+	IsDefendTargetRescue = true, --**Rescuing the target wins the mission, like a hostage rescue
+	--Makes NPCs go to Blip location, and Target go from Blip2 to Blip location, when IsDefendTargetChase=true, NPCs chase Target instead
+	IsDefendTargetGotoBlip = true, 
+
+    Blip2 = {
+      Title = "Protect the road warrior",
+      Position = {x = 1872.28, y = 3219.21, z = 45.4}, --{x = 1453.72, y = -2282.69, z = 67.47},  x = 1872.28, y = 3219.21, z = 45.4
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+	Blip = {
+      Title = "Mission End",
+      Position = {x = 1416.86, y = 6591.29, z = 12.92}, --{ x = 1453.72, y = -2282.69, z = 67.47}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 38,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+    Marker = {
+      Type     = 1,
+      Position = {x = 1453.72, y = -2282.69, z = 67.47},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 150.0, y = 150.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 200.0,
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = 1731.94, y = 3308.24, z = 41.22}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = 1731.94, y = 3308.24, z = 40.22},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 1480.63, y = 3167.93, z = 40.99}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+	
+	
+    },
+	IsDefendTargetEntity = { --**Uses Blip2 location to spawn... except for heading**
+		--Only define 1, Add 'id2' w. 'Vehicle' to add ped to vehicle.
+		--{id = 1,  Weapon = 0x2BE6766B,  modelHash = "u_f_y_princess", heading = 372.55},
+		{id = 1, id2 = 1, Weapon= 0x2BE6766B, Vehicle = "kuruma2", modelHash = "ig_mp_agent14",heading = 283.22,armor=100}, --movetocoord={  x = 1564.8, y = 3221.98, z = 40.4}
+	
+	},
+
+
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},	
+		
+	
+
+    Peds = {
+	
+		{id = 1,  Weapon = 0x13532244,  modelHash = "u_m_y_zombie_01",  x = 1046.11, y = 3061.58, z = 41.93, heading = 372.55,notzed=true,target=true,},
+		{id = 2,  Weapon = 0x13532244,  modelHash = "u_m_y_zombie_01",   x = 1047.11, y = 3061.58, z = 41.93, heading = 372.55,notzed=true,target=true},
+		{id = 3,  Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",  x = 1048.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true},
+		{id = 4,  Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",  x = 1049.11, y = 3061.58, z = 41.93, heading = 372.55,notzed=true,target=true},
+		{id = 5,  Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",  x = 1050.11, y = 3061.58, z = 41.93, heading = 372.55,notzed=true,target=true},
+		{id = 6,  Weapon = 0x13532244,  modelHash = "u_m_y_zombie_01",  x = 1051.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true},
+		{id = 7, Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",   x = 1052.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true},
+			
+		
+		
+    },
+	
+	
+
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+   	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
+	{id = 1, id2 = 1, Weapon= 0x13532244, Vehicle = "phantom2", modelHash = "u_m_y_zombie_01",ExtraPeds={{id=1,seatid=0}}, x = 1693.43, y = 3252.58, z = 40.91, heading = 283.22,notzed=true,target=true,conqueror=true}, --movetocoord={ x = 1453.72, y = -2282.69, z = 67.47},
+	{id = 2, id2 = 2, Weapon= 0x13532244, Vehicle = "limo2", modelHash = "u_m_y_zombie_01",  x = 1716.09, y = 3263.64, z = 41.14, heading = 287.06,notzed=true,target=true,conqueror=true},
+	{id = 3, id2 = 3, Weapon= 0x13532244, Vehicle = "barrage", modelHash = "u_m_y_zombie_01",x = 1675.94, y = 3235.49, z = 40.71, heading = 280.06, notzed=true,target=true,conqueror=true},
+	{id = 4, id2 = 4, Weapon= 0x13532244, Vehicle = "gargoyle", modelHash = "u_m_y_zombie_01",  x = 1633.08, y = 3235.96, z = 40.41, heading = 280.53, notzed=true,target=true,conqueror=true},
+	{id = 5, id2 = 5, Weapon= 0x13532244, Vehicle = "dukes2", modelHash = "u_m_y_zombie_01", ExtraPeds={{id=2,seatid=0}}, x = 1601.39, y = 3219.89, z = 40.41, heading = 281.29, notzed=true,target=true,conqueror=true},
+	{id = 6, id2 = 6, Weapon= 0x13532244, Vehicle = "tampa3", modelHash = "u_m_y_zombie_01", x = 1564.8, y = 3221.98, z = 40.44, heading = 279.78, notzed=true,target=true,conqueror=true},
+	{id = 7, id2 = 7, Weapon= 0x13532244, Vehicle = "ratbike", modelHash = "u_m_y_zombie_01",  x = 1530.94, y = 3195.49, z = 40.43, heading = 283.06, notzed=true,target=true,conqueror=true},
+	{id = 8, id2 = 8, Weapon= 0x13532244, Vehicle = "sanctus", modelHash = "u_m_y_zombie_01",  x = 1507.08, y = 3207.04, z = 40.45, heading = -80.67, notzed=true,target=true,conqueror=true},
+{id = 9, id2 = 9, Weapon= 0x13532244, Vehicle = "dune4", modelHash = "u_m_y_zombie_01", ExtraPeds={{id=3,seatid=0}}, x = 1718.96, y = 3258.17, z = 41.13, heading = 284.77 , notzed=true,target=true,conqueror=true},
+		{id = 10, id2 = 10, Weapon= 0x13532244, Vehicle = "dune3", modelHash = "u_m_y_zombie_01",ExtraPeds={{id=4,seatid=0}}, x = 1480.56, y = 3181.15, z = 40.44, heading = 279.9, notzed=true,target=true,conqueror=true},
+		{id = 11, id2 = 11, Weapon= 0x13532244, Vehicle = "dune2", modelHash = "u_m_y_zombie_01", ExtraPeds={{id=5,seatid=0}},x = 1443.97, y = 3190.27, z = 40.45, heading = 281.69, notzed=true,target=true,conqueror=true},
+		{id = 12, id2 = 12, Weapon= 0x13532244, Vehicle = "dune", modelHash = "u_m_y_zombie_01", ExtraPeds={{id=6,seatid=0}}, x = 1062.02, y = 3084.72, z = 41.17, heading = 286.88, heading = 278.93, notzed=true,target=true,conqueror=true},
+		{id = 13, id2 = 13, Weapon= 0x13532244, Vehicle = "technical2", modelHash = "u_m_y_zombie_01",  x = 1421.18, y = 3162.42, z = 40.47, heading = 280.8 , notzed=true,target=true,conqueror=true},
+		{id = 14, id2 = 14, Weapon= 0x13532244, Vehicle = "technical2", modelHash = "u_m_y_zombie_01",ExtraPeds={{id=7,seatid=0}},x = 1376.34, y = 3172.96, z = 40.46, heading = 280.96, notzed=true,target=true,conqueror=true},
+	{id = 15, id2 = 15, Weapon= 0x13532244, Vehicle = "boxville5", modelHash = "u_m_y_zombie_01",x = 1345.56, y = 3142.1, z = 40.47, heading = -78.9, notzed=true,target=true,conqueror=true},
+	
+	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
+    }
+  },
+  
+  
+    Mission15 = {
+    
+	StartMessage = "Protect the secret agent from the terrorists!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Fast and Furious",
+	MissionMessage = "Stop the terrorists from eliminating the secret agent who stole their secrets",	
+	Type = "Assassinate",	
+	--TargetKillReward = 150, 
+	--KillReward = 150,
+	IsDefend = true,
+	IsDefendTarget = true,
+	IsDefendTargetRescue = true,
+	IsDefendTargetChase = true,	
+	
+--[[
+    Blip = {
+      Title = "Mission Start",
+      Position = {   x = 44.29, y = 6423.54, z = 31.3},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },]]--
+	 Blip2 = {
+      Title = "Protect the target",
+      Position = { x = 44.29, y = 6423.54, z = 31.3},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -423.38, y = 2064.82, z = 118.99}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = {x = -2108.16, y = 3275.45, z = 37.73}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -2108.16, y = 3275.45, z = 37.73},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -2451.21, y = 3134.29, z = 32.82, heading = 156.25}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = -3238.09, y = 3380.0, z = 0.18}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+		--{ id=1, realId=1, Name = "prop_idol_01_error", Position = {x = -423.91, y = 2064.71, z = 120.03, heading = 278.44}}, --prop_idol_case
+	
+    },
+	
+
+	
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},
+	IsDefendTargetEntity = { --**Uses Blip2 location to spawn... except for heading**
+		--Only define 1, Add 'id2' w. 'Vehicle' to add ped to vehicle.
+		--{id = 1,  Weapon = 0x2BE6766B,  modelHash = "ig_mp_agent14", heading = 258.54},
+		{id = 1, id2 = 1, Weapon= 0x2BE6766B, Vehicle = "kuruma2", modelHash = "ig_mp_agent14",heading = 132.01,armor=100,driving=true}, --movetocoord={  x = 1564.8, y = 3221.98, z = 40.4}
+	
+	},	
+		
+
+
+    Peds = {
+		--{id = 1,  Weapon = 0x13532244, Vehicle = "tampa3", modelHash = "g_m_y_lost_03", x = 67.76, y = 6444.12, z = 31.3, heading = 133.24,},
+		--{id = 2,  Weapon = 0x13532244, Vehicle = "tampa3", modelHash = "g_m_y_lost_02",x = 78.04, y = 6419.11, z = 31.29, heading = 44.07, },
+		--{id = 3, Weapon = 0x13532244, Vehicle = "tampa3", modelHash = "g_m_y_lost_01",x = 50.66, y = 6458.93, z = 31.41, heading = 183.7, },
+		
+	
+	--[[
+		{id = 1,  Weapon = 0x2BE6766B,  modelHash = "g_m_y_lost_01", x = 392.22, y = -948.11, z = 29.4, heading = 235.57,armor=500,movespeed=1},
+		{id = 2,  Weapon = 0x2BE6766B,  modelHash = "g_m_y_lost_02", x = 452.02, y = -939.25, z = 28.52, heading = 174.14,armor=500,movespeed=1},
+		{id = 3,  Weapon = 0x2BE6766B, modelHash = "g_m_y_lost_03", x = 491.22, y = -962.64, z = 27.24, heading = 121.6,armor=500,movespeed=1 },
+		{id = 4,  Weapon = 0x2BE6766B, modelHash = "g_f_y_lost_01", x = 504.32, y = -1019.43, z = 28.01, heading = 90.92,armor=500,movespeed=1},
+		{id = 5,  Weapon = 0x2BE6766B,  modelHash = "g_m_y_lost_01", x = 479.23, y = -1067.98, z = 29.21, heading = 69.27,armor=500,movespeed=1},
+		{id = 6,  Weapon = 0x2BE6766B,  modelHash = "g_m_y_lost_02",x = 407.46, y = -1068.29, z = 29.36, heading = 355.52 ,armor=500,movespeed=1},
+		{id = 7,  Weapon = 0x2BE6766B, modelHash = "g_m_y_lost_03", x = 379.15, y = -1033.22, z = 29.31, heading = 313.98,armor=500,movespeed=1 },
+		]]--
+		--{id = 4,  Weapon = 0x2BE6766B, modelHash = " g_f_y_lost_01",   x = 451.2, y = -984.93, z = 43.69, heading = 274.59,armor=500,movespeed=1},
+		--{id = 5,  Weapon = 0x476BF155, modelHash = "ig_orleans",   x = -436.34, y = 2062.19, z = 121.36, heading = 101.34 ,armor=500},
+	--{id = 6,  Weapon = 0xAF3696A1,  modelHash = "ig_orleans",x = -428.27, y = 2064.24, z = 120.64, heading = 106.58 ,armor=500},
+		--{id = 7, Weapon = 0x476BF155, modelHash = "ig_orleans", x = -428.8, y = 2063.0, z = 120.72, heading = 100.6,armor=500},
+
+		
+    },
+	
+	
+
+    Vehicles = {
+
+	 {id = 1, id2 = 1, Weapon = 0x13532244, Vehicle = "tampa3", nomods=true, modelHash = "g_m_y_lost_03", x = 67.76, y = 6444.12, z = 31.3, heading = 133.24, movespeed=120.0, conqueror=true,driving=true,target=true},
+	 {id = 2, id2 = 2, Weapon = 0x13532244, Vehicle = "tampa3", nomods=true,  modelHash = "g_m_y_lost_02",x = 78.04, y = 6419.11, z = 31.29, heading = 44.07, movespeed=120.0, conqueror=true,driving=true,target=true},
+	 {id = 3, id2 = 3, Weapon = 0x13532244, Vehicle = "tampa3",  nomods=true,  modelHash = "g_m_y_lost_01",x = 50.66, y = 6458.93, z = 31.41, heading = 183.7, movespeed=120.0, conqueror=true,driving=true,target=true},
+    }
+  },
+  
+  
+   Mission16 = {
+    
+	StartMessage = "Stop the mercenaries from taking over Los Santos!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Battle for Los Santos",
+	MissionMessage = "Stop the mercenaries from taking over Los Santos!",	
+	--Type = "Assassinate",	
+	Type = "Assassinate",	
+	--TargetKillReward = 150, 
+	--KillReward = 150,
+	IsDefend = true,
+    Blip2 = {
+      Title = "Mission End",
+      Position = { x = -29.44, y = -950.3, z = 29.41}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+	Blip = {
+      Title = "Defend",
+      Position = { x = -29.44, y = -950.3, z = 29.41}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -29.44, y = -950.3, z = 29.41},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 150.0, y = 150.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 200.0,
+    },
+		BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = -1694.94, y = -3152.18, z = 23.32},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1469.37, y = -2967.27, z = 13.3}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	--***Must Set 'realId' too, which must is always the same as 'id' for props to not float***
+	Props = {
+	
+	
+    },
+	
+
+	
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},	
+		
+	
+
+    Peds = {
+	
+
+    },
+	
+	
+	
+	
+
+    Vehicles = {
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+   	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
+	{id = 1, id2 = 1, Weapon= 0x2BE6766B, Vehicle = "khanjali", modelHash = "s_m_y_ammucity_01",x = -909.58, y = -3472.0, z = 13.94, heading = 320.58,target=true,}, --movetocoord={ x = 1453.72, y = -2282.69, z = 67.47},
+	{id = 2, id2 = 2, Weapon= 0x2BE6766B, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01",  x = 1255.7, y = -3334.67, z = 5.8, heading = 357.43,target=true,},
+	{id = 3, id2 = 3, Weapon= 0x2BE6766B, Vehicle = "khanjali", modelHash = "s_m_y_ammucity_01",  x = 285.41, y = -3304.03, z = 5.62, heading = 352.1, target=true,},
+	
+	{id = 4, id2 = 4, Weapon= 0x2BE6766B, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01", x = -2616.08, y = 2971.87, z = 16.68, heading = 172.79, target=true,},
+	{id = 5, id2 = 5, Weapon= 0x2BE6766B, Vehicle = "khanjali", modelHash = "s_m_y_ammucity_01",x = 216.18, y = 3134.58, z = 42.35, heading = 184.52, target=true,},
+	{id = 6, id2 = 6, Weapon= 0x2BE6766B, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01",x = 2906.09, y = 4446.63, z = 48.17, heading = 107.07,target=true,},
+	
+	{id = 7, id2 = 7, Weapon= 0x2BE6766B, Vehicle = "apc", modelHash = "s_m_y_ammucity_01", x = -385.54, y = 5994.55, z = 31.47, heading = 134.79, target=true,conqueror=true},
+	
+	{id = 8, id2 = 8, Weapon= 0x2BE6766B, Vehicle = "apc", modelHash = "s_m_y_ammucity_01",  x = 1323.05, y = 6485.61, z = 19.99, heading = 256.07, target=true,conqueror=true},
+	
+	{id = 9, id2 = 9, Weapon= 0x2BE6766B, Vehicle = "valkyrie", modelHash = "s_m_y_ammucity_01",   x = -101.92, y = -1144.27, z = 550.79, heading = 268.87,movespeed=120.0, driving=true,isAircraft=true,target=true},
+	
+	{id = 9, id2 = 9, Weapon= 0x2BE6766B, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",  x = -229.57, y = -670.27, z = 380.46, heading = 78.99,movespeed=120.0, driving=true,isAircraft=true,target=true},
+
+	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
+    }
+  },
+  
+  Mission17 = {
+    
+	StartMessage = "Rescue the hostages",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Rescue",
+	MissionMessage = "Rescue the hostages!",	
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Capture the objective!",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Takeover",
+	MissionMessageObj = "Capture the objective!",	
+	
+	StartMessageAss = "Eliminate the targets!",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Elimination",
+	MissionMessageAss = "Eliminate the targets",
+	Type = "Objective",	 --placeholder
+	RandomMissionDoLandBattle = true,
+	IsRandom = true,
+	IsRandomEvent=true,
+	--RandomMissionBoat={"apc"},
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Objective",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	
+	Events = {
+		--**need a stub entry set for the random default event**
+		--add custom events for mission with id=1 onwards
+      {id = 1, 
+		Position = { x = 50000.0, y = 50000.0, z = 50000.0, heading = 0 },
+	  	  Size     = {radius=1000.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  --NumberPeds=1,
+		  isBoss=false,
+		  Target=false,
+		  SquadSpawnRadius=25.0,
+		  
+	  
+	  },
+     },	
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  },
+  
+  Mission18 = {
+    
+ 	StartMessage = "New Mission",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Extraction",
+	MissionMessage = "New Mission",	
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Capture the objective!",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Takeover",
+	MissionMessageObj = "Capture the objective!",	
+	
+	StartMessageAss = "Rescue the target!",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Extraction",
+	MissionMessageAss = "Rescue the target!",		
+	Type = "Assassinate",
+	RandomMissionTypes ={"Assassinate"},	
+	IsRandom = true,
+	IsDefend = true,
+	IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	IsDefendTargetGotoBlip=true,
+	RandomMissionTypes = {"Assassinate"},
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Objective",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	Blip2 = {
+      Title = "Objective",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	},
+	
+	RandomMissionPositions = { 
+	
+	{ x = 58.43, y = -1133.28, z = 29.34, MissionTitle="Extraction",
+	Blip2 = {
+      Title = "Mission Start",
+      Position = { x = -1389.86, y = -388.47, z = 36.7}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
+      Icon     = 309,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+
+	Blip = { 
+      Title = "Defend The Target",
+      Position = {x = 103.87, y = -1001.07, z = 29.4}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	--[[
+    Marker = {
+      Type     = 1,
+      Position = {x = 1345.43, y = 3152.51, z = 40.41,},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 10.0, y = 10.0, z = 5.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 200.0,
+    },]]--
+	DefendTargetInVehicle = true,
+	
+	
+	},
+	
+	
+{ x = 1074.41, y = 3072.94, z = 40.82, MissionTitle="Extraction", 
+ 
+	Blip2 = { 
+      Title = "Mission Start",
+      Position = { x = 2365.07, y = 2958.56, z = 49.06}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
+      Icon     = 309,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+
+	Blip = { 
+      Title = "Defend The Target",
+      Position = {x = 1155.28, y = 3031.23, z = 40.3}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	--[[
+    Marker = {
+      Type     = 1,
+      Position = {x = 1345.43, y = 3152.51, z = 40.41,},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 10.0, y = 10.0, z = 5.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 200.0,
+    },
+	]]--
+	DefendTargetInVehicle = true,
+	--DefendTargetVehicleIsAircraft = true,
+	
+
+},  
+
+}
+	
+	
+ },
+ 
+
+ Mission19 = {
+    
+ 	StartMessage = "Rescue the hostages",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Warfare",
+	MissionMessage = "Rescue the hostages!",	
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Capture the objective!",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Warfare",
+	MissionMessageObj = "Capture the objective!",	
+	
+	StartMessageAss = "Eliminate the targets!",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Warfare",
+	MissionMessageAss = "Eliminate the targets",
+	--RandomMissionWeapons = {0x63AB0442},
+	
+	Type = "Objective",	
+	IsRandom = true,
+	IsRandomEvent=true,
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	IsRandomSpawnAnywhere = true,
+	RandomMissionSpawnRadius = 150.0, --keep a float for enemy ped wandering to work
+	RandomMissionMaxPedSpawns = 75,
+	RandomMissionMinPedSpawns = 50,
+	RandomMissionMaxVehicleSpawns = 6,
+	RandomMissionMinVehicleSpawns = 3,
+	RandomMissionChanceToSpawnVehiclePerTry = 100,
+	RandomMissionAircraftChance = 30,
+	MissionLengthMinutes = 60,
+	SafeHouseVehiclesMaxClaim = 3,
+	SafeHouseVehicleCount = 9,
+	SafeHouseAircraftCount = 3,
+	SafeHouseBoatCount = 3,
+	--SafeHouseVehicles ={'rcbandito'},
+	--RandomMissionVehicles={"tampa3"},
+	--RandomMissionAircraft={"volatol"},	
+	--what x and y coordinate range should these mission spawn in?
+	IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	--RandomMissionPeds = {"mp_m_freemode_01"},
+	--RandomMissionAircraft = {"bombushka"},
+	--RandomMissionVehicles = {"pounder2"},
+	
+	Blip = {
+      Title = "Objective",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	Events = {
+		--**need a stub entry set for the random default event**
+		--add custom events for mission with id=1 onwards
+      {id = 1, 
+		Position = { x = 50000.0, y = 50000.0, z = 50000.0, heading = 0 },
+	  	  Size     = {radius=1000.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  --NumberPeds=1,
+		  isBoss=false,
+		  Target=false,
+		  SquadSpawnRadius=25.0,
+		  
+	  
+	  },
+     },	 
+	 
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  },
+
+Mission20 = {
+    
+ 	StartMessage = "New Mission",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Extraction",
+	MissionMessage = "New Mission",	
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Capture the objective!",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Takeover",
+	MissionMessageObj = "Capture the objective!",	
+	
+	StartMessageAss = "Rescue the target!",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Extraction",
+	MissionMessageAss = "Rescue the target!",		
+	Type = "Assassinate",	
+	IsRandom = true,
+	RandomMissionTypes ={"Assassinate"},
+	IsDefend = true,
+	IsDefendTarget = true,
+	IsDefendTargetRescue = true,
+	IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--TeleportToSafeHouseOnMissionStart = false,
+	RandomMissionSpawnRadius = 100.0, --keep a float for enemy ped wandering to work
+	RandomMissionMaxPedSpawns = 10,
+	RandomMissionMinPedSpawns = 10,
+	RandomMissionMaxVehicleSpawns = 0,
+	RandomMissionMinVehicleSpawns = 0,
+	RandomMissionChanceToSpawnVehiclePerTry = 100,
+	RandomMissionAircraftChance = 0,
+	RandomMissionWeapons = {0xDD5DF8D9,0x99B507EA,0xCD274149,0x1B06D571},
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Objective",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	Blip2 = {
+      Title = "Objective",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	},
+	
+	RandomMissionPositions = { 
+	
+	{ x = 31.0, y = -767.1, z = 44.24,  MissionTitle="Extraction",
+	Blip2 = { --safehouse blip
+      Title = "Mission Start",
+      Position = { x = 31.0, y = -767.1, z = 44.24}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+
+	
+   --[[ Marker = {
+      Type     = 1,
+      Position = {x = 31.0, y = -767.1, z = 44.24},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 10.0, y = 10.0, z = 5.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 200.0,
+    },]]--
+	--DefendTargetInVehicle = true,
+	
+	
+	},
+	
+	
+	{  x = -547.74, y = -1477.3, z = 10.14, MissionTitle="Extraction", 
+ 
+	Blip2 = { 
+      Title = "Mission Start",
+      Position = {  x = -547.74, y = -1477.3, z = 10.14}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },
+
+	
+    --[[Marker = {
+      Type     = 1,
+      Position = { x = -547.74, y = -1477.3, z = 10.14},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 10.0, y = 10.0, z = 5.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 200.0,
+    },]]--
+	--DefendTargetInVehicle = true,
+	--DefendTargetVehicleIsAircraft = true,
+	
+
+	}, 
+
+	},	
+
+},
+-- uncomment if you have red dead desert map installed:  https://github.com/KSA01/Red-Dead-Desert 
+--[[
+Mission21 = {
+    
+ 	StartMessage = "Recapture the prison colony Westworld from the convict uprising!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Westworld",
+	MissionMessage = "Recapture the prison colony Westworld from the convict uprising",	
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Recapture the prison colony Westworld from the convict uprising!",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Westworld",
+	MissionMessageObj = "Recapture the prison colony Westworld from the convict uprising",	
+	
+	StartMessageAss = "Recapture the prison colony Westworld from the convict uprising!",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Westworld",
+	MissionMessageAss = "Recapture the prison colony Westworld from the convict uprising",
+	--RandomMissionWeapons = {0x63AB0442},
+	
+	Type = "Objective",	
+	IsRandom = true,
+	RandomMissionTypes ={"Objective"},
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	IsRandomSpawnAnywhere = true,
+	UseSafeHouseLocations = false,
+	RandomMissionDoLandBattle = true,
+	RandomMissionSpawnRadius = 150.0, --keep a float for enemy ped wandering to work
+	RandomMissionMaxPedSpawns = 75,
+	RandomMissionMinPedSpawns = 50,
+	RandomMissionMaxVehicleSpawns = 6,
+	RandomMissionMinVehicleSpawns = 3,
+	RandomMissionChanceToSpawnVehiclePerTry = 100,
+	RandomMissionAircraftChance = 25,
+	MissionLengthMinutes = 60,
+	SafeHouseVehiclesMaxClaim = 3,
+	SafeHouseVehicleCount = 9,
+	SafeHouseAircraftCount = 3,
+	SafeHouseBoatCount = 3,
+	RandomMissionPeds = {"s_m_y_prismuscl_01","u_m_y_prisoner_01","s_m_y_prisoner_01"},
+	--what x and y coordinate range should these mission spawn in?
+	IsRandomSpawnAnywhereCoordRange = {xrange={4647,7756},yrange={-1181,1950}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Objective",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = {x = 6605.16, y = -787.53, z = 23.78}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 6605.16, y = -787.53, z = 22.78},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = {x = 6837.65, y = -942.43, z = 31.4}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 6992.71, y = -1301.72, z = 0.28}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  },
+  ]]--
+
+}}
