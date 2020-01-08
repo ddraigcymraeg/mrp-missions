@@ -8,7 +8,7 @@ See Config_Guide.lua.txt for how to edit Missions.lua to edit and create your ow
 See first post below as well for this information and videos/screenshots:
 https://forum.fivem.net/t/release-fivem-crackdown-gamemode-and-mission-generator-creation-beta/275613/41
 
-ABOUT
+ABOUT: 
 This resource mutated over time, adding many new features, to be used as a mission system for my local 
 FiveM server. Development has basically finished, so wanted to share with others who want to use or adapt 
 it for their own servers. The resource is very configurable and can be configured to meet a vast majority 
@@ -17,7 +17,7 @@ changes that people requested that was out of the scope of my project for what I
 to use this resource as a reference for your own resource, just give credit to me and also to the people I 
 credit in the fivem forum link above. 
 
-OneSync Support:
+OneSync Support: 
 This resource may have problems with OneSync servers. The server side script asks each client to return NetworkIsHost() 
 and spawn missions entities on the one that is true. I gather with OneSync this will return true for all clients(?).
 If that is a problem, you will need to change that code to either pick a random client, or use another solution to pick 
@@ -27,17 +27,17 @@ missions, which will spawn entities dynamically on any player's machine which is
 He changed the hardcoded value for distance check (see line 6977 in client.lua) from 30m to 300m. Hopefully you will not 
 need to do this if you are on OneSync. 
 
-Relationship groups and Mission Players:
+Relationship groups and Mission Players: 
 You may want to have it so that enemy npcs in missions only attack players that are in missions, rather than any player they see. 
 You would need to add code that creates a new relationship group called "MISSION_PLAYER" or something, and add the players 
 who are in the mission (See EnableOptIn and EnableSafeHouseOptIn settings, and the decor values: mrpoptin, mrpoptout) to that 
 group. You would need to find and replace every instance of "HATES_PLAYER" with "MISSION_PLAYER". Thats basically how you would 
 do it. 
 
-Only certain skins like Police can take missions:
+Only certain skins like Police can take missions: 
 Similar to 'Relationship groups and Mission Players' check out EnableOptIn and EnableSafeHouseOptIn settings, and the decor values: mrpoptin, mrpoptout. You would need to add an extra check on the player's skin to see if the can accept the mission. 
 
-Code Cleanup and Re-writes:
+Code Cleanup and Re-writes: 
 The code can do with a major cleanup. Much of the code in SpawnPed, SpawnAPed and SpawnRandomPed can be merged. 
 Some functions that are no longer used can be removed. MissionBlips code can be improved, and probably a lot of other 
 areas too. This was a huge learning curve over the last year playing with this tech and I can see how a re-write using more 
