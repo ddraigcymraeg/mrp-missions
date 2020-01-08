@@ -16940,7 +16940,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
-
+--[[
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -16957,4 +16957,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-
+]]--
