@@ -37,7 +37,7 @@ do it.
 Only certain skins like Police can take missions:
 Similar to 'Relationship groups and Mission Players' check out EnableOptIn and EnableSafeHouseOptIn settings, and the decor values: mrpoptin, mrpoptout. You would need to add an extra check on the player's skin to see if the can accept the mission. 
 
-Code Cleanup and Re-writes
+Code Cleanup and Re-writes:
 The code can do with a major cleanup. Much of the code in SpawnPed, SpawnAPed and SpawnRandomPed can be merged. 
 Some functions that are no longer used can be removed. MissionBlips code can be improved, and probably a lot of other 
 areas too. This was a huge learning curve over the last year playing with this tech and I can see how a re-write using more 
