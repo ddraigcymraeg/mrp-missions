@@ -41,7 +41,7 @@ The code can do with a major cleanup. Much of the code in SpawnPed, SpawnAPed an
 Some functions that are no longer used can be removed. MissionBlips code can be improved, and probably a lot of other 
 areas too. This was a huge learning curve over the last year playing with this tech and I can see how a re-write using more 
 native GTA5/GTAO mp mission specific functions could be used from the start. A lot of stuff was bolted on. From the get-go 
-I would start with focusing on tiggering entites to spawn dynamically for only nearby players, which this resource will do,
+I would start with focusing on triggering entites to spawn dynamically for only nearby players, which this resource will do,
 but without the extra fluff. 
 
 
