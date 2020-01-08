@@ -6,7 +6,7 @@ See the SHADOW STATE MISSION PACK README.txt file in shadowstate-missionpack.zip
 specfic to the 12 missions that are also incorporated in Missions.lua and use DLC areas. 
 See Config_Guide.lua.txt for how to edit Missions.lua to edit and create your own missions.
 See first post below as well for this information and videos/screenshots:
-https://forum.fivem.net/t/release-fivem-crackdown-gamemode-and-mission-generator-creation-beta/275613/41
+https://forum.cfx.re/t/release-fivem-crackdown-game-mode-and-mission-generator-creation-beta/275613
 
 ABOUT: 
 This resource mutated over time, adding many new features, to be used as a mission system for my local 
