@@ -18,8 +18,7 @@ to use this resource as a reference for your own resource, just give credit to m
 credit in the fivem forum link above. 
 
 OneSync Support: 
-This resource may have problems with OneSync servers. The server side script asks each client to return NetworkIsHost() 
-and spawn missions entities on the one that is true. I gather with OneSync this will return true for all clients(?).
+This resource may have problems with OneSync servers. Depending on the mission, the server side script asks each client to return NetworkIsHost() and spawn missions entities on the one that is true. I gather with OneSync this will return true for all clients(?).
 If that is a problem, you will need to change that code to either pick a random client, or use another solution to pick 
 which client will be the host. Sixsens on forum.fivem.net has used this resource for his public RP server fine, but 
 had to make some changes when he went to OneSync. One of the changes he made was to set IndoorsMission=true for 
