@@ -31,7 +31,8 @@ Players Press RB + DPAD DOWN or 'Q' and '[' keys together to stop particpating i
 another has not started. 
 
 COMMANDS FOR ADMINS AND PLAYERS:
-In the chat you can use “/stop” to stop missions running. “/list” to list all available mission names. Then “/mission ‘MissionName’” to start the mission. NOTE: These commands can be run by any player, so you need to provide your own security/permissions. Again, you can configure the resource to not teleport players to the safe house on mission start, turn crate drops on/off etc… (see paste link above)
+In the chat you can use “/stop” to stop missions running. “/list” to list all available mission names. Then “/mission ‘MissionName’” 
+(i.e. /mission Mission9) to start the mission. NOTE: These commands can be run by any player, so you need to provide your own security/permissions. Again, you can configure the resource to not teleport players to the safe house on mission start, turn crate drops on/off etc… (see paste link above)
 
 Players can create a ballot to cancel the the current mission using “/votefinish”. Players can then vote using /voteyes and /voteno See the bottom of server.lua to configure voting settings, if you run a public server you will need to configure it. (All credit to FAXES for his Vote-to-Kick voting system which I used and adapted, see credits below.)
 You can also create a vote to cancel a mission to start a new one.
