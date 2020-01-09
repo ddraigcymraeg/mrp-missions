@@ -74,7 +74,7 @@ Config.SMS_MissionMessage = true
 
 --Do players that are in the mission (see Config.EnableOptIn/Config.EnableSafeHouseOptIn) 
 --share the money between them? if optin in is not set, and this is true, then all players share money
-Config.MissionShareMoney = false
+Config.MissionShareMoney = true
 
 
 -- OPT-OUT/OPT-IN SETTINGS. NOT PER MISSION, ONLY GLOBAL:
