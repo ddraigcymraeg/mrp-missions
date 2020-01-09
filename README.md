@@ -30,8 +30,8 @@ Relationship groups and Mission Players:
 You may want to have it so that enemy npcs in missions only attack players that are in missions, rather than any player they see. 
 You would need to add code that creates a new relationship group called "MISSION_PLAYER" or something, and add the players 
 who are in the mission (See EnableOptIn and EnableSafeHouseOptIn settings, and the decor values: mrpoptin, mrpoptout) to that 
-group. You would need to find and replace every instance of "HATES_PLAYER" with "MISSION_PLAYER". Thats basically how you would 
-do it. 
+group. You would need to find and replace every instance of "HATES_PLAYER" with "MISSION_PLAYER". When players opt out of doing 
+missions, you would remove them from the "MISSION_PLAYER" relationship group. Thats basically how you would do it. 
 
 Only certain skins like Police can take missions: 
 Similar to 'Relationship groups and Mission Players' check out EnableOptIn and EnableSafeHouseOptIn settings, and the decor values: mrpoptin, mrpoptout. You would need to add an extra check on the player's skin to see if the can accept the mission. 
