@@ -1,5 +1,5 @@
 # CrackDown: Missions and Mission Generator/Mission Creation Resource. 
-See first post at for all the information:
+See first post at the link below for all the information about mission types and the primary game mode:
 https://forum.cfx.re/t/release-fivem-crackdown-game-mode-and-mission-generator-creation-beta/275613
 
 Installation:
@@ -8,7 +8,6 @@ Install like any other FiveM Server Resource.
 'mrp-missions_spawn' is purely optional, and has defined player skins to spawn as. 
 
 To build your own missions, check out the Config_Guide.lua.txt, and see notes below.
-
 
 
 CONTROLS (which can be turned on/off depending on mission config settings): 
@@ -31,6 +30,18 @@ at the safehouse marker.)
 Players Press RB + DPAD DOWN or 'Q' and '[' keys together to stop particpating in missions, only after a mission is over and 
 another has not started. 
 
+COMMANDS FOR ADMINS AND PLAYERS:
+In the chat you can use “/stop” to stop missions running. “/list” to list all available mission names. Then “/mission ‘MissionName’” to start the mission. NOTE: These commands can be run by any player, so you need to provide your own security/permissions. Again, you can configure the resource to not teleport players to the safe house on mission start, turn crate drops on/off etc… (see paste link above)
+
+Players can create a ballot to cancel the the current mission using “/votefinish”. Players can then vote using /voteyes and /voteno See the bottom of server.lua to configure voting settings, if you run a public server you will need to configure it. (All credit to FAXES for his Vote-to-Kick voting system which I used and adapted, see credits below.)
+You can also create a vote to cancel a mission to start a new one.
+If you are on mission 12 and want to create a ballot for Mission9, you can type in chat:
+‘/votefinish Mission9’ or just use ‘/votefinish’ to create a ballot to cancel the mission.
+By default, the server will wait 10 seconds before starting a new mission if the vote passes.
+
+
+ESX SUPPORT:
+For ESX money support, in client.lua and server.lua set UseESX=true
 
 MISSION INFORMATION AND MAKING YOUR OWN MISSIONS:
 
