@@ -18,7 +18,7 @@ changes that people requested that was out of the scope of my project for what I
 to use this resource as a reference for your own resource, just give credit to me and also to the people I 
 credit in the fivem forum link above. 
 
-OneSync Support: 
+ONESYNC SUPPORT: 
 This resource may have problems with OneSync servers. Depending on the mission, the server side script asks each client to return NetworkIsHost() and spawn missions entities on the one that is true. I gather with OneSync this will return true for all clients(?).
 If that is a problem, you will need to change that code to either pick a random client, or use another solution to pick 
 which client will be the host. Sixsens on forum.fivem.net has used this resource for his public RP server fine, but 
@@ -27,17 +27,22 @@ missions, which will spawn entities dynamically on any player's machine which is
 He changed the hardcoded value for distance check (see line 6977 in client.lua) from 30m to 300m. Hopefully you will not 
 need to do this if you are on OneSync. 
 
-Relationship groups and Mission Players: 
+MIGRATION: There is no built in support for when a player whose machine spawned mission entities disconnects mid-mission. No NetIDs 
+or calls to native Migration functions. Behavior can be unpredictable. NPCs may become inert etc... It does seem that there is some 
+migration of the host's session to other connected peers built into the platform without calling these natives. 
+If there are problems with the mission after a host leaves, then players can use the /vote commands to restart the mission, see the README.TXT
+
+RELATIONSHIP GROUPS AND MISSION PLAYERS: 
 You may want to have it so that enemy npcs in missions only attack players that are in missions, rather than any player they see. 
 You would need to add code that creates a new relationship group called "MISSION_PLAYER" or something, and add the players 
 who are in the mission (See EnableOptIn and EnableSafeHouseOptIn settings, and the decor values: mrpoptin, mrpoptout) to that 
 group. You would need to find and replace every instance of "HATES_PLAYER" with "MISSION_PLAYER". When players opt out of doing 
 missions, you would remove them from the "MISSION_PLAYER" relationship group. Thats basically how you would do it. 
 
-Only certain skins like Police can take missions: 
+ONLY CERTAIN SKINS LIKE POLICE CAN TAKE MISSIONS: 
 Similar to 'Relationship groups and Mission Players' check out EnableOptIn and EnableSafeHouseOptIn settings, and the decor values: mrpoptin, mrpoptout. You would need to add an extra check on the player's skin to see if the can accept the mission. 
 
-Code Cleanup and Re-writes: 
+CODE CLEANUP AND RE-WRITES: 
 The code can do with a major cleanup. Much of the code in SpawnPed, SpawnAPed and SpawnRandomPed can be merged. 
 Some functions that are no longer used can be removed. MissionBlips code can be improved, and probably a lot of other 
 areas too. This was a huge learning curve over the last year playing with this tech and I can see how a re-write using more 
