@@ -1108,7 +1108,7 @@ Config.Missions = {
 
 
     Blip = {
-      Title = "Mission Objective",
+      Title = "Mission: Secure the Construction Site",
       Position = { x = -146.84, y = -1080.72, z = 42.02 },
       Icon     = 58,
       Display  = 4,
@@ -1231,7 +1231,7 @@ Config.Missions = {
 	SMS_PassedMessage="Thank you brother. Take the reward money, its well deserved. Peace.",	
 
     Blip = {
-      Title = "Mission: OT VIII",
+      Title = "Mission: Liberate Des Proud and his pet coyote",
       Position = { x = -138.08, y = 869.04, z = 232.69},
       Icon     = 58,
       Display  = 4,
@@ -1393,7 +1393,7 @@ Config.Missions = {
 	--KillReward = 150,
 
     Blip = {
-      Title = "Mission Objective",
+      Title = "Mission: Battle for Fort Zancudo",
       Position = { x = -2074.59, y = 1475.03, z = 275.15 },
       Icon     = 58,
       Display  = 4,
@@ -1549,7 +1549,7 @@ Config.Missions = {
 	SMS_PassedMessage="Thank you for your service",		
 
     Blip = {
-      Title = "Mission: Takedown",
+      Title = "Mission: Eliminate the mercenaries",
       Position = { x = 0.30, y = -399.48, z = 39.43 },
       Icon     = 58,
       Display  = 4,
@@ -1653,7 +1653,7 @@ Config.Missions = {
 	
 
     Blip = {
-      Title = "Mission: Wonderland",
+      Title = "Mission: Take out the maniac and rescue the stripper",
       Position = {x = 275.7607, y = 1686.501, z = 237.8363},
       Icon     = 58,
       Display  = 4,
@@ -2085,7 +2085,7 @@ Events = {
 	SMS_PassedMessage="You stole the secret files and sold them for ransom yourself.",	
 
     Blip = {
-      Title = "Mission: Secure narcotics from crashed plane",
+      Title = "Mission: Secure narcotics from the crashed plane",
       Position = {x = 302.86, y = 4373.86, z = 51.61},
       Icon     = 58,
       Display  = 4,
