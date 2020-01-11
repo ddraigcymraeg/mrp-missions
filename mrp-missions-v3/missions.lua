@@ -1106,7 +1106,7 @@ Config.Missions = {
 	MissionSpaceTime = 10000,
 	MissionTriggerRadius = 1000.0,
 	Type = "Objective",
-	SMS_Subject="Mission: Blackwater",
+	SMS_Subject="Construction Site",
 	SMS_Message="Mercenaries for hire have taken over a construction site for ransom. We need help to secure it",
 	SMS_Message2="Make it to the middle of the top level of the structure in downtown to secure it.",
 	SMS_Message3="They are well armed and have heavy vehicular ordinance, so do not go down there naked",		
@@ -1236,7 +1236,7 @@ Config.Missions = {
 	MissionMessage = "Rescue TV celebrity Des Proud. He is being held captive at a Church of Chantixology mansion",	
 	Type = "HostageRescue",	
 	MissionTriggerRadius = 500.0,
-	SMS_Subject="Help Me!!",
+	SMS_Subject="Get me out of here!",
 	SMS_Message="Hey man, this is Des Proud. Im being held captive by the Church of Chantixology",
 	SMS_Message2="They are holding me and my pet coyote indefinitely at one of their mansions in the Vinewood Hills",
 	SMS_Message3="Break us out of here so I can get back on TV to complete my nature special",		
@@ -3246,7 +3246,7 @@ Events = {
 	MissionTriggerStartPoint = {x = 88.67, y = 6336.96, z = 31.23},
 	MissionTriggerRadius = 5.0,
 	
-	SMS_Subject="Fast and Furious",
+	SMS_Subject="Rescue the agent",
 	SMS_Message="Hey. I could use a hand here, to evade some terrorists hot on my tail",
 	SMS_Message2="They are none too happy they were inflitrated and I got their secret files. I need evac ASAP!",
 	--SMS_Message3="The Governor's plane was brought down. We have captured him and obtained his secret files.",	
@@ -3999,7 +3999,7 @@ Events = {
 	
 	SMS_Subject="Take out the targets",
 	SMS_Message="Our Intel shows where the leaders of a heavily armed  mercenary group are",
-	SMS_Message2="We need help to eliminate the danger. They are very dangerous and well protected",
+	SMS_Message2="We need help to eliminate the threat. They are very dangerous and well protected",
 	SMS_Message3="You think you can handle this?",	
 		
 	--SMS_ContactPics={"DIA_PRINCESS",
@@ -8205,10 +8205,10 @@ Mission32 = {
 
   Mission33 = {
     
-	StartMessage = "Shut down an interdimensional portal~n~opened by a syndicate before it is too late!",
+	StartMessage = "Shut down an interdimensional portal~n~opened by a powerful syndicate before it is too late!",
 	FinishMessage = "~q~You saved San Andreas!",
 	MissionTitle = "Ghostbusters",
-	MissionMessage = "Shut down an interdimensional portal~n~opened by a syndicate before it is too late!",	
+	MissionMessage = "Shut down an interdimensional portal~n~opened by a powerful syndicate before it is too late!",	
 	Type = "Objective",	
 	IndoorsMission = true,
 	FinishedObjectiveReward = 10000, --cash
@@ -8248,7 +8248,7 @@ Mission32 = {
 	},
 	
     Blips = {	{
-		Title = "Mission: Cabal Headquarters",
+		Title = "Mission: Interdimensional Portal",
 		Position = {x = -81.74, y = -837.28, z = 40.56},
 		Icon     = 58,
 		Display  = 4,
@@ -10008,7 +10008,7 @@ Events = {
 		  Color    = 1,
 		},
 		{
-		Title = "Mission: Cabal Headquarters",
+		Title = "Mission: Syndicate Headquarters",
 		Position = {x = -81.74, y = -837.28, z = 40.56},
 		Icon     = 58,
 		Display  = 4,
@@ -10709,7 +10709,7 @@ Mission40 = {
 	SMS_PassedMessage="Los Santos is safe and sound from the attack",	
 	
     Blips = {{
-		  Title = "Secret Underground Facility",
+		  Title = "Mission: Secret Underground Facility",
 		  Position =  {x = 1285.94, y = 2847.34, z = 49.36},
 		  Icon     = 58,
 		  Display  = 4,
@@ -11005,7 +11005,7 @@ Mission42 = {
 
     Blips = {
 		{
-		  Title = "Pacific Standard Public Deposit Bank",
+		  Title = "Mission: Pacific Standard Public Deposit Bank",
 		  Position =  {  x = 249.67, y = 219.57, z = 101.68 },
 		  Icon     = 58,
 		  Display  = 4,
