@@ -129,6 +129,28 @@ Config.MissionVehicleRandomizeLiveries=true
 Config.ShowMissionIntroText=false
 
 
+ --acts as a $ penalty for players dying during a mission.
+ --Set to 0 for no fee and no notification
+Config.MissionRejuvenationFee=0
+
+--Does player get harrassed/encouraged by mission contact when they die?
+--1 in 4 chance per death to be sent. 
+Config.MissionRejuvenationSMS=false
+
+--"Harrasment"/"encourgement" messages sent to player from mission contact
+--1 in 4 chance per death to be sent. Random subject and random message then sent from below:
+Config.SMS_RejuvenationSubjects={"Are you OK?","Whats going on?","Can you handle this?","Wait for Reinforcements?"}
+
+Config.SMS_RejuvenationMessages={"You sure you are up for this? You're getting your ass handed to you",
+
+"This mission might be too hard for you. Maybe wait for some reinforcements?",
+
+"Whats going on down there? Are you able to finish this mission...on time?",
+
+"Are you coming at this the right way? Maybe try a different tactic?",
+
+}
+
 
 --THESE MISSION SMS SETTINGS SHOULD BE SET PER MISSION:
 --LENGTH OF SMS_ContactPics, SMS_ContactNames, etc... NEED TO BE THE SAME LENGTH:
