@@ -15215,29 +15215,121 @@ function GetClosestPlayer()
 	return closestPlayer, closestDistance
 end
 
+--Do MissionRejuvenationFee
+--which merely acts as a penalty for players dying during a mission
+--when > 0
+function doMissionRejuvenationFee()
+	if (Active == 1) and  MissionName ~="N/A" then
+		if getMissionConfigProperty(MissionName, "MissionRejuvenationFee") > 0 then
+
+			local currentmoney = 0
+			local rejuvcost = getMissionConfigProperty(MissionName, "MissionRejuvenationFee")
+			local totalmoney = 0		
+			
+			local _,currentmoney = StatGetInt('MP0_WALLET_BALANCE',-1)
+			playerMissionMoney =  0 - rejuvcost
+			totalmoney =  currentmoney - rejuvcost		
+				
+			if UseESX then 
+				TriggerServerEvent("paytheplayer", totalmoney)
+				TriggerServerEvent("UpdateUserMoney", totalmoney)
+			else
+					--DecorSetInt(GetPlayerPed(-1),"mrpplayermoney",totalmoney)
+				DecorSetInt(GetPlayerPed(-1),"mrpplayermoney",DecorGetInt(GetPlayerPed(-1),"mrpplayermoney") + playerMissionMoney)			
+				mrpplayermoneyG = DecorGetInt(GetPlayerPed(-1),"mrpplayermoney")			
+				StatSetInt('MP0_WALLET_BALANCE',totalmoney, true)
+			end
+			if SHOWWASTEDMESSAGE then 
+				MISSIONSHOWMESSAGE="~r~Mission Rejuvenation Fee: ~g~$"..getMissionConfigProperty(MissionName, "MissionRejuvenationFee")
+			else 
+				
+				--TriggerEvent("mt:missiontext2","~r~Mission Rejuvenation Fee: ~g~$"..getMissionConfigProperty(MissionName, "MissionRejuvenationFee"), 4000)
+				Notify("~h~~r~Mission Rejuvenation Fee: ~g~$"..getMissionConfigProperty(MissionName, "MissionRejuvenationFee"))
+			end
+			
+		else 			
+
+			MISSIONSHOWMESSAGE=" "
+		end
+	else 
+		MISSIONSHOWMESSAGE=" "
+	end
+
+	
+end
+
+--being hassled by mission contact :-)
+function doSMSRejuvenationMessage(input) 
+	
+	local sms_pos = math.random(1, #getMissionConfigProperty(input, "SMS_ContactNames"))
+	
+	local sms_subpos = math.random(1, #getMissionConfigProperty(input, "SMS_RejuvenationSubjects"))
+	local sms_mespos = math.random(1, #getMissionConfigProperty(input, "SMS_RejuvenationMessages"))
+	
+	
+	SMS_Message(getMissionConfigProperty(input, "SMS_ContactPics")[sms_pos], getMissionConfigProperty(input, "SMS_ContactNames")[sms_pos], getMissionConfigProperty(input, "SMS_RejuvenationSubjects")[sms_subpos], getMissionConfigProperty(input, "SMS_RejuvenationMessages")[sms_mespos], getMissionConfigProperty(input, "SMS_PlaySound"))	
+	
+
+end
+
 --"start baseevents" needs to be on in server.cfg:
 AddEventHandler("baseevents:onPlayerDied", function(player, reason, pos)
      --  print("mrprescuecount"..DecorGetInt(GetPlayerPed(-1),"mrprescuecount"))
 	mrprescuecountG = DecorGetInt(GetPlayerPed(-1),"mrprescuecount")
 	mrpobjectivecountG = DecorGetInt(GetPlayerPed(-1),"mrpobjrescuecount")
-	if SHOWWASTEDMESSAGE then 
-		MISSIONSHOWRESULT = true
-		BLDIDTIMEOUT = false
-		MISSIONSHOWTEXT="WASTED"
-		MISSIONSHOWMESSAGE=" "	
-	end
+	--print("made it died")
+	if (Active == 1) and  MissionName ~="N/A" and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
+		if SHOWWASTEDMESSAGE  then 
+			MISSIONSHOWRESULT = true
+			BLDIDTIMEOUT = false
+			MISSIONSHOWTEXT="WASTED"
+			if getMissionConfigProperty(MissionName, "MissionRejuvenationFee") > 0 then
+				doMissionRejuvenationFee()		
+			else 
+				MISSIONSHOWMESSAGE=" "
+			end
+		elseif getMissionConfigProperty(MissionName, "MissionRejuvenationFee") > 0 then 
+			doMissionRejuvenationFee()	
+		end
+		
+		--1 in 4 chance per death of being harrassed by a mission contact!
+		if getMissionConfigProperty(MissionName, "MissionRejuvenationSMS") and math.random(1,4) == 4 then 
+			Wait(math.random(3000,7000))
+			doSMSRejuvenationMessage(MissionName) 
+		end		
+		
+		
+	end 
 end)
 --"start baseevents" needs to be on in server.cfg:
 AddEventHandler("baseevents:onPlayerKilled", function(player, killer, reason, pos)
 	-- print("mrp2rescuecount"..DecorGetInt(GetPlayerPed(-1),"mrprescuecount"))
 	mrprescuecountG = DecorGetInt(GetPlayerPed(-1),"mrprescuecount")
 	mrpobjectivecountG = DecorGetInt(GetPlayerPed(-1),"mrpobjrescuecount")
-	if SHOWWASTEDMESSAGE then 
-		MISSIONSHOWRESULT = true
-		BLDIDTIMEOUT = false
-		MISSIONSHOWTEXT="WASTED"
-		MISSIONSHOWMESSAGE=" "	
-	end
+	--print("made it killed")
+	if (Active == 1) and  MissionName ~="N/A" and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
+		if SHOWWASTEDMESSAGE  then 
+			MISSIONSHOWRESULT = true
+			BLDIDTIMEOUT = false
+			MISSIONSHOWTEXT="WASTED"
+			if getMissionConfigProperty(MissionName, "MissionRejuvenationFee") > 0 then
+				doMissionRejuvenationFee()		
+			else 
+				MISSIONSHOWMESSAGE=" "
+			end
+		elseif getMissionConfigProperty(MissionName, "MissionRejuvenationFee") > 0 then 
+			doMissionRejuvenationFee()	
+		end
+		
+		--1 in 4 chance per death of being harrassed by a mission contact!
+		if getMissionConfigProperty(MissionName, "MissionRejuvenationSMS") and math.random(1,4) == 4 then 
+			Wait(math.random(3000,7000))
+			doSMSRejuvenationMessage(MissionName) 
+		end				
+		
+	end 
+	
+	
 end)
 
 
@@ -16962,4 +17054,3 @@ Citizen.CreateThread(function()
     end
 end)
 ]]--
-
