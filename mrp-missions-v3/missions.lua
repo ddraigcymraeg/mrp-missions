@@ -34,6 +34,29 @@ Config.DoHelpScreens = false
 --now replaced by SMS texts.
 Config.ShowMissionIntroText=false
 
+ --acts as a penalty for players dying during a mission.
+ --Set to 0 for no fee and no notification
+Config.MissionRejuvenationFee=0
+
+--Does player get harrassed/encouraged by mission contact when they die?
+--1 in 4 chance per death to be sent. 
+Config.MissionRejuvenationSMS=false
+
+--"Harrasment"/"encourgement" messages sent to player from mission contact
+--1 in 4 chance per death to be sent. Random subject and random message then sent from below:
+Config.SMS_RejuvenationSubjects={"Are you OK?","Whats going on?","Can you handle this?","Wait for Reinforcements?"}
+
+Config.SMS_RejuvenationMessages={"You sure you are up for this? You're getting your ass handed to you",
+
+"This mission might be too hard for you. Maybe wait for some reinforcements?",
+
+"Whats going on down there? Are you able to finish this mission...on time?",
+
+"Are you coming at this the right way? Maybe try a different tactic?",
+
+}
+
+
 --THESE MISSION SMS SETTINGS SHOULD BE SET PER MISSION:
 --LENGTH OF SMS_ContactPics, SMS_ContactNames, etc... NEED TO BE THE SAME LENGTH:
 --ONE WILL BE CHOSEN RANDOMLY, BUT SAME INDEX FOR ALL ARRAYS
@@ -2843,8 +2866,8 @@ Events = {
 	
 	SMS_Subject="Protect the Asset",
 	SMS_Message="An asset is being held at Los Santos Police Station in a cell. She is in severe danger though",
-	SMS_Message2="Hostiles are assaulting the police station to take her out. Stop them at all cost",
-	--SMS_Message3="They awoke something in the darkness. Legends have it of a lost treasure. Will you find it for me?",	
+	SMS_Message2="Hostiles are assaulting the police station to take her out. We need to stop them at all cost",
+	SMS_Message3="Will you help?",	
 		
 	SMS_ContactPics={"HC_N_GUS",
 	},
