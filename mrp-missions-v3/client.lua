@@ -1704,9 +1704,9 @@ AddEventHandler('missionBlips', function(input,rMissionLocationIndex,rMissionTyp
 			SetBlipAsShortRange(blip, false)
 			
 			--override "Objective" default text when IsBountyHunt random mission
-			if getMissionConfigProperty(input, "IsBountyHunt") then
-				Config.Missions[input].Blip.Title = getMissionConfigProperty(input, "MissionTitle")
-			end
+			--if getMissionConfigProperty(input, "IsBountyHunt") then
+				--Config.Missions[input].Blip.Title = getMissionConfigProperty(input, "MissionTitle")
+			--end
 			
 			local btitle = Config.Missions[input].Blip.Title
 			BeginTextCommandSetBlipName("STRING")
@@ -4226,8 +4226,12 @@ AddEventHandler('SpawnRandomPed', function(input,MissionType, NumPeds,NumVehicle
 		randomLocation = IsRandomSpawnAnywhereInfo[1] --randomplace
 		
 	else 
-		randomLocation = getMissionConfigProperty(input, "RandomMissionPositions")[rIndex]
-		
+		if getMissionConfigProperty(input, "RandomMissionPositions")[rIndex].SpawnAt then 
+			
+			randomLocation = getMissionConfigProperty(input, "RandomMissionPositions")[rIndex].SpawnAt
+		else 
+			randomLocation = getMissionConfigProperty(input, "RandomMissionPositions")[rIndex]
+		end
 		--print(randomLocation.x)
 		--only for isdefendtarget, goto goal missions, override for SpawnAt for random detination:
 		if MissionIsDefendTargetGoalDestIndex and
