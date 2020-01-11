@@ -1765,7 +1765,12 @@ AddEventHandler('missionBlips', function(input,rMissionLocationIndex,rMissionTyp
 		BeginTextCommandSetBlipName("STRING")
 		
 		--if tostring(getObjectiveReward(input)) ~= "N/A" then 
-			AddTextComponentString(btitle.. " ($-"..getMissionConfigProperty(MissionName, "SafeHouseCost")..")")
+		local shbliptitle = btitle.. " ($-"..getMissionConfigProperty(MissionName, "SafeHouseCost")..")" 
+		if getMissionConfigProperty(MissionName, "MissionRejuvenationFee") > 0 then 
+				shbliptitle = shbliptitle ..", Respawn: ($-"..getMissionConfigProperty(MissionName, "MissionRejuvenationFee")..")" 
+		end
+	 
+			AddTextComponentString(shbliptitle)
 		--else 
 			--AddTextComponentString(btitle)
 		--end
