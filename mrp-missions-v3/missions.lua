@@ -946,7 +946,6 @@ Config.RandomMissionIsBountyOverrideVehPeds = {"hc_hacker","hc_gunman","u_m_m_ba
 
 Config.RandomMissionVehicles = {	
 	"apc",
-	"apc",
 	"barrage",
 	"halftrack",
 	"dune3",
@@ -2712,7 +2711,7 @@ Events = {
 	SMS_PassedMessage="The legends were true afterall! Enjoy your reimbursement",		
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Mission: Capture the goods",
       Position = { x = -10000, y = 0, z =  0},
       Icon     = 58,
       Display  = 4,
@@ -3056,7 +3055,7 @@ Events = {
 	SMS_PassedMessage="Return my treasures to me, and I myself will carry you through the gates of Valhalla.",
 
     Blip2 = {
-      Title = "Protect the road warrior",
+      Title = "Mission: Protect the road warrior",
       Position = { x = 1511.08, y = 3485.06, z = 36.37}, --{x = 1453.72, y = -2282.69, z = 67.47},  x = 1872.28, y = 3219.21, z = 45.4
       Icon     = 58,
       Display  = 4,
@@ -4190,7 +4189,7 @@ RandomMissionVehicleWeapons = {0x1B06D571},
 
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Mission: Protect the compromised agent",
       Position = { x = -10000, y = 0, z =  0},
       Icon     = 58,
       Display  = 4,
@@ -4199,7 +4198,7 @@ RandomMissionVehicleWeapons = {0x1B06D571},
     },
 	
 	Blip2 = {
-      Title = "Objective",
+      Title = "Mission: Protect the compromised agent",
       Position = { x = -10000, y = 0, z =  0},
       Icon     = 58,
       Display  = 4,
@@ -4431,7 +4430,7 @@ Mission20 = {
 	
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Mission: Find and eliminate the targets around the map",
       Position = { x = -10000, y = 0, z =  0},
       Icon     = 58,
       Display  = 4,
@@ -4636,7 +4635,7 @@ Mission20 = {
 	
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Mission: Find and rescue the missing people around the map",
       Position = { x = -10000, y = 0, z =  0},
       Icon     = 58,
       Display  = 4,
@@ -4814,7 +4813,7 @@ Mission22 = {
 	--RandomLocation = true, --for completely random location.. 
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Mission: Capture the very important goods",
       Position = { x = -10000, y = 0, z =  0},
       Icon     = 58,
       Display  = 4,
@@ -5019,7 +5018,7 @@ RandomMissionPeds ={"hc_hacker","hc_gunman","ig_tomepsilon","u_m_m_bankman","u_m
 	SMS_PassedMessage="Los Santos is safe and sound from the attack",
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Mission: Take out the enemy targets",
       Position = { x = -10000, y = 0, z =  0},
       Icon     = 58,
       Display  = 4,
@@ -5210,19 +5209,19 @@ StartMessage = "Ensure that the asset and their vehicle~n~ make it to the destin
 	SMS_PassedMessage="Los Santos is safe and sound from the attack",	
 
 	
-	Blip = {
-      Title = "Objective",
+    Blip = {
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
     },
 	
-	Blip2 = {
-      Title = "Objective",
+    Blip2 = {
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
@@ -5301,7 +5300,7 @@ StartMessage = "Ensure that the asset and their vehicle~n~ make it to the destin
 	
 	{  x = 1318.13, y = 3624.67, z = 33.5,  MissionTitle="The Gauntlet",
 		Blip2 = { --safehouse blip
-		  Title = "Mission Start",
+		  Title = "Mission Start: Rendevouz with the asset",
 		  Position = { x = 1515.16, y = 3064.27, z = 41.3}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 58,
 		  Display  = 4,
@@ -5312,7 +5311,7 @@ StartMessage = "Ensure that the asset and their vehicle~n~ make it to the destin
 		  --Used for AddBlipForRadius with IsDefend Missions
 		},
 		Blip = { --safehouse blip
-		  Title = "Destination",
+		  Title = "Destination ($5000)",
 		  Position = { x = 890.31, y = 3717.53, z = 29.66}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 38,
 		  Display  = 4,
@@ -5516,18 +5515,18 @@ StartMessage = "Ensure that the asset and their plane~n~ make it to the destinat
 	SMS_PassedMessage="Los Santos is safe and sound from the attack",	
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
     },
 	
 	Blip2 = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
@@ -5606,7 +5605,7 @@ StartMessage = "Ensure that the asset and their plane~n~ make it to the destinat
 	
 	{  x = 1318.13, y = 3624.67, z = 33.5,  MissionTitle="Top Gun",
 		Blip2 = { --safehouse blip
-		  Title = "Mission Start",
+		  Title = "Mission Start: Rendevouz with the asset",
 		  Position = { x = 1515.16, y = 3064.27, z = 41.3}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 58,
 		  Display  = 4,
@@ -5617,7 +5616,7 @@ StartMessage = "Ensure that the asset and their plane~n~ make it to the destinat
 		  --Used for AddBlipForRadius with IsDefend Missions
 		},
 		Blip = { --safehouse blip
-		  Title = "Destination",
+		  Title = "Destination ($5000)",
 		  Position = { x = 890.31, y = 3717.53, z = 29.66}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 38,
 		  Display  = 4,
@@ -5844,18 +5843,18 @@ StartMessage = "Ensure that the asset and their boat~n~ make it to the destinati
 
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
     },
 	
 	Blip2 = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
@@ -5934,7 +5933,7 @@ StartMessage = "Ensure that the asset and their boat~n~ make it to the destinati
 	
 	{  x = 1318.13, y = 3624.67, z = 33.5,  MissionTitle="I'm On A Boat",
 		Blip2 = { --safehouse blip
-		  Title = "Mission Start",
+		  Title = "Mission Start: Rendevouz with the asset",
 		  Position = { x = 2317.1, y = 4543.08, z = 29.35}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 58,
 		  Display  = 4,
@@ -5945,7 +5944,7 @@ StartMessage = "Ensure that the asset and their boat~n~ make it to the destinati
 		  --Used for AddBlipForRadius with IsDefend Missions
 		},
 		Blip = { --safehouse blip
-		  Title = "Destination",
+		  Title = "Destination ($5000)",
 		  Position = { x = -150.2, y = 4233.38, z = 29.52}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 38,
 		  Display  = 4,
@@ -6069,18 +6068,18 @@ StartMessage = "Drive the asset and their vehicle~n~ to the destination~n~~r~Hur
 
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
     },
 	
 	Blip2 = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
@@ -6159,7 +6158,7 @@ StartMessage = "Drive the asset and their vehicle~n~ to the destination~n~~r~Hur
 	
 	{  x = 1318.13, y = 3624.67, z = 33.5,  MissionTitle="The Gauntlet v2",
 		Blip2 = { --safehouse blip
-		  Title = "Mission Start",
+		  Title = "Mission Start: Rendevouz with the asset",
 		  Position = { x = 1515.16, y = 3064.27, z = 41.3}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 58,
 		  Display  = 4,
@@ -6170,7 +6169,7 @@ StartMessage = "Drive the asset and their vehicle~n~ to the destination~n~~r~Hur
 		  --Used for AddBlipForRadius with IsDefend Missions
 		},
 		Blip = { --safehouse blip
-		  Title = "Destination",
+		  Title = "Destination ($5000)",
 		  Position = { x = 890.31, y = 3717.53, z = 29.66}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 38,
 		  Display  = 4,
@@ -6373,18 +6372,18 @@ StartMessage = "Fly the asset and their plane~n~ to the destination~n~~r~Hurry!"
 
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
     },
 	
 	Blip2 = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
@@ -6463,7 +6462,7 @@ StartMessage = "Fly the asset and their plane~n~ to the destination~n~~r~Hurry!"
 	
 	{  x = 1318.13, y = 3624.67, z = 33.5,  MissionTitle="Top Gun v2",
 		Blip2 = { --safehouse blip
-		  Title = "Mission Start",
+		  Title = "Mission Start: Rendevouz with the asset",
 		  Position = { x = 1515.16, y = 3064.27, z = 41.3}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 58,
 		  Display  = 4,
@@ -6474,7 +6473,7 @@ StartMessage = "Fly the asset and their plane~n~ to the destination~n~~r~Hurry!"
 		  --Used for AddBlipForRadius with IsDefend Missions
 		},
 		Blip = { --safehouse blip
-		  Title = "Destination",
+		  Title = "Destination ($5000)",
 		  Position = { x = 890.31, y = 3717.53, z = 29.66}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 38,
 		  Display  = 4,
@@ -6701,18 +6700,18 @@ StartMessage = "Drive the asset and their boat~n~ to the destination~n~~r~Hurry!
 
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
     },
 	
 	Blip2 = {
-      Title = "Objective",
+      Title = "Destination ($5000)",
       Position = { x = -10000, y = 0, z =  0},
-      Icon     = 58,
+      Icon     = 38,
       Display  = 4,
       Size     = 1.2,
       Color    = 1,
@@ -6791,7 +6790,7 @@ StartMessage = "Drive the asset and their boat~n~ to the destination~n~~r~Hurry!
 	
 	{  x = 1318.13, y = 3624.67, z = 33.5,  MissionTitle="I'm On A Boat v2",
 		Blip2 = { --safehouse blip
-		  Title = "Mission Start",
+		  Title = "Mission Start: Rendevouz with the asset",
 		  Position = { x = 2317.1, y = 4543.08, z = 29.35}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 58,
 		  Display  = 4,
@@ -6802,7 +6801,7 @@ StartMessage = "Drive the asset and their boat~n~ to the destination~n~~r~Hurry!
 		  --Used for AddBlipForRadius with IsDefend Missions
 		},
 		Blip = { --safehouse blip
-		  Title = "Destination",
+		  Title = "Destination ($5000)",
 		  Position = { x = -150.2, y = 4233.38, z = 29.52}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 38,
 		  Display  = 4,
@@ -8183,10 +8182,10 @@ Mission32 = {
 
   Mission33 = {
     
-	StartMessage = "Shut down an interdimensional portal~n~opened by aliens before it is too late!",
+	StartMessage = "Shut down an interdimensional portal~n~opened by a syndicate before it is too late!",
 	FinishMessage = "~q~You saved San Andreas!",
 	MissionTitle = "Ghostbusters",
-	MissionMessage = "Shut down an interdimensional portal~n~opened by aliens before it is too late!",	
+	MissionMessage = "Shut down an interdimensional portal~n~opened by a syndicate before it is too late!",	
 	Type = "Objective",	
 	IndoorsMission = true,
 	FinishedObjectiveReward = 10000, --cash
@@ -8199,9 +8198,9 @@ Mission32 = {
 	MissionTriggerRadius=1000.0,
 	
 	SMS_Subject="Ghostbusters",
-	SMS_Message="Looks like some rich powerful assholes have been playing with alien tech",
-	SMS_Message2="Head downtown and shut down the interdimensional portal opened by them before it is too late!",
-	--SMS_Message3="Anyone up for this?",	
+	SMS_Message="Looks like a rich powerful syndicate has been toying around with some alien tech",
+	SMS_Message2="We need someone to head downtown and shut down the interdimensional portal opened by them",
+	SMS_Message3="Before it is too late!",	
 		
 	--SMS_ContactPics={"CHAR_AGENT14",
 	--},
@@ -8626,7 +8625,7 @@ SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONEN
 
 	
 	Blip = {
-      Title = "Objective",
+      Title = "Mission Start: Rendevouz with the asset",
       Position = { x = -10000, y = 0, z =  0},
       Icon     = 58,
       Display  = 4,
@@ -8635,7 +8634,7 @@ SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONEN
     },
 	
 	Blip2 = {
-      Title = "Objective",
+      Title = "Mission Start: Rendevouz with the asset",
       Position = { x = -10000, y = 0, z =  0},
       Icon     = 58,
       Display  = 4,
@@ -8714,9 +8713,9 @@ SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONEN
 	
 	RandomMissionPositions = { 
 	
-	{  x = 1318.13, y = 3624.67, z = 33.5,  MissionTitle="The Gauntlet v3",
+	{  x = 1515.16, y = 3064.27, z = 41.3, SpawnAt={x = 1318.13, y = 3624.67, z = 33.5} ,  MissionTitle="The Gauntlet v3",
 		Blip2 = { --safehouse blip
-		  Title = "Mission Start",
+		  Title = "Mission Start: Rendevouz with the asset",
 		  Position = { x = 1515.16, y = 3064.27, z = 41.3}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
 		  Icon     = 58,
 		  Display  = 4,
