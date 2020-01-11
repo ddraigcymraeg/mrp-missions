@@ -36,11 +36,11 @@ Config.ShowMissionIntroText=false
 
  --acts as a penalty for players dying during a mission.
  --Set to 0 for no fee and no notification
-Config.MissionRejuvenationFee=0
+Config.MissionRejuvenationFee=1000
 
 --Does player get harrassed/encouraged by mission contact when they die?
 --1 in 4 chance per death to be sent. 
-Config.MissionRejuvenationSMS=false
+Config.MissionRejuvenationSMS=true
 
 --"Harrasment"/"encourgement" messages sent to player from mission contact
 --1 in 4 chance per death to be sent. Random subject and random message then sent from below:
@@ -5215,7 +5215,7 @@ StartMessage = "Ensure that the asset and their vehicle~n~ make it to the destin
 	--what x and y coordinate range should these mission spawn in?
 	--RandomLocation = true, --for completely random location..
 	
-	SMS_Subject="The Gauntlet",
+	SMS_Subject="Escort Mission",
 	SMS_Message="We need help to ensure that an asset and their vehicle make it to the destination",
 	SMS_Message2="They will need an escort. Are you up for this?",
 	--SMS_Message3="Anyone up for this?",	
@@ -5521,7 +5521,7 @@ StartMessage = "Ensure that the asset and their plane~n~ make it to the destinat
 	--RandomLocation = true, --for completely random location..
 	
 	
-	SMS_Subject="Top Gun",
+	SMS_Subject="Escort Mission",
 	SMS_Message="We need help to ensure that an asset and their aircraft make it to the destination",
 	SMS_Message2="They will need an escort. Are you up for this?",
 	--SMS_Message3="Anyone up for this?",	
@@ -5813,7 +5813,7 @@ StartMessage = "Ensure that the asset and their boat~n~ make it to the destinati
 	--RandomLocation = true, --for completely random location..
 	
 	
-	SMS_Subject="Adrift",
+	SMS_Subject="Escort Mission",
 	SMS_Message="We need help to ensure that an asset and their boat make it to the destination",
 	SMS_Message2="They will need an escort. Are you up for this?",
 	--SMS_Message3="Anyone up for this?",	
@@ -6066,7 +6066,7 @@ StartMessage = "Drive the asset and their vehicle~n~ to the destination~n~~r~Hur
 	MissionTriggerStartPoint = { x = 1515.16, y = 3064.27, z = 41.3},
 	
 	
-	SMS_Subject="The Gauntlet v2",
+	SMS_Subject="Transport Mission",
 	SMS_Message="We need help to ensure that an asset and their vehicle make it to the destination",
 	SMS_Message2="They will need a driver and escorts. Are you up for this?",
 	--SMS_Message3="Anyone up for this?",	
@@ -6377,7 +6377,7 @@ StartMessage = "Fly the asset and their plane~n~ to the destination~n~~r~Hurry!"
 	--what x and y coordinate range should these mission spawn in?
 	--RandomLocation = true, --for completely random location..
 	
-	SMS_Subject="Top Gun v2",
+	SMS_Subject="Transport Mission",
 	SMS_Message="We need help to ensure that an asset and their aircraft make it to the destination",
 	SMS_Message2="They will need a pilot and escorts. Are you up for this?",
 	--SMS_Message3="Anyone up for this?",	
@@ -6669,7 +6669,7 @@ StartMessage = "Drive the asset and their boat~n~ to the destination~n~~r~Hurry!
 	--what x and y coordinate range should these mission spawn in?
 	--RandomLocation = true, --for completely random location..
 	
-	SMS_Subject="Adrift v2",
+	SMS_Subject="Transport Mission",
 	SMS_Message="We need help to ensure that an asset and their boat make it to the destination",
 	SMS_Message2="They will need a driver and escorts. Are you up for this?",
 	--SMS_Message3="Anyone up for this?",	
@@ -6878,7 +6878,7 @@ RandomMissionDestinations = {
 
 	},
 	
-	SMS_Subject="Killing Floor",
+	SMS_Subject="Humane Labs",
 	SMS_Message="Mercenaries have infiltrated Humane Labs to steal bio nanotechnology to sell on the black market",
 	SMS_Message2="We need someone to stop them. Can you help us?",
 	--SMS_Message3="Anyone up for this?",	
@@ -7703,7 +7703,7 @@ Mission32 = {
 	TeleportToSafeHouseOnMissionStart = true,
 	SafeHouseGiveImmediately=true,
 	
-	SMS_Subject="Heat",
+	SMS_Subject="Secure the data",
 	SMS_Message="Take the secret files from the bank vault to the submarine to be secured, so they can be publicized",
 	--SMS_Message2="We need someone to stop them. Can you help us?",
 	--SMS_Message3="Anyone up for this?",	
@@ -8220,7 +8220,7 @@ Mission32 = {
 	SafeHouseAircraftCount = 2,
 	MissionTriggerRadius=1000.0,
 	
-	SMS_Subject="Ghostbusters",
+	SMS_Subject="Close down the portal",
 	SMS_Message="Looks like a rich powerful syndicate has been toying around with some alien tech",
 	SMS_Message2="We need someone to head downtown and shut down the interdimensional portal opened by them",
 	SMS_Message3="Before it is too late!",	
@@ -8578,7 +8578,7 @@ StartMessage = "Defend the asset and their vehicle~n~eliminate all hostiles~n~~r
 	SafeHouseCrackDownModeHealthAmount=1000,
 	
 	
-	SMS_Subject="The Gauntlet v3",
+	SMS_Subject="Protect the asset",
 	SMS_Message="We need help to ensure that an asset and their vehicle survive an attack",
 	SMS_Message2="They will need an escort. Are you up for this?",
 	--SMS_Message3="Anyone up for this?",	
@@ -9774,7 +9774,7 @@ SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONEN
 	SafeHouseSniperExplosiveRoundsGiven=0,
 	MissionTriggerRadius = 20.0,
 	
-	SMS_Subject="Skynet",
+	SMS_Subject="NOOSE Compromised",
 	SMS_Message="Mercs have taken over an AI at NOOSE Headquarters and weaponized it.",
 	SMS_Message2="Shut down the AI the mercenaries have enabled before it takes over the internet. Can you help?",
 	--SMS_Message3="",	
@@ -9985,8 +9985,8 @@ Events = {
 	
 	SMS_Subject="OmniCorp",
 	SMS_Message="Our intel have revealed the clients of renegade mercenaries terrorizing San Andreas.",
-	SMS_Message2="We are calling them The Cabal. We need someone to take out the mercs infrastructure and clients",
-	SMS_Message3="This will help finish off thre threat. Can you help?",	
+	SMS_Message2="We are calling them The Syndicate. We need someone to take out the mercs infrastructure and clients",
+	SMS_Message3="This will help finish off the threat. Can you help?",	
 		
 	--SMS_ContactPics={"CHAR_AGENT14",
 	--},
@@ -10449,7 +10449,7 @@ Mission40 = {
 	MissionTriggerRadius=20.0,
 	HostageRescue = true,
 	
-	SMS_Subject="They Live",
+	SMS_Subject="D.U.M.B.",
 	SMS_Message="Intel has revealed a deep secret underground facility that needs to be investigated",
 	SMS_Message2="There are rumors of secret experiments. Would you like to take the mission?",
 	--SMS_Message3="This will help finish off thre threat. Can you help?",	
@@ -10692,7 +10692,7 @@ Mission40 = {
 	MissionTriggerRadius=20.0,
 	HostageRescue = true,
 	
-	SMS_Subject="Ong's Hat",
+	SMS_Subject="Underground Base",
 	SMS_Message="Intel has revealed a secret facility that needs to be investigated",
 	SMS_Message2="There are rumors of secret experiments. Would you like to take the mission?",
 	--SMS_Message3="This will help finish off thre threat. Can you help?",	
@@ -10981,6 +10981,8 @@ Mission42 = {
 	MissionTriggerRadius=300.0,
 
 	
+	
+	SMS_Subject="Bank Vault",
 	SMS_Message="We need someone to go to the Pacific Standard Bank and capture secret intel from the vault",
 	SMS_Message2="We hope to expose this information to the public of San Andreas. Will you help us?",
 	--SMS_Message3="This will help finish off thre threat. Can you help?",	
