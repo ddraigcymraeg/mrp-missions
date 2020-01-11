@@ -36,11 +36,11 @@ Config.ShowMissionIntroText=false
 
  --acts as a penalty for players dying during a mission.
  --Set to 0 for no fee and no notification
-Config.MissionRejuvenationFee=1000
+Config.MissionRejuvenationFee=0
 
 --Does player get harrassed/encouraged by mission contact when they die?
 --1 in 4 chance per death to be sent. 
-Config.MissionRejuvenationSMS=true
+Config.MissionRejuvenationSMS=false
 
 --"Harrasment"/"encourgement" messages sent to player from mission contact
 --1 in 4 chance per death to be sent. Random subject and random message then sent from below:
