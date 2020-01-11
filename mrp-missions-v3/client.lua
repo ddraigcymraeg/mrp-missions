@@ -13270,6 +13270,7 @@ AddEventHandler('SecureObjRescue',function(playerPed,Ent,intType) --0 hostage, 1
 				TriggerEvent("chatMessage", "You are now rescuing the target.")
 				TriggerEvent("mt:missiontext2", "~u~(~g~Rescue Progress: ~r~".. SecureTime .."~u~)", 1000)			
 			elseif intType == 2 then 
+				
 				TriggerEvent("chatMessage", "You are now securing an objective.")
 				TriggerEvent("mt:missiontext2", "~u~(~g~Capture Progress: ~r~".. SecureTime .."~u~)", 1000)						
 			end
@@ -13289,10 +13290,37 @@ function SecureObj()
 		
         PLY = PlayerId()
         PLYN = GetPlayerName(PLY)
+		
+			--UGGH... FIX FOR WHEN PLAYER LEAVES MARKER, STOP SECURING
+			for k,v in pairs(Config.Missions[MissionName].Marker) do
+					--print("hey")
+					ply = PlayerId()
+					coords = GetEntityCoords(GetPlayerPed(ply))
+					if (Config.Missions[MissionName].Marker.Position.z <= 0.0) then
+
+						
+						--print("heya")
+						--workaround for when ground z is not found in random anywhere missions
+							if(GetDistanceBetweenCoords(coords.x,coords.y,0.0, Config.Missions[MissionName].Marker.Position.x, Config.Missions[MissionName].Marker.Position.y, 0.0, true) > Config.Missions[MissionName].Marker.Size.x / 2) then
+								--print("hey1")
+								securing = false
+							end						
+						
+					else
+						--print("heyb")
+						--workaround for when groun
+								if(GetDistanceBetweenCoords(coords.x,coords.y,coords.z, Config.Missions[MissionName].Marker.Position.x, Config.Missions[MissionName].Marker.Position.y, Config.Missions[MissionName].Marker.Position.z, true) > Config.Missions[MissionName].Marker.Size.x / 2) then
+								--print("hey2")
+								securing = false
+							end
+						
+					end
+				end		
+		
         if SecureTime > 0 and SecureTime < SecureStartTime then
 	
    
-           
+			
 			local messageProgress  = "~u~(~g~Capture Progress: ~r~".. SecureTime .."~u~)"
 			--TriggerEvent('chatMessage', "^1[MISSIONS]: ^0 Capture Progress: ^1"..(SecureTime))
 			 SecureTime = SecureTime - 1
@@ -13356,6 +13384,40 @@ function BuyObj()
 		if(getMissionConfigProperty(MissionName, "SafeHouseGiveImmediately")) then 
 			BuyTime = 0
 		end
+		
+				for k,v in pairs(Config.Missions[MissionName].MarkerS) do
+				--print("hey")
+						if Active == 1 and MissionName ~="N/A" and Config.Missions[MissionName].MarkerS  and ((GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse")) > playerSafeHouse) then
+								--print("heya")
+							ply = PlayerId()
+							coords = GetEntityCoords(GetPlayerPed(ply))
+							--workaround for when ground z is not found in random anywhere missions
+							if (Config.Missions[MissionName].MarkerS.Position.z <= 0.0) then 
+								--print("hey1")
+								if(GetDistanceBetweenCoords(coords.x,coords.y,0.0, Config.Missions[MissionName].MarkerS.Position.x, Config.Missions[MissionName].MarkerS.Position.y, 0.0, true) > Config.Missions[MissionName].MarkerS.Size.x / 2) then
+									
+									buying = false
+									return
+									
+								end						
+							
+							else
+								--print("hey2")
+								--hack for small radius missions
+								local testradius = Config.Missions[MissionName].MarkerS.Size.x / 2
+								if Config.Missions[MissionName].MarkerS.Size.x <= 2.0 then 
+									testradius = 1.5
+								end
+								if(GetDistanceBetweenCoords(coords.x,coords.y,coords.z, Config.Missions[MissionName].MarkerS.Position.x, Config.Missions[MissionName].MarkerS.Position.y, Config.Missions[MissionName].MarkerS.Position.z, true) > testradius) then
+										--print("hey3")
+										buying = false
+										return
+									
+								end
+							end
+						end
+				end					
+		
 		
         PLY = PlayerId()
         PLYN = GetPlayerName(PLY)
@@ -14286,9 +14348,11 @@ Citizen.CreateThread(function()
 						--workaround for when ground z is not found in random anywhere missions
 						if (Config.Missions[MissionName].Marker.Position.z <= 0.0) then 				
 							if(GetDistanceBetweenCoords(coords.x,coords.y,0.0, Config.Missions[MissionName].Marker.Position.x, Config.Missions[MissionName].Marker.Position.y, 0.0, true) < Config.Missions[MissionName].Marker.Size.x / 2) and not securing then
-								if IsPedOnFoot(GetPlayerPed(ply)) and DecorGetInt(GetPlayerPed(ply),"mrpoptout") == 0 then 
-									securing = true
-									SecureObj()
+								if IsPedOnFoot(GetPlayerPed(ply)) then 
+									if DecorGetInt(GetPlayerPed(ply),"mrpoptout") == 0 then
+										securing = true
+										SecureObj()
+									end
 								else
 									securing = false
 								end
@@ -14297,12 +14361,16 @@ Citizen.CreateThread(function()
 						
 						else
 							if(GetDistanceBetweenCoords(coords.x,coords.y,coords.z, Config.Missions[MissionName].Marker.Position.x, Config.Missions[MissionName].Marker.Position.y, Config.Missions[MissionName].Marker.Position.z, true) < Config.Missions[MissionName].Marker.Size.x / 2) and not securing then
-								if IsPedOnFoot(GetPlayerPed(ply)) and DecorGetInt(GetPlayerPed(ply),"mrpoptout") == 0 then 
-									securing = true
-									SecureObj()
+								if IsPedOnFoot(GetPlayerPed(ply)) then 
+									if DecorGetInt(GetPlayerPed(ply),"mrpoptout") == 0 then
+										securing = true
+										SecureObj()
+									end
 								else
 									securing = false
 								end
+							
+							
 								
 							end
 						end
@@ -14343,6 +14411,7 @@ Citizen.CreateThread(function()
 								if(GetDistanceBetweenCoords(coords.x,coords.y,coords.z, Config.Missions[MissionName].MarkerS.Position.x, Config.Missions[MissionName].MarkerS.Position.y, Config.Missions[MissionName].MarkerS.Position.z, true) < testradius) and not buying then
 									if IsPedOnFoot(GetPlayerPed(ply)) then 
 										buying = true
+										--print("BUYING")
 										if DecorGetInt(GetPlayerPed(ply),"mrpoptout") == 0 then 
 											
 											BuyObj()
