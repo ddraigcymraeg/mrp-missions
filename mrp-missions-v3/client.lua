@@ -12499,9 +12499,12 @@ function calcCompletionRewards(nonTargetPedsKilledByPlayer,targetPedsKilledByPla
 			--give a fraction to everyone including myself based on total players.
 			local moneytogive = playerMissionMoney/totalplayersinmission
 			
-			if playerwasinmissionG == 1 and moneytogive ~= 0 then 
+			--need to share 0 dollars as well, to not break MISSIONSHAREMONEYAMOUNT
+			--global
+			if playerwasinmissionG == 1 then --and moneytogive ~= 0 then 
 				--print("moneytogive:"..moneytogive)
 				TriggerServerEvent("sharemoney", math.ceil(moneytogive))
+			
 			end 
 					
 		else 
@@ -12548,6 +12551,7 @@ AddEventHandler("mt:sharemoney",function(playermissionmoney)
 			end 
 		end
 	else ]]--
+	--print("mt shared money called")
 	if playerwasinmissionG == 1 then 
 	
 			--print("mt:sharemoney called:$"..playermissionmoney)
@@ -12866,7 +12870,8 @@ function MissionCheck()
 					if isDefendTargetKilledByPlayer > 0  then
 						PLY = PlayerId()
 						PLYN = GetPlayerName(PLY)						
-						reasontext = PLYN.." has killed the target you were defending!"
+						--reasontext = PLYN.." has killed the target you were defending!"
+						reasontext = "The target you were defending has died"
 						message = "^1[MISSIONS]: ^2 "..PLYN.."^1 has killed the target you were defending!"
 						message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 mission has failed!"					
 					
@@ -13787,10 +13792,10 @@ Citizen.CreateThread(function()
 										DecorSetInt(PlayerPed,"mrpvehsafehousemax",mrpvehsafehousemax)
 										mrpvehsafehousemaxG = mrpvehsafehousemax  
 										--print("mrpvehsafehousemax:"..tostring(DecorGetInt(PlayerPed,"mrpvehsafehousemax")))
-										local messageOwner = "You just claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(false,true,false,MissionName)
+										local messageOwner = "You claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(false,true,false,MissionName)
 										TriggerEvent("mt:missiontext2", messageOwner,10000)
 										--print("vehicle server id:"..DecorGetInt(PedVeh,"mrpvehsafehouseowner"))
-										Notify("~b~You just claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(false,true,false,MissionName))
+										Notify("~b~You claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(false,true,false,MissionName))
 										
 									else
 										TaskLeaveVehicle(PlayerPed, PedVeh, 0)
@@ -15314,6 +15319,7 @@ function doMissionRejuvenationFee()
 				StatSetInt('MP0_WALLET_BALANCE',totalmoney, true)
 			end
 			if SHOWWASTEDMESSAGE then 
+				--print("HEY")
 				MISSIONSHOWMESSAGE="~r~Mission Rejuvenation Fee: ~g~$"..getMissionConfigProperty(MissionName, "MissionRejuvenationFee")
 			else 
 				
@@ -15366,8 +15372,9 @@ AddEventHandler("baseevents:onPlayerDied", function(player, reason, pos)
 			doMissionRejuvenationFee()	
 		end
 		
-		--1 in 4 chance per death of being harrassed by a mission contact!
-		if getMissionConfigProperty(MissionName, "MissionRejuvenationSMS") and math.random(1,4) == 4 then 
+		--MissionRejuvenationSMSChance % chance per death of being harrassed by a mission contact!
+		if getMissionConfigProperty(MissionName, "MissionRejuvenationSMS") and math.random(1,100) <= getMissionConfigProperty(MissionName, "MissionRejuvenationSMSChance")  then 
+			
 			Wait(math.random(3000,7000))
 			doSMSRejuvenationMessage(MissionName) 
 		end		
@@ -15395,8 +15402,9 @@ AddEventHandler("baseevents:onPlayerKilled", function(player, killer, reason, po
 			doMissionRejuvenationFee()	
 		end
 		
-		--1 in 4 chance per death of being harrassed by a mission contact!
-		if getMissionConfigProperty(MissionName, "MissionRejuvenationSMS") and math.random(1,4) == 4 then 
+		--MissionRejuvenationSMSChance % chance per death of being harrassed by a mission contact!
+		if getMissionConfigProperty(MissionName, "MissionRejuvenationSMS") and math.random(1,100) <= getMissionConfigProperty(MissionName, "MissionRejuvenationSMSChance")  then 
+		
 			Wait(math.random(3000,7000))
 			doSMSRejuvenationMessage(MissionName) 
 		end				
@@ -16870,7 +16878,7 @@ while true do
 								DecorSetInt(GetPlayerPed(-1),"mrpvehsafehousemax",mrpvehsafehousemax)
 								mrpvehsafehousemaxG = mrpvehsafehousemax
 								playerSafeHouse = GetGameTimer()
-								local messageOwner = "You just claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(true,true,false,MissionName)
+								local messageOwner = "You claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(true,true,false,MissionName)
 								TriggerEvent("mt:missiontext2", messageOwner,10000)									
 							else 
 									local messageOwner = "Please try again to deploy a rc remote detonate bomb"
@@ -17055,7 +17063,7 @@ Citizen.CreateThread(function()
 			
 
 				if string.len(MISSIONSHOWTEXT) > 0 and MISSIONSHOWTEXT ~="WASTED" then
-				 --print("hey")
+				-- print("hey")
 					local starttime= GetGameTimer()
 					while not MISSIONSHAREMONEYAMOUNT do
 						Wait(1)
