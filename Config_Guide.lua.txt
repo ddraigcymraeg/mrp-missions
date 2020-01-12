@@ -59,6 +59,11 @@ IsVehicleDefendTargetGotoBlipTargetOnly=true, —think this is deprecated, Makes
 IsDefendTargetEnemySetBlockingOfNonTemporaryEvents=true, —used for when IsRandom=true to make enemies keep to task until IsDefendTargetAttackDistance or IsDefendTargetVehicleAttackDistance is reached
 IsDefendTargetSetBlockingOfNonTemporaryEvents=true, —used for when IsRandom=true make the target to defend npc stay still or keep to task
 
+--How close to the IsDefendTargetVehicle does the player need to be 
+--in order to be able to teleport to a free seat? 
+if 0 or 0.0 turns this feature off
+Config.IsDefendTargetVehiclePassengerRadius=25.0
+
 --How close to the target will peds on feet finally attack? Useful when SetBlockingOfNonTemporaryEvents is set for a ped.
 Config.IsDefendTargetAttackDistance = 10.0
 
