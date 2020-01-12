@@ -42,6 +42,9 @@ Config.MissionRejuvenationFee=0
 --1 in 4 chance per death to be sent. 
 Config.MissionRejuvenationSMS=false
 
+-- % chance of messaging? Values from 0 for no chance to 100 for always
+Config.MissionRejuvenationSMSChance=25
+
 --"Harrasment"/"encourgement" messages sent to player from mission contact
 --1 in 4 chance per death to be sent. Random subject and random message then sent from below:
 Config.SMS_RejuvenationSubjects={"Are you OK?","Whats going on?","Can you handle this?","Wait for Reinforcements?"}
@@ -1772,7 +1775,21 @@ Config.Missions = {
 	SMS_FailedSubject="Pigs",
 	SMS_FailedMessage="You should have stayed away, this is much bigger than you",
 	SMS_PassedSubject="Pigs",
-	SMS_PassedMessage="You stole the secret files and sold them for ransom yourself.",			
+	SMS_PassedMessage="You stole the secret files and sold them for ransom yourself.",
+
+	MissionRejuvenationSMS=true,
+	MissionRejuvenationSMSChance=100,
+	SMS_RejuvenationSubjects={"The Governor of what?","Die you pig!","Justice","Stay away"},
+
+	SMS_RejuvenationMessages={"Down with the imperialst police state!",
+
+	"I don't give a crap about you... or your governor",
+
+	"What better example than to let the governor and his cronies perish?",
+	
+	"These military codes will now be decrypted in less than an hour which we use to free San Andreas",
+
+	},			
 	
 	
     Blip = {
@@ -2388,7 +2405,7 @@ Events = {
 	
 	SMS_Subject="Fury Road",
 	SMS_Message="We are taking over the oil field, and you better step out of the way",
-	SMS_Message2="I salute my half-life War Boys who will ride with me eternal on the highways of Valhalla.",
+	SMS_Message2="I salute my half-life War Boys who will ride with me eternal on the highways of Valhalla!",
 	--SMS_Message3="The Governor's plane was brought down. We have captured him and obtained his secret files.",	
 		
 	SMS_ContactPics={"DIA_BRAD",
@@ -2401,6 +2418,18 @@ Events = {
 	SMS_FailedMessage="You should have stayed away, this is much bigger than you",
 	SMS_PassedSubject="Valhalla!",
 	SMS_PassedMessage="Return my treasures to me, and I myself will carry you through the gates of Valhalla.",
+	
+	MissionRejuvenationSMS=true,
+	MissionRejuvenationSMSChance=50,
+	SMS_RejuvenationSubjects={"Ah, mediocre!","Thats my property!","HAHAHA!","Step Aside!"},
+
+	SMS_RejuvenationMessages={"Well done my War Boys! You will ride eternal, shiny and chrome!",
+
+	"I am your redeemer. It is by my hand you will rise from the ashes of this world",
+
+	"You should have stayed away, this is much bigger than you",
+
+	},		
 	
 
     Blip2 = {
@@ -3062,20 +3091,33 @@ Events = {
 	
 	
 	SMS_Subject="The Road Warrior",
-	SMS_Message="The Road Warrior cannot escape! Capture him! Resistance is futile!",
-	SMS_Message2="I salute my half-life War Boys who will ride with me eternal on the highways of Valhalla.",
+	SMS_Message="The Road Warrior cannot escape! Put a bullet in his skull. Stop the rig. Return my treasures to me!",
+	SMS_Message2="I salute my half-life War Boys who will ride with me eternal on the highways of Valhalla!",
 	--SMS_Message3="You will ride eternal, shiny and chrome",	
 		
 	SMS_ContactPics={"DIA_BRAD",
 	},
 	SMS_ContactNames={"Immortan Joe",
 	},
+	
 	SMS_NoFailedMessage=true,
 	SMS_NoPassedMessage=true,
 	SMS_FailedSubject="HAHA",
 	SMS_FailedMessage="You should have stayed away, this is much bigger than you",
 	SMS_PassedSubject="Valhalla!",
 	SMS_PassedMessage="Return my treasures to me, and I myself will carry you through the gates of Valhalla.",
+	
+	MissionRejuvenationSMS=true,
+	MissionRejuvenationSMSChance=50,
+	SMS_RejuvenationSubjects={"Ah, mediocre!","Thats my property!","HAHAHA!","Step Aside!"},
+
+	SMS_RejuvenationMessages={"Well done my War Boys! You will ride eternal, shiny and chrome!",
+
+	"I am your redeemer. It is by my hand you will rise from the ashes of this world",
+
+	"You should have stayed away, this is much bigger than you",
+
+	},		
 
     Blip2 = {
       Title = "Mission: Protect the road warrior",
