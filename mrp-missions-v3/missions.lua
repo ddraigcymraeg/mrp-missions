@@ -36,11 +36,11 @@ Config.ShowMissionIntroText=false
 
  --acts as a penalty for players dying during a mission.
  --Set to 0 for no fee and no notification
-Config.MissionRejuvenationFee=0
+Config.MissionRejuvenationFee=1000
 
 --Does player get harrassed/encouraged by mission contact when they die?
 --1 in 4 chance per death to be sent. 
-Config.MissionRejuvenationSMS=false
+Config.MissionRejuvenationSMS=true
 
 -- % chance of messaging? Values from 0 for no chance to 100 for always
 Config.MissionRejuvenationSMSChance=25
@@ -107,13 +107,13 @@ Config.MissionShareMoney = true
 
 --IF EITHER EnableOptIn OR EnableSafeHouseOptIn IS true, THE OTHER HAS TO BE false:
 --This allows players to simply press ‘Q’ and ‘[’ keys or RB + DPAD DOWN together to join an active mission:
-Config.EnableOptIn = false
+Config.EnableOptIn = true
 --requires the player to journey to the safehouse marker (they will see the safehouse blip on the map) 
 --and press either ‘]’ key or DPAD UP in order to join the mission:
 Config.EnableSafeHouseOptIn = false
 --When set to true, when a mission is active and a player is not opted in, it displays text in the lower RHS 
 --that there is an active mission with directions on how to join:
-Config.EnableOptInHUD = false
+Config.EnableOptInHUD = true
 --This forces all players to opt out of the mission system at mission end, forcing them to opt back in for the next mission. 
 --Does not remove weapons, but removes buffs:
 Config.ForceOptOutAtMissionEnd = false
@@ -727,6 +727,10 @@ Config.IsDefendTargetVehicleAttackDistance = 150.0
 --not used:
 Config.IsDefendTargetCheckLoop=false
 
+--How close to the IsDefendTargetVehicle does the player need to be 
+--in order to be able to teleport to a free seat?
+Config.IsDefendTargetVehiclePassengerRadius=25.0
+
 --Make the target keep to set task, usually driving...
 Config.IsDefendTargetSetBlockingOfNonTemporaryEvents=false
 
@@ -765,11 +769,9 @@ Config.IsDefendTargetRandomAircraft = {
 }
 
 Config.IsDefendTargetRandomBoat = {
-"dinghy4",
+
 "seashark",
-"toro2",
-"marquis",
-"jetmax"
+
 }
 
 --****END IsRandom -> IsDefend -> IsDefendTarget configuration
@@ -5512,6 +5514,7 @@ StartMessage = "Ensure that the asset and their plane~n~ make it to the destinat
 	SafeHousePedLeaders = {},
 	SafeHouseProps = {"hei_prop_carrier_crate_01a"},
 	SafeHouseGiveImmediately = true,
+	IsDefendTargetVehiclePassengerRadius=500.0,
 	
 	--RandomMissionDoLandBattle=false, 
 	TeleportToSafeHouseMinDistance = 30,
@@ -6022,6 +6025,7 @@ StartMessage = "Ensure that the asset and their boat~n~ make it to the destinati
 		
 	DefendTargetInVehicle = true,
 	DefendTargetVehicleIsBoat=true,
+	--DefendTargetVehicleMoveSpeedRatio = 0.75,
 
 	}, 
 
@@ -6356,6 +6360,7 @@ StartMessage = "Fly the asset and their plane~n~ to the destination~n~~r~Hurry!"
 	IsDefendTargetRescue = false,
 	IsDefendTargetChase = true,
 	IsVehicleDefendTargetChase = true,
+	IsDefendTargetVehiclePassengerRadius=500.0,
 	IsDefendTargetSetBlockingOfNonTemporaryEvents=true,
 	--IsDefendTargetEnemySetBlockingOfNonTemporaryEvents=true,
 	IsDefendTargetOnlyPlayersDamagePeds=false,
