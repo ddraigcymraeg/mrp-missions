@@ -137,6 +137,10 @@ Config.MissionRejuvenationFee=0
 --1 in 4 chance per death to be sent. 
 Config.MissionRejuvenationSMS=false
 
+-- % chance of contact messaging? Values from 0 for no chance to 100 for always
+--needs Config.MissionRejuvenationSMS=true to work
+Config.MissionRejuvenationSMSChance=25
+
 --"Harrasment"/"encourgement" messages sent to player from mission contact
 --1 in 4 chance per death to be sent. Random subject and random message then sent from below:
 Config.SMS_RejuvenationSubjects={"Are you OK?","Whats going on?","Can you handle this?","Wait for Reinforcements?"}
