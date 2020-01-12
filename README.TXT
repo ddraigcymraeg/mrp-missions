@@ -24,6 +24,10 @@ as a safehouse vehicle, and players will need to wait until the safehouse is ope
 
 Players can toggle night vision and thermal vision if enabled. Player will press and hold both Left stick down + right stick down ( C + Left Ctrl by default) to cycle through.
 
+For IsDefendTarget missions, where the target is a vehicle, and the player is within a range of the vehicle, Pressing 
+DPAD LEFT AND LB PRESSED ('E' key and 'SCROLLWHEEL UP' key) will have the player enter (teleport to) the drivers seat if empty,
+else any turret seat if empty, else any passanger seat if empty. This can make some escort/transport missions more fun.
+
 If EnableOptIn or EnableSafeHouseOptIn is turned on:
 Players press ‘Q’ and ‘]’ keys or RB + DPAD UP together to join an active mission. (with EnableSafeHouseOptIn player has to be 
 at the safehouse marker.)
