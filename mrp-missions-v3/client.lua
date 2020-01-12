@@ -8867,8 +8867,8 @@ function PutPlayerIntoTargetVehicle(PedVehicle,input)
 				SetPedIntoVehicle(GetPlayerPed(-1), PedVehicle, v)
 				setPed=true
 			
-				Notify("~h~~g~You moved to a turrent on the target's vehicle")
-				TriggerEvent("mt:missiontext2","~g~You moved to a turrent on the target's vehicle", 4000)
+				Notify("~h~~g~You moved to a turret on the target's vehicle")
+				TriggerEvent("mt:missiontext2","~g~You moved to a turret on the target's vehicle", 4000)
 				Wait(3500)
 				return 
 			end
