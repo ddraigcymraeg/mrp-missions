@@ -770,7 +770,11 @@ Config.IsDefendTargetRandomAircraft = {
 
 Config.IsDefendTargetRandomBoat = {
 
+"dinghy4",
 "seashark",
+"toro2",
+"marquis",
+"jetmax"
 
 }
 
