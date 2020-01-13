@@ -14714,9 +14714,11 @@ Citizen.CreateThread(function()
 				
 				PutPlayerIntoTargetVehicle(GetVehiclePedIsIn(GlobalTargetPed, false),MissionName)
 			
-			else			
-				Notify("~r~Cannot find the target or the target's vehicle to move to")
-				Wait(3500)
+			else
+				if Config.Missions[MissionName].IsDefendTarget and GlobalTargetPed then 
+					Notify("~r~Cannot find the target's vehicle to enter")
+					Wait(3500)
+				end
 			end
 		end		
 			
@@ -17128,7 +17130,7 @@ while true do
 				TriggerEvent("mt:missiontext2", message, 10000)
 			
 			end
-				
+			Wait(3500)	
 		elseif ((IsControlPressed(0, 44) and IsControlPressed(0, 14)) or (IsControlPressed(0, 34) and IsControlPressed(0, 35))) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
 			
 		--RB and dpad left (E + SCROLLWHEEL DOWN)
@@ -17395,7 +17397,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
---[[
+
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -17412,4 +17414,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-]]--
+
