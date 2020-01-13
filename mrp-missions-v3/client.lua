@@ -15738,6 +15738,11 @@ AddEventHandler("playerSpawned", function(spawn)
 		--GHK End blackops preferred variations	
 	
 	
+	if MissionName ~="N/A" and Active == 1 then
+		--Wait(7000)
+		
+		HelpMessage("Check your map for mission data. Press ~INPUT_SNIPER_ZOOM_OUT_SECONDARY~ to view mission info.",true,5000)	
+	end	
 
 	 if(firstjoin) then --should be a first time connecting player
 		--lets see if this is the only player and if a mission is running
@@ -15802,6 +15807,13 @@ AddEventHandler("playerSpawned", function(spawn)
 		doTeleportToSafeHouse(true)
 	
 	end
+	
+	if MissionName ~="N/A" and Active == 1 then
+		Wait(7000)
+		
+		--do it again, to bypass mission chat messages on mission launch
+		HelpMessage("Check your map for mission data. Press ~INPUT_SNIPER_ZOOM_OUT_SECONDARY~ to view mission info.",false,5000)	
+	end		
 	  
 end)
 
