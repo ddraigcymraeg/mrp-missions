@@ -107,12 +107,13 @@ Config.MissionShareMoney = true
 
 --IF EITHER EnableOptIn OR EnableSafeHouseOptIn IS true, THE OTHER HAS TO BE false:
 --This allows players to simply press ‘Q’ and ‘[’ keys or RB + DPAD DOWN together to join an active mission:
-Config.EnableOptIn = true
+Config.EnableOptIn = false
 --requires the player to journey to the safehouse marker (they will see the safehouse blip on the map) 
 --and press either ‘]’ key or DPAD UP in order to join the mission:
 Config.EnableSafeHouseOptIn = false
 --When set to true, when a mission is active and a player is not opted in, it displays text in the lower RHS 
 --that there is an active mission with directions on how to join:
+--KEEP THIS TRUE NOW:
 Config.EnableOptInHUD = true
 --This forces all players to opt out of the mission system at mission end, forcing them to opt back in for the next mission. 
 --Does not remove weapons, but removes buffs:
@@ -770,11 +771,7 @@ Config.IsDefendTargetRandomAircraft = {
 
 Config.IsDefendTargetRandomBoat = {
 
-"dinghy4",
 "seashark",
-"toro2",
-"marquis",
-"jetmax"
 
 }
 
