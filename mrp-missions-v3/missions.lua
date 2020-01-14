@@ -30,6 +30,9 @@ Config.MissionVehicleRandomizeLiveries=true
 --Use Mission Reinforcement Point where players can fast travel to after respawn?
 Config.UseMissionDrop=true
 Config.UseMissionDropFee=500
+
+--Dont teleport vehicle with player if in vehicle?
+Config.UseMissionDropNoVehicle=false
 --recommend a helicopter, *not supported atm*
 Config.UseMissionDropAircraft = {
 "cargobob"--,"cargoplane",
