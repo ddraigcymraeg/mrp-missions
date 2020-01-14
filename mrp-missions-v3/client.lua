@@ -96,6 +96,12 @@ SetAudioFlag("LoadMPData", true)
 
 Blips = {}
 
+local MissionDropBlip
+local MissionDropMarker
+local MissionDropHeading
+local MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
+local MissionDropDid=false
+
 DecorRegister("mrppedid",1)
 DecorRegister("mrpvpedid",1)
 DecorRegister("mrpvpeddriverid",1)
@@ -1231,7 +1237,13 @@ AddEventHandler("mt:missiontext", function(input, timet)
 		--do it again, to bypass mission chat messages on mission launch
 		HelpMessage("Check your map for mission data. Press ~INPUT_SNIPER_ZOOM_OUT_SECONDARY~ to view mission info.",true,5000)
 		
-		if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
+		
+		
+		--if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
+			Wait(5000)
+			HelpMessage("Press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~ for a quick tutorial on controls and mission help",true,5000)
+			
+			--[[			
 			if blDoNightVisionToggleStates > 0 then
 				Wait(5000)
 				HelpMessage("Press ~INPUT_DUCK~ and ~INPUT_LOOK_BEHIND~ to toggle night vision modes",false,5000)
@@ -1246,6 +1258,13 @@ AddEventHandler("mt:missiontext", function(input, timet)
 				
 			end
 			
+			if getMissionConfigProperty(MissionName, "UseMissionDrop") then 
+				Wait(5000)
+				HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to create a Mission Reinforcement Point",false,5000)
+				Wait(5000)
+				HelpMessage("Mission Reinforcement Points allow for fast travel after you respawn",false,5000)				
+			end			
+			
 			if(getMissionConfigProperty(input, "UseSafeHouseBanditoDrop")) then 
 				Wait(5000)
 				HelpMessage("Deploy an explosive drone car with ~INPUT_WEAPON_WHEEL_NEXT~ and ~INPUT_COVER~.",true,5000)
@@ -1255,7 +1274,8 @@ AddEventHandler("mt:missiontext", function(input, timet)
 				HelpMessage("The safe house needs to be open to deploy, and it will count towards a safe house vehicle",false,5000)		
 				
 			end	
-		end
+			]]--
+		--end
 		
 		--SetTextComponentFormat("STRING")
 		--AddTextComponentString("Hit ~INPUT_CONTEXT~ to do shit!")
@@ -1265,6 +1285,81 @@ AddEventHandler("mt:missiontext", function(input, timet)
 	end
 	
 	
+end)
+
+RegisterNetEvent("mt:doMissionHelpText")
+AddEventHandler("mt:doMissionHelpText", function(input)
+
+
+		--do it again, to bypass mission chat messages on mission launch
+		HelpMessage("This is the help guide for this mission..",false,5000)
+		Wait(5000)
+		
+		if((getMissionConfigProperty(input, "EnableOptIn")) or 
+			(getMissionConfigProperty(input, "EnableSafeHouseOptIn")))
+			and 
+			DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 1
+			then 
+			HelpMessage("You are not in the mission. Press ~INPUT_SNIPER_ZOOM_OUT_SECONDARY~ on how to join",false,5000)
+			Wait(5000)
+		end		
+		
+		HelpMessage("Check your map for mission data. Press ~INPUT_SNIPER_ZOOM_OUT_SECONDARY~ to view mission info.",false,5000)
+		
+		
+		--if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
+		
+			if(getMissionConfigProperty(input, "UseSafeHouse")) then 
+				Wait(5000)
+				HelpMessage("Use the safe house for equipment and upgrades for the mission, whenever it is open. Cost: $"..getMissionConfigProperty(input, "SafeHouseCost"),false,5000)
+				Wait(5000)
+				HelpMessage("Use the boat and vehicle safe houses for mission vehicles. Cost per vehicle: $"..getMissionConfigProperty(input, "SafeHouseCostVehicle"),false,5000)
+				Wait(5000)
+				HelpMessage("When a mission is activated, any mission vehicle you drive, will be claimed by you",false,5000)	
+				Wait(5000)
+				HelpMessage("Only you will be able to drive it, but other players can be passengers. You can claim "..getMissionConfigProperty(input, "SafeHouseVehiclesMaxClaim").." vehicles",false,5000)						
+			end
+		
+		
+			if blDoNightVisionToggleStates > 0 then
+				Wait(5000)
+				HelpMessage("Press ~INPUT_DUCK~ and ~INPUT_LOOK_BEHIND~ to toggle night vision modes",false,5000)
+
+			end	
+			
+			if(getMissionConfigProperty(input, "UseSafeHouseCrateDrop")) then 
+				Wait(5000)
+				HelpMessage("Call in an air supply drop using ~INPUT_WEAPON_WHEEL_PREV~ and ~INPUT_COVER~. Cost: $"..getMissionConfigProperty(input, "SafeHouseCostCrate"),false,5000)
+				Wait(5000)
+				HelpMessage("It's the same equipment and upgrades. The safe house needs to be open to call in an air supply drop",false,5000)
+				
+			end
+			
+			if getMissionConfigProperty(MissionName, "UseMissionDrop") then 
+				Wait(5000)
+				HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to toggle a Mission Reinforcement Point (MRP) at your location",false,5000)
+				Wait(5000)
+				HelpMessage("MRPs allow for fast travel after you respawn",false,5000)	
+				Wait(5000)
+				HelpMessage("If an MRP is set, after you respawn, press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~ to move there",false,5000)			
+			end			
+			
+			if(getMissionConfigProperty(input, "UseSafeHouseBanditoDrop")) then 
+				Wait(5000)
+				HelpMessage("Deploy an explosive drone car with ~INPUT_WEAPON_WHEEL_NEXT~ and ~INPUT_COVER~.",false,5000)
+				Wait(5000)
+				HelpMessage("Press ~INPUT_PICKUP~ to explode the drone car once activated. Cost to deploy: $"..getMissionConfigProperty(input, "SafeHouseCostCrate"),false,5000)
+				Wait(5000)
+				HelpMessage("The safe house needs to be open to deploy, and it will count towards a safe house vehicle",false,5000)		
+				
+			end
+			
+			Wait(5000)
+			HelpMessage("To see this tutorial again, press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~",false,5000)		
+			
+		--end
+
+
 end)
 
 RegisterNetEvent("mt:doisDefendVehicleHelp")
@@ -2711,6 +2806,14 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
 	blDoNightVisionToggleState = 0
 	blDoNightVisionToggleStates = 0
 	blDoNightVision = false
+	
+	--reset reinforcement drop
+	if(DoesBlipExist(MissionDropBlip)) then 
+		RemoveBlip(MissionDropBlip)
+	end
+	MissionDropDid=false
+	MissionDropBlip=nil
+	MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
 	
 	if getMissionConfigProperty(input, "RemoveWeaponsAndUpgradesAtMissionEnd") then 
 		--print("made  it"..DecorGetInt(GetPlayerPed(-1),"mrpoptout"))
@@ -13872,6 +13975,14 @@ Citizen.CreateThread(function()
 					
 				end
 			end
+			
+			if getMissionConfigProperty(MissionName, "UseMissionDrop") then 
+				if MissionDropBlip then
+					DrawMarker(40, MissionDropBlipCoords.x, MissionDropBlipCoords.y, MissionDropBlipCoords.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 3.0,3.0, 3.0, 117, 218, 255, 100, true, true, 2, true, false, false, false)					
+				
+				end
+			
+			end
 			if getMissionConfigProperty(MissionName, "UseSafeHouse") then 
 			   if (GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse")) > playerSafeHouse then
 					for k,v in pairs(Config.Missions[MissionName].MarkerS) do
@@ -14725,6 +14836,9 @@ Citizen.CreateThread(function()
 		
         if Active == 1 and MissionName ~="N/A" and IsControlPressed(0, 43) and not IsPlayerFreeAiming(PlayerId()) then
 			if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
+			
+			HelpMessage("Press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~ for a quick tutorial on controls and mission help",false,0)
+				
 				local currmissionminutesleft = string.format("%02d", tostring(math.floor((MilliSecondsLeft)/60000) % 60))
 				local currmissionsecondsleft = string.format("%02d", tostring(math.floor((MilliSecondsLeft)/1000) % 60))
 			
@@ -15525,7 +15639,212 @@ function doTeleportToSafeHouse(isOnSpawn)
 
 end
 
+--does a toggle on/off everytime it is called
+RegisterNetEvent("doMissionDrop")
+AddEventHandler("doMissionDrop",function()
+	
+	
+	if (IsEntityDead(GetPlayerPed(-1)) or DoingMissionTeleport) 
+	or not (MissionName ~="N/A" and Active == 1)
+	
+	then --or DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 1 then 
+		return
+	end
+	
+	if not MissionDropBlip then 
+		local pcoords = GetEntityCoords(GetPlayerPed(-1))
+		MissionDropHeading = GetEntityHeading(GetPlayerPed(-1))
+		MissionDropBlipCoords.x=pcoords.x
+		MissionDropBlipCoords.y=pcoords.y
+		MissionDropBlipCoords.z=pcoords.z+1
+		MissionDropBlip = AddBlipForCoord(pcoords.x, pcoords.y, pcoords.z)
+		
+		SetBlipSprite (MissionDropBlip, 94)
+		SetBlipDisplay(MissionDropBlip, 4)
+		SetBlipScale  (MissionDropBlip, 1.2)
+		SetBlipColour (MissionDropBlip, 3)
+		SetBlipAsShortRange(MissionDropBlip, false)	
 
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString("Mission Reinforcement Point")
+		EndTextCommandSetBlipName(MissionDropBlip)
+		
+		
+		TriggerEvent("mt:missiontext2","Mission Reinforcement Point added.", 4000)
+		
+		HelpMessage("Mission Reinforcement Point added. Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove",true,5000)
+		Wait(5000)
+		HelpMessage("You can fast travel here after respawn, by pressing ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~",true,5000)
+		MissionDropDid=true
+	else 
+		
+		RemoveBlip(MissionDropBlip)
+		MissionDropBlip=nil
+		MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
+		HelpMessage("Mission Reinforcement Point Removed. Press~INPUT_DUCK~ and ~INPUT_COVER~ to add another",true,5000)
+		
+		TriggerEvent("mt:missiontext2","Mission Reinforcement Point Removed", 4000)
+	
+	end
+
+end)
+
+RegisterNetEvent("doMissionDropTeleport")
+AddEventHandler("doMissionDropTeleport",function()
+	--if currently teleporting..
+	
+	if not MissionDropBlip then 
+		TriggerEvent("mt:missiontext2","No Mission Reinforcement Point set", 4000)
+		HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to create a Mission Reinforcement Point at your location",true,5000)
+		return
+	end
+	
+	if MissionDropDid then 
+		TriggerEvent("mt:missiontext2","Mission Reinforcement Point only available after you respawn", 4000)
+		return
+	end
+	
+	if (IsEntityDead(GetPlayerPed(-1)) or DoingMissionTeleport) 
+	or not (MissionName ~="N/A" and Active == 1)
+	
+	then --or DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 1 then 
+		return
+	end
+	
+	
+
+	if MissionName ~="N/A" and Active == 1 then
+	
+	
+		if getMissionConfigProperty(MissionName, "UseMissionDrop")  and MissionDropBlip then
+		
+			local locationdata = {x=0.0,y=0.0,z=0.0}
+			
+			--local cInitial = GetEntityCoords(GetPlayerPed(-1))
+			--local watertest = GetWaterHeight(cInitial.x,cInitial.y,cInitial.z)
+			--local leaveWaterVehicle = false 
+			--if (watertest  == 1 or watertest  == true) and not IsPedOnFoot(GetPlayerPed(-1))  then 
+			
+		
+			
+			
+			local EntityToTeleport = GetPlayerPed(-1)
+			local onFoot = true
+			if (not IsPedOnFoot(GetPlayerPed(-1))) then --and IsEntityInWater(boat)) then 
+				EntityToTeleport = GetVehiclePedIsIn(PlayerPedId(), false)
+				onFoot = false
+			end
+			
+			--local origx
+			--local origy 
+			
+			--lets not accidently teleport boats onto land
+			if onFoot then
+				
+				locationdata.x = MissionDropBlipCoords.x --+ rndx
+				locationdata.y = MissionDropBlipCoords.y --+ rndy
+				locationdata.z = MissionDropBlipCoords.z
+				
+			
+				--local rHeading = math.random(0, 360) + 0.0
+				--local theta = (rHeading / 180.0) * 3.14		
+				--locationdata = vector3(locationdata.x, locationdata.y, locationdata.z) - vector3(math.cos(theta) *  math.floor(Config.Missions[MissionName].MarkerS.Size.x/2 + 1.0), math.sin(theta) * math.floor(Config.Missions[MissionName].MarkerS.Size.x/2 + 1.0), 0.0)
+				
+				
+				local coords = GetEntityCoords(EntityToTeleport)
+				if GetDistanceBetweenCoords(coords.x,coords.y,coords.z, locationdata.x,locationdata.y,locationdata.z, true) < 5 then--print
+					-- no point teleporting when so close
+				
+					return
+					
+				end				
+			
+				
+			else
+			
+				locationdata.x = MissionDropBlipCoords.x --+ rndx
+				locationdata.y = MissionDropBlipCoords.y --+ rndy
+				locationdata.z = MissionDropBlipCoords.z
+
+				local coords = GetEntityCoords(EntityToTeleport)
+				
+				
+				
+				if GetDistanceBetweenCoords(coords.x,coords.y,coords.z, locationdata.x,locationdata.y,locationdata.z, true) < 5 then--print
+					-- no point teleporting when so close
+					return
+					
+				end 
+				
+				local model = GetEntityModel(EntityToTeleport) 
+				if(IsThisModelAHeli(model) or IsThisModelAPlane(model)) then 
+					SetVehicleLandingGear(EntityToTeleport, 0)
+				end
+			
+			end
+			--print('teleportto x'..locationdata.x ..' y:'..locationdata.y ..' z:'..locationdata.z )
+			
+			TriggerEvent("mt:missiontext2","Traveling to Mission Reinforcement Point...", 4000)
+			
+			
+			FreezeEntityPosition(EntityToTeleport, true)
+			DoScreenFadeOut(1000)
+			while IsScreenFadingOut() do Citizen.Wait(0) end
+			NetworkFadeOutEntity(GetPlayerPed(-1), true, false)
+			--TriggerEvent("chatMessage", "^1[MISSIONS]: ^0Travelling to the mission safehouse...")
+			--TriggerEvent("mt:missiontext2","Travelling to the mission safehouse...", 3000)
+			Wait(1000)
+			--print("spawning at"..locationdata.x)
+			SetEntityCoords(EntityToTeleport,locationdata.x, locationdata.y,locationdata.z)
+			--SetEntityHeading(GetPlayerPed(-1), h)
+			NetworkFadeInEntity(GetPlayerPed(-1), 0)
+			Wait(1000)
+			FreezeEntityPosition(EntityToTeleport, false)
+			
+			
+			--for obj in EnumerateObjects() do
+				--if DecorGetInt(obj, "mrpsafehousepropid") > 0 then
+					local p1 = GetEntityCoords(GetPlayerPed(-1), true)
+					--local p2 = GetEntityCoords(obj, true)
+					
+					
+					--local dx = p2.x - p1.x
+					--local dy = p2.y - p1.y
+					
+					--local dx = origx - p1.x
+					--local dy = origy - p1.y
+					
+					--local heading = GetHeadingFromVector_2d(dx, dy)				 
+					SetEntityHeading(EntityToTeleport,MissionDropHeading) 
+					SetGameplayCamRelativeHeading(0.0) 
+					--break
+				--end
+			--end					
+			
+			--SetGameplayCamRelativeHeading(0.0)
+			DoScreenFadeIn(1000)
+			while IsScreenFadingIn() do Citizen.Wait(0)	end
+		
+			--TriggerEvent("chatMessage", "^1[MISSIONS]: ^0Traveled to your mission respawn location...")
+			TriggerEvent("mt:missiontext2","Traveled to Mission Reinforcement Point...", 4000)
+			MissionDropDid=true	
+			
+			
+		
+			
+
+			--local zGround = checkAndGetGroundZ(locationdata.x,locationdata.y,locationdata.z,true)
+			--if zGround = 0.0 then 
+				-- zGround = locationdata.z
+			--end
+			--SetEntityCoords(GetPlayerPed(-1),locationdata.x, locationdata.y,locationdata.z)
+			--TriggerEvent("mt:missiontext2","Taken to the mission safehouse", 250)
+			--makeEntityFaceEntity( entity1, entity2 )
+		end
+	end
+
+
+end)
 
 function GetPlayers()
     local players = {}
@@ -15691,7 +16010,10 @@ AddEventHandler("playerSpawned", function(spawn)
 	SetPedMaxHealth(GetPlayerPed(-1), Config.DefaultPlayerMaxHealthAmount)
 	SetEntityHealth(GetPlayerPed(-1), Config.DefaultPlayerMaxHealthAmount)
 	--SetPedComponentVariation(GetPlayerPed(-1), 9, 0, 1, 2) --take away armor		
-	playerUpgraded = false	
+	playerUpgraded = false
+
+	--reset any MissionDrop Availability
+	MissionDropDid=false	
 	
 	--Make sure safe house vehicle claims are kept when player respawns
 	--as well as mission money for the session
@@ -15815,6 +16137,18 @@ AddEventHandler("playerSpawned", function(spawn)
 		
 		--do it again, to bypass mission chat messages on mission launch
 		HelpMessage("Check your map for mission data. Press ~INPUT_SNIPER_ZOOM_OUT_SECONDARY~ to view mission info.",false,5000)	
+		Wait(5000)
+		
+		HelpMessage("Press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~ for a quick tutorial on controls and mission help",false,5000)
+		Wait(5000)
+		
+		if getMissionConfigProperty(MissionName, "UseMissionDrop") and MissionDropBlip 
+		and not MissionDropDid
+		then 
+			HelpMessage("Mission Reinforcement Point available. Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~ to move there",true,5000)
+			TriggerEvent("mt:missiontext2","~g~Mission Reinforcement Point available for fast travel", 4000)
+		end
+		
 	end		
 	  
 end)
@@ -17098,6 +17432,34 @@ Citizen.CreateThread(function()
 while true do
 
 	Citizen.Wait(0)
+	
+	
+		--Left stick down + RB: drop/remove MissionDrop marker
+		if (IsControlPressed(0, 36) and IsControlPressed(0, 44)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 and true then
+			
+			TriggerEvent("doMissionDrop")
+			
+			Wait(3500)
+		end
+		
+		
+		--Right stick down + RB: teleport to MissionDrop
+		if (IsControlPressed(0, 26) and IsControlPressed(0, 44)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 and true then
+			
+			TriggerEvent("doMissionDropTeleport")
+			
+			Wait(3500)
+		end	
+
+		--Right stick down + LB: Mission Help
+		if (IsControlPressed(0, 26) and IsControlPressed(0, 38)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 and true then
+			if MissionName ~="N/A" and Active == 1  then 
+				TriggerEvent("mt:doMissionHelpText",MissionName)
+			
+					Wait(3500)
+				end
+		end			
+	
 		if (IsControlPressed(0, 15) and IsControlPressed(0, 44)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
 			if  Active == 1 and MissionName ~="N/A" then
 				--left  + right bumpers pressed together
@@ -17397,7 +17759,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
-
+--[[
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -17414,4 +17776,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-
+]]--
