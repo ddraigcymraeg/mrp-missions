@@ -119,6 +119,9 @@ Config.RemoveWeaponsAndUpgradesAtMissionEnd = false
 --same thing, but at mission start
 --RemoveWeaponsAndUpgradesAtMissionStart = true,
 
+--Use Mission Reinforcement Point where players can fast travel to after respawn?
+Config.UseMissionDrop=true
+
 
 -show help notifications on how to play and controls at mission start?
 Config.DoHelpScreens = false
