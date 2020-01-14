@@ -96,11 +96,11 @@ SetAudioFlag("LoadMPData", true)
 
 Blips = {}
 
-local MissionDropBlip
-local MissionDropMarker
-local MissionDropHeading
-local MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
-local MissionDropDid=false
+MissionDropBlip
+MissionDropMarker
+MissionDropHeading
+MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
+MissionDropDid=false
 
 DecorRegister("mrppedid",1)
 DecorRegister("mrpvpedid",1)
