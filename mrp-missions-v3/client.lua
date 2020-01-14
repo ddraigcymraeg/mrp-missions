@@ -15693,17 +15693,6 @@ RegisterNetEvent("doMissionDropTeleport")
 AddEventHandler("doMissionDropTeleport",function()
 	--if currently teleporting..
 	
-	if not MissionDropBlip then 
-		TriggerEvent("mt:missiontext2","No Mission Reinforcement Point set", 4000)
-		HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to create a Mission Reinforcement Point at your location",true,5000)
-		return
-	end
-	
-	if MissionDropDid then 
-		TriggerEvent("mt:missiontext2","Mission Reinforcement Point only available after you respawn", 4000)
-		HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove the Mission Reinforcement Point",false,5000)
-		return
-	end
 	
 	if (IsEntityDead(GetPlayerPed(-1)) or DoingMissionTeleport) 
 	or not (MissionName ~="N/A" and Active == 1)
@@ -15715,6 +15704,18 @@ AddEventHandler("doMissionDropTeleport",function()
 	
 
 	if MissionName ~="N/A" and Active == 1 then
+	
+		if not MissionDropBlip then 
+			TriggerEvent("mt:missiontext2","No Mission Reinforcement Point set", 4000)
+			HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to create a Mission Reinforcement Point at your location",true,5000)
+			return
+		end
+	
+		if MissionDropDid then 
+			TriggerEvent("mt:missiontext2","Mission Reinforcement Point only available after you respawn", 4000)
+			HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove the Mission Reinforcement Point",false,5000)
+			return
+		end
 	
 	
 		if getMissionConfigProperty(MissionName, "UseMissionDrop")  and MissionDropBlip then
@@ -17787,7 +17788,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
---[[
+
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -17804,4 +17805,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-]]--
+
