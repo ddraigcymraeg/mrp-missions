@@ -1241,7 +1241,7 @@ AddEventHandler("mt:missiontext", function(input, timet)
 		
 		--if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
 			Wait(5000)
-			HelpMessage("Press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~ for a quick tutorial on controls and mission help",true,5000)
+			HelpMessage("Press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~ for a quick tutorial on controls and mission help",false,5000)
 			
 			--[[			
 			if blDoNightVisionToggleStates > 0 then
@@ -1292,7 +1292,7 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 
 
 		--do it again, to bypass mission chat messages on mission launch
-		HelpMessage("This is the help guide for this mission..",false,5000)
+		HelpMessage("This is the help guide for this mission",false,5000)
 		Wait(5000)
 		
 		if((getMissionConfigProperty(input, "EnableOptIn")) or 
@@ -1339,7 +1339,7 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 				Wait(5000)
 				HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to toggle a Mission Reinforcement Point (MRP) at your location",false,5000)
 				Wait(5000)
-				HelpMessage("MRPs allow for fast travel after you respawn",false,5000)	
+				HelpMessage("MRPs allow for fast travel after you respawn. Cost: $"..getMissionConfigProperty(input, "UseMissionDropFee"),false,5000)	
 				Wait(5000)
 				HelpMessage("If an MRP is set, after you respawn, press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~ to move there",false,5000)			
 			end			
@@ -15666,7 +15666,7 @@ AddEventHandler("doMissionDrop",function()
 		SetBlipAsShortRange(MissionDropBlip, false)	
 
 		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString("Mission Reinforcement Point")
+		AddTextComponentString("Mission Reinforcement Point ($-"..getMissionConfigProperty(MissionName, "UseMissionDropFee")..")")
 		EndTextCommandSetBlipName(MissionDropBlip)
 		
 		
@@ -15674,7 +15674,7 @@ AddEventHandler("doMissionDrop",function()
 		
 		HelpMessage("Mission Reinforcement Point created. Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove",true,5000)
 		Wait(5000)
-		HelpMessage("You can fast travel here after respawn, by pressing ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~",true,5000)
+		HelpMessage("To fast travel here after respawn, Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~. Cost: $"..getMissionConfigProperty(MissionName, "UseMissionDropFee"),true,5000)
 		MissionDropDid=true
 	else 
 		
@@ -15701,6 +15701,7 @@ AddEventHandler("doMissionDropTeleport",function()
 	
 	if MissionDropDid then 
 		TriggerEvent("mt:missiontext2","Mission Reinforcement Point only available after you respawn", 4000)
+		HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove the Mission Reinforcement Point",false,5000)
 		return
 	end
 	
@@ -15785,6 +15786,32 @@ AddEventHandler("doMissionDropTeleport",function()
 			--print('teleportto x'..locationdata.x ..' y:'..locationdata.y ..' z:'..locationdata.z )
 			
 			TriggerEvent("mt:missiontext2","Traveling to Mission Reinforcement Point...", 4000)
+			MissionDropDid=true
+			
+
+			if getMissionConfigProperty(MissionName, "UseMissionDropFee") > 0 then
+
+					local currentmoney = 0
+					local rejuvcost = getMissionConfigProperty(MissionName, "UseMissionDropFee")
+					local totalmoney = 0		
+					
+					local _,currentmoney = StatGetInt('MP0_WALLET_BALANCE',-1)
+					playerMissionMoney =  0 - rejuvcost
+					totalmoney =  currentmoney - rejuvcost		
+						
+					if UseESX then 
+						TriggerServerEvent("paytheplayer", totalmoney)
+						TriggerServerEvent("UpdateUserMoney", totalmoney)
+					else
+							--DecorSetInt(GetPlayerPed(-1),"mrpplayermoney",totalmoney)
+						DecorSetInt(GetPlayerPed(-1),"mrpplayermoney",DecorGetInt(GetPlayerPed(-1),"mrpplayermoney") + playerMissionMoney)			
+						mrpplayermoneyG = DecorGetInt(GetPlayerPed(-1),"mrpplayermoney")			
+						StatSetInt('MP0_WALLET_BALANCE',totalmoney, true)
+					end	
+
+					Notify("~h~~b~Mission Reinforcement Point Fee: ~g~$"..getMissionConfigProperty(MissionName, "UseMissionDropFee"))
+					
+			end
 			
 			
 			FreezeEntityPosition(EntityToTeleport, true)
@@ -15827,7 +15854,8 @@ AddEventHandler("doMissionDropTeleport",function()
 		
 			--TriggerEvent("chatMessage", "^1[MISSIONS]: ^0Traveled to your mission respawn location...")
 			TriggerEvent("mt:missiontext2","Traveled to Mission Reinforcement Point...", 4000)
-			MissionDropDid=true	
+				
+			
 			
 			
 		
@@ -16146,7 +16174,7 @@ AddEventHandler("playerSpawned", function(spawn)
 		and not MissionDropDid
 		then 
 			HelpMessage("Mission Reinforcement Point available. Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~ to move there",true,5000)
-			TriggerEvent("mt:missiontext2","~g~Mission Reinforcement Point available for fast travel", 4000)
+			TriggerEvent("mt:missiontext2","~g~Mission Reinforcement Point available for fast travel. Cost: $"..getMissionConfigProperty(MissionName, "UseMissionDropFee"), 4000)
 		end
 		
 	end		
@@ -17759,7 +17787,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
-
+--[[
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -17776,4 +17804,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-
+]]--
