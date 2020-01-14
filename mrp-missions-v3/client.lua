@@ -15670,9 +15670,9 @@ AddEventHandler("doMissionDrop",function()
 		EndTextCommandSetBlipName(MissionDropBlip)
 		
 		
-		TriggerEvent("mt:missiontext2","Mission Reinforcement Point added.", 4000)
+		TriggerEvent("mt:missiontext2","Mission Reinforcement Point created", 4000)
 		
-		HelpMessage("Mission Reinforcement Point added. Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove",true,5000)
+		HelpMessage("Mission Reinforcement Point created. Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove",true,5000)
 		Wait(5000)
 		HelpMessage("You can fast travel here after respawn, by pressing ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~",true,5000)
 		MissionDropDid=true
@@ -15683,7 +15683,7 @@ AddEventHandler("doMissionDrop",function()
 		MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
 		HelpMessage("Mission Reinforcement Point Removed. Press~INPUT_DUCK~ and ~INPUT_COVER~ to add another",true,5000)
 		
-		TriggerEvent("mt:missiontext2","Mission Reinforcement Point Removed", 4000)
+		TriggerEvent("mt:missiontext2","Mission Reinforcement Point removed", 4000)
 	
 	end
 
@@ -17759,7 +17759,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
---[[
+
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -17776,4 +17776,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-]]--
+
