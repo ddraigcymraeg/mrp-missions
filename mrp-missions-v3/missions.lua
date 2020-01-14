@@ -27,6 +27,9 @@ Config.GoalReachedReward = 2000
 --provides more variety in how vehicles look
 Config.MissionVehicleRandomizeLiveries=true
 
+--Use Mission Reinforcement Point where players can fast travel to after respawn?
+Config.UseMissionDrop=true
+
 --show help notifications on how to play and controls at mission start?
 Config.DoHelpScreens = false
 
