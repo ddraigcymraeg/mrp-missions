@@ -96,11 +96,11 @@ SetAudioFlag("LoadMPData", true)
 
 Blips = {}
 
-MissionDropBlip
-MissionDropMarker
-MissionDropHeading
-MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
-MissionDropDid=false
+local MissionDropBlip
+local MissionDropMarker
+local MissionDropHeading
+local MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
+local MissionDropDid=false
 
 DecorRegister("mrppedid",1)
 DecorRegister("mrpvpedid",1)
@@ -1260,9 +1260,9 @@ AddEventHandler("mt:missiontext", function(input, timet)
 			
 			if getMissionConfigProperty(MissionName, "UseMissionDrop") then 
 				Wait(5000)
-				HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to create a Mission Reinforcement Point",false,5000)
+				HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to create a Mission Reinforcement Drop",false,5000)
 				Wait(5000)
-				HelpMessage("Mission Reinforcement Points allow for fast travel after you respawn",false,5000)				
+				HelpMessage("Mission Reinforcement Drops allow for fast travel after you respawn",false,5000)				
 			end			
 			
 			if(getMissionConfigProperty(input, "UseSafeHouseBanditoDrop")) then 
@@ -1337,11 +1337,11 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 			
 			if getMissionConfigProperty(MissionName, "UseMissionDrop") then 
 				Wait(5000)
-				HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to toggle a Mission Reinforcement Point (MRP) at your location",false,5000)
+				HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to toggle a Mission Reinforcement Drop (MRD) at your location",false,5000)
 				Wait(5000)
-				HelpMessage("MRPs allow for fast travel after you respawn. Cost: $"..getMissionConfigProperty(input, "UseMissionDropFee"),false,5000)	
+				HelpMessage("MRDs allow for fast travel after you respawn. Cost: $"..getMissionConfigProperty(input, "UseMissionDropFee"),false,5000)	
 				Wait(5000)
-				HelpMessage("If an MRP is set, after you respawn, press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~ to move there",false,5000)			
+				HelpMessage("If an MRD is set, after you respawn, press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~ to move there",false,5000)			
 			end			
 			
 			if(getMissionConfigProperty(input, "UseSafeHouseBanditoDrop")) then 
@@ -1448,6 +1448,8 @@ AddEventHandler('missionBlips', function(input,rMissionLocationIndex,rMissionTyp
 	MissionName = input
 	--allow the mission to be active
 	GlobalKillTargetPed  = false
+	
+	
 	
 	if getMissionConfigProperty(input, "RemoveWeaponsAndUpgradesAtMissionStart") then 
 		Notify("~r~Any previous weapons and upgrades have been removed for this mission")
@@ -15666,24 +15668,25 @@ AddEventHandler("doMissionDrop",function()
 		SetBlipAsShortRange(MissionDropBlip, false)	
 
 		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString("Mission Reinforcement Point ($-"..getMissionConfigProperty(MissionName, "UseMissionDropFee")..")")
+		AddTextComponentString("Mission Reinforcement Drop ($-"..getMissionConfigProperty(MissionName, "UseMissionDropFee")..")")
 		EndTextCommandSetBlipName(MissionDropBlip)
+		MissionDropDid=true
 		
+		TriggerEvent("mt:missiontext2","Mission Reinforcement Drop created", 4000)
 		
-		TriggerEvent("mt:missiontext2","Mission Reinforcement Point created", 4000)
-		
-		HelpMessage("Mission Reinforcement Point created. Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove",true,5000)
+		HelpMessage("Mission Reinforcement Drop created. Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove",true,5000)
 		Wait(5000)
 		HelpMessage("To fast travel here after respawn, Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~. Cost: $"..getMissionConfigProperty(MissionName, "UseMissionDropFee"),true,5000)
-		MissionDropDid=true
+		print("MissionDropDid")
 	else 
 		
 		RemoveBlip(MissionDropBlip)
 		MissionDropBlip=nil
 		MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
-		HelpMessage("Mission Reinforcement Point Removed. Press~INPUT_DUCK~ and ~INPUT_COVER~ to add another",true,5000)
+		HelpMessage("Mission Reinforcement Drop Removed. Press~INPUT_DUCK~ and ~INPUT_COVER~ to add another",true,5000)
 		
-		TriggerEvent("mt:missiontext2","Mission Reinforcement Point removed", 4000)
+		TriggerEvent("mt:missiontext2","Mission Reinforcement Drop removed", 4000)
+		
 	
 	end
 
@@ -15706,14 +15709,14 @@ AddEventHandler("doMissionDropTeleport",function()
 	if MissionName ~="N/A" and Active == 1 then
 	
 		if not MissionDropBlip then 
-			TriggerEvent("mt:missiontext2","No Mission Reinforcement Point set", 4000)
-			HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to create a Mission Reinforcement Point at your location",true,5000)
+			TriggerEvent("mt:missiontext2","No Mission Reinforcement Drop set", 4000)
+			HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to create a Mission Reinforcement Drop at your location",true,5000)
 			return
 		end
-	
+		print(MissionDropDid)
 		if MissionDropDid then 
-			TriggerEvent("mt:missiontext2","Mission Reinforcement Point only available after you respawn", 4000)
-			HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove the Mission Reinforcement Point",false,5000)
+			TriggerEvent("mt:missiontext2","Mission Reinforcement Drop only available after you respawn", 4000)
+			HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove the Mission Reinforcement Drop",false,5000)
 			return
 		end
 	
@@ -15786,8 +15789,11 @@ AddEventHandler("doMissionDropTeleport",function()
 			end
 			--print('teleportto x'..locationdata.x ..' y:'..locationdata.y ..' z:'..locationdata.z )
 			
-			TriggerEvent("mt:missiontext2","Traveling to Mission Reinforcement Point...", 4000)
+			TriggerEvent("mt:missiontext2","Traveling to Mission Reinforcement Drop...", 4000)
 			MissionDropDid=true
+			
+
+			
 			
 
 			if getMissionConfigProperty(MissionName, "UseMissionDropFee") > 0 then
@@ -15810,7 +15816,7 @@ AddEventHandler("doMissionDropTeleport",function()
 						StatSetInt('MP0_WALLET_BALANCE',totalmoney, true)
 					end	
 
-					Notify("~h~~b~Mission Reinforcement Point Fee: ~g~$"..getMissionConfigProperty(MissionName, "UseMissionDropFee"))
+					Notify("~h~~b~Mission Reinforcement Drop Fee: ~g~$"..getMissionConfigProperty(MissionName, "UseMissionDropFee"))
 					
 			end
 			
@@ -15854,9 +15860,98 @@ AddEventHandler("doMissionDropTeleport",function()
 			while IsScreenFadingIn() do Citizen.Wait(0)	end
 		
 			--TriggerEvent("chatMessage", "^1[MISSIONS]: ^0Traveled to your mission respawn location...")
-			TriggerEvent("mt:missiontext2","Traveled to Mission Reinforcement Point...", 4000)
+			TriggerEvent("mt:missiontext2","Traveled to Mission Reinforcement Drop...", 4000)
 				
 			
+			--SPAWN DROP Aircraft
+		--[[	
+		local aircraftmodel = getMissionConfigProperty(MissionName, "UseMissionDropAircraft")[math.random(1, #getMissionConfigProperty(MissionName, "UseMissionDropAircraft"))]
+		local planeSpawnDistance = 50.0
+           RequestModel(GetHashKey(aircraftmodel))
+		  
+           while not HasModelLoaded(GetHashKey(aircraftmodel)) do
+              Wait(0)
+           end
+		   
+        local rHeading = math.random(0, 360) + 0.0
+		
+		local spawnx = MissionDropBlipCoords.x
+		local spawny = MissionDropBlipCoords.y
+		local spawnz = MissionDropBlipCoords.z
+			
+
+
+        local planeSpawnDistance = (planeSpawnDistance and tonumber(planeSpawnDistance) + 0.0) or 400.0 -- this defines how far away the plane is spawned
+        local theta = (rHeading / 180.0) * 3.14
+        local rPlaneSpawn = vector3(spawnx, spawny, spawnz) - vector3(math.cos(theta) * planeSpawnDistance, math.sin(theta) * planeSpawnDistance, -150.0)
+		
+        local dx = spawnx - rPlaneSpawn.x
+        local dy = spawny - rPlaneSpawn.y
+        local heading = GetHeadingFromVector_2d(dx, dy) -- determine plane heading from coordinates
+		
+		local doingDrop = true
+
+        local aircraft = CreateVehicle(GetHashKey(aircraftmodel), rPlaneSpawn, heading, true, true)
+		
+		doVehicleMods(aircraftmodel,aircraft,MissionName)
+		DecorSetInt(aircraft,"mrpvehdid",65432) --not really needed
+        SetEntityHeading(aircraft, heading)
+        SetVehicleDoorsLocked(aircraft, 2) -- lock the doors so pirates don't get in
+        SetEntityDynamic(aircraft, true)
+        ActivatePhysics(aircraft)
+        SetVehicleForwardSpeed(aircraft, 60.0)
+        SetHeliBladesFullSpeed(aircraft) -- works for planes I guess
+        SetVehicleEngineOn(aircraft, true, true, false)
+        SetVehicleLandingGear(aircraft, 3) -- retract the landing gear
+        OpenVehicleBombBay(aircraft) -- opens the hatch below the plane for added realism
+        SetEntityProofs(aircraft, true, false, true, false, false, false, false, false)
+
+         RequestModel(GetHashKey("s_m_m_pilot_02"))
+		  
+           while not HasModelLoaded(GetHashKey("s_m_m_pilot_02")) do
+              Wait(0)
+           end		
+		
+        local pilot = CreatePedInsideVehicle(aircraft, 1, GetHashKey("s_m_m_pilot_02"), -1, true, true)
+		DecorSetInt(pilot,"mrpvpedid",65432) --only used to show blip on radar
+		
+		--local pilot = CreatePed(2, "s_m_m_pilot_02", rPlaneSpawn.x, rPlaneSpawn.y, rPlaneSpawn.z, heading, true, true)
+		--print(tostring(DoesEntityExist(pilot)))
+		
+		--CreatePedInsideVehicle(aircraft, 1, GetHashKey("s_m_m_pilot_02"), -1, true, true) 
+		--SetPedIntoVehicle(pilot,aircraft, -1)
+			
+        SetBlockingOfNonTemporaryEvents(pilot, true) -- ignore explosions and other shocking events
+        SetPedRandomComponentVariation(pilot, false)
+        SetPedKeepTask(pilot, true)
+        --SetPlaneMinHeightAboveGround(aircraft, 50) -- the plane shouldn't dip below the defined altitude
+		Citizen.InvokeNative( 0xB893215D8D4C015B, airplane, 50)
+
+        TaskVehicleDriveToCoord(pilot, aircraft, vector3(spawnx, spawny, spawnz) + vector3(0.0, 0.0, 150.0), 60.0, 0, GetHashKey(aircraftmodel), 262144, 15.0, -1.0) -- to the dropsite, could be replaced with a task sequence
+
+        local droparea = vector2(spawnx, spawny)
+        local planeLocation = vector2(GetEntityCoords(aircraft).x, GetEntityCoords(aircraft).y)
+		
+        while not IsEntityDead(pilot) and #(planeLocation - droparea) > 5.0 do -- wait for when the plane reaches the dropCoords ± 5 units
+            Wait(100)
+            planeLocation = vector2(GetEntityCoords(aircraft).x, GetEntityCoords(aircraft).y) -- update plane coords for the loop
+        end
+
+        if IsEntityDead(pilot) then -- I think this will end the script if the pilot dies, no idea how to return works
+            print("PILOT: dead")
+			doingDrop=false
+           -- do return end -- <--still allow the paradrop to happen even if the plane is not there or the pilot.
+        end
+		--Notify("~r~Enemy paradrop on its way!")
+		if not doingDrop then 
+			TaskVehicleDriveToCoord(pilot, aircraft, 0.0, 0.0, 500.0, 60.0, 0, GetHashKey(aircraftmodel), 262144, -1.0, -1.0) -- disposing of the plane like Rockstar does, send it to 0; 0 coords with -1.0 stop range, so the plane won't be able to achieve its task
+		end
+        SetEntityAsNoLongerNeeded(pilot) 
+        SetEntityAsNoLongerNeeded(aircraft)					
+			
+			]]--
+			
+			---END DROP AIRCRAFT			
 			
 			
 		
@@ -16174,8 +16269,8 @@ AddEventHandler("playerSpawned", function(spawn)
 		if getMissionConfigProperty(MissionName, "UseMissionDrop") and MissionDropBlip 
 		and not MissionDropDid
 		then 
-			HelpMessage("Mission Reinforcement Point available. Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~ to move there",true,5000)
-			TriggerEvent("mt:missiontext2","~g~Mission Reinforcement Point available for fast travel. Cost: $"..getMissionConfigProperty(MissionName, "UseMissionDropFee"), 4000)
+			HelpMessage("Mission Reinforcement Drop available. Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~ to move there",true,5000)
+			TriggerEvent("mt:missiontext2","~g~Mission Reinforcement Drop available for fast travel. Cost: $"..getMissionConfigProperty(MissionName, "UseMissionDropFee"), 4000)
 		end
 		
 	end		
@@ -17050,7 +17145,10 @@ AddEventHandler("doParadrop",function(dropCoords,k)
 		local doingDrop = true
 
         local aircraft = CreateVehicle(GetHashKey(aircraftmodel), rPlaneSpawn, heading, true, true)
+		
+		doVehicleMods(aircraftmodel,aircraft,MissionName)
 		DecorSetInt(aircraft,"mrpvehdid",65432) --not really needed
+		doVehicleMods(aircraftmodel,aircraft,MissionName) 
         SetEntityHeading(aircraft, heading)
         SetVehicleDoorsLocked(aircraft, 2) -- lock the doors so pirates don't get in
         SetEntityDynamic(aircraft, true)
@@ -17226,6 +17324,9 @@ function CrateDropMRP(weapon, ammo, planeSpawnDistance, dropCoords,thisMission)
         local heading = GetHeadingFromVector_2d(dx, dy) -- determine plane heading from coordinates
 
         aircraft = CreateVehicle(GetHashKey("volatol"), rPlaneSpawn, heading, true, true) --volatol
+		if MissionName ~="N/A" and Active == 1 then
+			doVehicleMods("volatol",aircraft,MissionName)
+		end
         SetEntityHeading(aircraft, heading)
         SetVehicleDoorsLocked(aircraft, 2) -- lock the doors so pirates don't get in
         SetEntityDynamic(aircraft, true)
@@ -17788,7 +17889,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
-
+--[[
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -17805,4 +17906,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-
+]]--
