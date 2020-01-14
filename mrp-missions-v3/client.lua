@@ -15677,7 +15677,7 @@ AddEventHandler("doMissionDrop",function()
 		HelpMessage("Mission Reinforcement Drop created. Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove",true,5000)
 		Wait(5000)
 		HelpMessage("To fast travel here after respawn, Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~. Cost: $"..getMissionConfigProperty(MissionName, "UseMissionDropFee"),true,5000)
-		print("MissionDropDid")
+		--print("MissionDropDid")
 	else 
 		
 		RemoveBlip(MissionDropBlip)
@@ -15713,7 +15713,7 @@ AddEventHandler("doMissionDropTeleport",function()
 			HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to create a Mission Reinforcement Drop at your location",true,5000)
 			return
 		end
-		print(MissionDropDid)
+		--print(MissionDropDid)
 		if MissionDropDid then 
 			TriggerEvent("mt:missiontext2","Mission Reinforcement Drop only available after you respawn", 4000)
 			HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove the Mission Reinforcement Drop",false,5000)
@@ -15735,7 +15735,7 @@ AddEventHandler("doMissionDropTeleport",function()
 			
 			local EntityToTeleport = GetPlayerPed(-1)
 			local onFoot = true
-			if (not IsPedOnFoot(GetPlayerPed(-1))) then --and IsEntityInWater(boat)) then 
+			if (not IsPedOnFoot(GetPlayerPed(-1))) and not getMissionConfigProperty(MissionName, "UseMissionDropNoVehicle")  then --and IsEntityInWater(boat)) then 
 				EntityToTeleport = GetVehiclePedIsIn(PlayerPedId(), false)
 				onFoot = false
 			end
@@ -17906,4 +17906,5 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
+
 ]]--
