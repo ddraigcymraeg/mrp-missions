@@ -17,6 +17,8 @@ Mission Stats can be viewed in the lower right hand side by pressing DPAD DOWN o
 Players can press  (DPAD LEFT & RB) of their gamepad or Q key & SCROLLWHEEL UP together,  to call in an air drop of mission weapons and upgrades for a $ cost. If they dont want to make it to the safe house.
 The safe house has to be open for this work.
 
+Players can press  (LEFT STICK DOWN & RB) of their gamepad or equivalent keys, to toggle a Mission Reinforcement Drop at their location. When on, players can fast travel there after they respawn using the  (RIGHT STICK DOWN & RB) or equivalent keys.
+
 There is a working RC Bandito remote detonation vehicle as well to use on missions. Use LB on the gamepad, or E key to detonate it.
 
 Players can spawn/deploy rcbandito remote detonate vehicles on the fly using RB+DPAD-Right or A + D keys. This will use one of their safe house vehicles for the mission though, will cost same $ amount 
