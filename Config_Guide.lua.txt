@@ -121,6 +121,8 @@ Config.RemoveWeaponsAndUpgradesAtMissionEnd = false
 
 --Use Mission Reinforcement Point where players can fast travel to after respawn?
 Config.UseMissionDrop=true
+-- optional fee and notification if > 0
+Config.UseMissionDropFee=500
 
 
 -show help notifications on how to play and controls at mission start?
