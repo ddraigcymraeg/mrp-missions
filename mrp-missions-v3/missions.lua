@@ -29,6 +29,7 @@ Config.MissionVehicleRandomizeLiveries=true
 
 --Use Mission Reinforcement Point where players can fast travel to after respawn?
 Config.UseMissionDrop=true
+Config.UseMissionDropFee=500
 
 --show help notifications on how to play and controls at mission start?
 Config.DoHelpScreens = false
