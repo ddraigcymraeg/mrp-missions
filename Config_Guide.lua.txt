@@ -29,6 +29,12 @@ IndoorMissions=true --Add this to Regular indoor missions that happen in indoor 
 --https://forum.fivem.net/t/spawning-indoors-and-underground-have-invisible-peds-npcs/373532
 --You can override this, to have the vehicle/ped spawn at mission start by adding the attribute 'outside=true' to the Ped or Vehicle (**see Regular Mission Setup further down**)
 
+--Not only for Indoors Misssions...
+--Used with IndoorsMissions=true which turns on 
+--dynamic spawning. Which means when the player is within 
+--IndoorsMissionSpawnRadius of where entity should spawn at.
+Config.IndoorsMissionSpawnRadius=30
+
 IndoorsMissionStrongSpawnCheck = true --Used with IndoorMissions=true. Does raytracing on players within 300m of spawn location, to make sure the NPC/Vehicle doesnt just appear out of nowhere in front of a player. 
 --if any player is in the line of sight it will not spawn. Sometimes you will not want this on.
 
