@@ -26,7 +26,7 @@ If that is a problem, you will need to change that code to either pick a random 
 which client will be the host. Sixsens on forum.fivem.net has used this resource for his public RP server fine, but 
 had to make some changes when he went to OneSync. One of the changes he made was to set IndoorsMission=true for 
 missions, which will spawn entities dynamically on any player's machine which is closest to where the entity should spawn. 
-He changed the hardcoded value for distance check (see line 6977 in client.lua) from 30m to 300m. Hopefully you will not 
+He changed the hardcoded value for distance check (IndoorsMissionSpawnRadius) from 30m to 300m. Hopefully you will not 
 need to do this if you are on OneSync. 
 
 MIGRATION: There is no built in support for when a player whose machine spawned mission entities disconnects mid-mission. No NetIDs 
