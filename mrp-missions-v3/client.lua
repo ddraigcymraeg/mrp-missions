@@ -7213,7 +7213,7 @@ Citizen.CreateThread(function()
 					end
 				
 					local p1 = GetEntityCoords(GetPlayerPed(-1), true)
-					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z,true) <= 30 and not Config.Missions[MissionName].Peds[i].spawned then 
+					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Peds[i].spawned then 
 						--print("spawn ped"..i)
 						local spawnentity = true
 						
@@ -7246,7 +7246,7 @@ Citizen.CreateThread(function()
 						
 					end				
 					local p1 = GetEntityCoords(GetPlayerPed(-1), true)
-					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z,true) <= 30 and not Config.Missions[MissionName].Vehicles[i].spawned then 
+					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Vehicles[i].spawned then 
 						--print("spawn vehicle"..i)
 						local spawnentity = true
 						
@@ -17909,4 +17909,5 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
+
 ]]--
