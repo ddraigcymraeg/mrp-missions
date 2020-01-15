@@ -5,8 +5,9 @@ See the README.TXT for installation, controls and other information about this r
 See the SHADOW STATE MISSION PACK README.txt file in shadowstate-missionpack.zip for information 
 specfic to the 12 missions that are also incorporated in Missions.lua and use DLC areas. 
 See Config_Guide.lua.txt for how to edit Missions.lua to edit and create your own missions.
+See the new thread here for the latest videos and other information: https://forum.cfx.re/t/release-crackdown-missions-system-v3-github-for-your-own-missions/961763
 See first post in the following link as well for this and other information about the default game mode,
-including videos/screenshots:
+including videos/screenshots (older beta thread):
 https://forum.cfx.re/t/release-fivem-crackdown-game-mode-and-mission-generator-creation-beta/275613
 
 ABOUT: 
