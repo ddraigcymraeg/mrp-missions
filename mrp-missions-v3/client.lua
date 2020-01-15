@@ -17149,7 +17149,7 @@ AddEventHandler("doParadrop",function(dropCoords,k)
 
         local aircraft = CreateVehicle(GetHashKey(aircraftmodel), rPlaneSpawn, heading, true, true)
 		
-		doVehicleMods(aircraftmodel,aircraft,MissionName)
+		--doVehicleMods(aircraftmodel,aircraft,MissionName)
 		DecorSetInt(aircraft,"mrpvehdid",65432) --not really needed
 		doVehicleMods(aircraftmodel,aircraft,MissionName) 
         SetEntityHeading(aircraft, heading)
