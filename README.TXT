@@ -52,7 +52,7 @@ For ESX money support, in client.lua and server.lua set UseESX=true
 
 MISSION INFORMATION AND MAKING YOUR OWN MISSIONS:
 
-'missions.lua' has 42 example missions of various types. 
+'missions.lua' has 44 example missions of various types. 
 
 I added all 12 of the Shadow State Mission Pack missions to Missions.lua. If you have problems with any of these 12 missions not working, 
 see below, and the readme in the shadowstate-missionpack.zip. YOU WILL NEED AN IPL LOADER AND TELEPORTAION RESOURCE TO GET TO AREAS FOR THESE MISSIONS TO WORK, which is provided in the zip above.
