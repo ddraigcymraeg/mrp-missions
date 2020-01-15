@@ -15652,8 +15652,9 @@ AddEventHandler("doMissionDrop",function()
 	then --or DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 1 then 
 		return
 	end
-	
+	PlaySoundFrontend(-1, "Apt_Style_Purchase", "DLC_APT_Apartment_SoundSet", 0)
 	if not MissionDropBlip then 
+		
 		local pcoords = GetEntityCoords(GetPlayerPed(-1))
 		MissionDropHeading = GetEntityHeading(GetPlayerPed(-1))
 		MissionDropBlipCoords.x=pcoords.x
@@ -15674,16 +15675,16 @@ AddEventHandler("doMissionDrop",function()
 		
 		TriggerEvent("mt:missiontext2","Mission Reinforcement Drop created", 4000)
 		
-		HelpMessage("Mission Reinforcement Drop created. Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove",true,5000)
+		HelpMessage("Mission Reinforcement Drop created. Press~INPUT_DUCK~ and ~INPUT_COVER~ to remove",false,5000)
 		Wait(5000)
-		HelpMessage("To fast travel here after respawn, Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~. Cost: $"..getMissionConfigProperty(MissionName, "UseMissionDropFee"),true,5000)
+		HelpMessage("To fast travel here after respawn, Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~. Cost: $"..getMissionConfigProperty(MissionName, "UseMissionDropFee"),false,5000)
 		--print("MissionDropDid")
 	else 
 		
 		RemoveBlip(MissionDropBlip)
 		MissionDropBlip=nil
 		MissionDropBlipCoords={x=-50000,y=-50000,z=-50000}
-		HelpMessage("Mission Reinforcement Drop Removed. Press~INPUT_DUCK~ and ~INPUT_COVER~ to add another",true,5000)
+		HelpMessage("Mission Reinforcement Drop Removed. Press~INPUT_DUCK~ and ~INPUT_COVER~ to add another",false,5000)
 		
 		TriggerEvent("mt:missiontext2","Mission Reinforcement Drop removed", 4000)
 		
@@ -15856,12 +15857,13 @@ AddEventHandler("doMissionDropTeleport",function()
 			--end					
 			
 			--SetGameplayCamRelativeHeading(0.0)
+			PlaySoundFrontend(-1, "CHECKPOINT_AHEAD", "HUD_MINI_GAME_SOUNDSET", 0)
 			DoScreenFadeIn(1000)
 			while IsScreenFadingIn() do Citizen.Wait(0)	end
 		
 			--TriggerEvent("chatMessage", "^1[MISSIONS]: ^0Traveled to your mission respawn location...")
 			TriggerEvent("mt:missiontext2","Traveled to Mission Reinforcement Drop...", 4000)
-				
+			
 			
 			--SPAWN DROP Aircraft
 		--[[	
@@ -16257,6 +16259,7 @@ AddEventHandler("playerSpawned", function(spawn)
 	end
 	
 	if MissionName ~="N/A" and Active == 1 then
+		local mname = MissionName
 		Wait(7000)
 		
 		--do it again, to bypass mission chat messages on mission launch
@@ -16266,11 +16269,11 @@ AddEventHandler("playerSpawned", function(spawn)
 		HelpMessage("Press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~ for a quick tutorial on controls and mission help",false,5000)
 		Wait(5000)
 		
-		if getMissionConfigProperty(MissionName, "UseMissionDrop") and MissionDropBlip 
+		if getMissionConfigProperty(mname, "UseMissionDrop") and MissionDropBlip 
 		and not MissionDropDid
 		then 
 			HelpMessage("Mission Reinforcement Drop available. Press ~INPUT_LOOK_BEHIND~ and ~INPUT_COVER~ to move there",true,5000)
-			TriggerEvent("mt:missiontext2","~g~Mission Reinforcement Drop available for fast travel. Cost: $"..getMissionConfigProperty(MissionName, "UseMissionDropFee"), 4000)
+			TriggerEvent("mt:missiontext2","~g~Mission Reinforcement Drop available for fast travel. Cost: $"..getMissionConfigProperty(mname, "UseMissionDropFee"), 4000)
 		end
 		
 	end		
@@ -17906,5 +17909,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-
 ]]--
