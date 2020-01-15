@@ -80,6 +80,12 @@ IsDefendTargetOnlyPlayersDamagePeds —Override, since for IsDefendTarget missio
 IsDefendTargetPassenger —for escort mission, force target NPC to defend into passenger seat. default seatid 0
 IsDefendTargetPassengerSeatId —if IsDefendTargetPassenger= true, what seated if not 0?
 
+- Meant for random missions where IsDefendTargetPassenger=true. Allows the target ped to go into a specific seatid, based on vehicle model name. Mission44 uses it, to shuffle the transport target passenger to a non-turret seat. IsDefendTargetPassengerSeatId, if set, will override this:
+IsDefendTargetSeatIds = {
+	valkyrie=2,akula = 0, savage=2,buzzard=0
+	}
+
+
 —SEE FURTHER DOWN AS WELL, MORE IsDefendTarget settings explained above.
 
 
