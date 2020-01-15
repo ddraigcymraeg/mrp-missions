@@ -5541,7 +5541,7 @@ StartMessage = "Ensure that the asset and their plane~n~ make it to the destinat
 	--SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 	SpawnSafeHouseComponents = {"COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 
-	SafeHouseCrackDownModeHealthAmount=200,
+	--SafeHouseCrackDownModeHealthAmount=200,
 	--IsDefendTargetDrivetoBlip=true,
 	--TeleportToSafeHouseOnMissionStart = false,
 	RandomMissionSpawnRadius = 250.0, --keep a float for enemy ped wandering to work
@@ -5844,7 +5844,7 @@ StartMessage = "Ensure that the asset and their boat~n~ make it to the destinati
 	--SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 	SpawnSafeHouseComponents = {"COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 
-	SafeHouseCrackDownModeHealthAmount=200,
+	--SafeHouseCrackDownModeHealthAmount=200,
 	--IsDefendTargetDrivetoBlip=true,
 	--TeleportToSafeHouseOnMissionStart = false,
 	RandomMissionSpawnRadius = 150.0, --keep a float for enemy ped wandering to work
@@ -6400,7 +6400,7 @@ StartMessage = "Fly the asset and their plane~n~ to the destination~n~~r~Hurry!"
 	--SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 	SpawnSafeHouseComponents = {"COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 
-	SafeHouseCrackDownModeHealthAmount=200,
+	--SafeHouseCrackDownModeHealthAmount=200,
 	--IsDefendTargetDrivetoBlip=true,
 	--TeleportToSafeHouseOnMissionStart = false,
 	RandomMissionSpawnRadius = 250.0, --keep a float for enemy ped wandering to work
@@ -6703,7 +6703,7 @@ StartMessage = "Drive the asset and their boat~n~ to the destination~n~~r~Hurry!
 	--SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 	SpawnSafeHouseComponents = {"COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 
-	SafeHouseCrackDownModeHealthAmount=200,
+	--SafeHouseCrackDownModeHealthAmount=200,
 	--IsDefendTargetDrivetoBlip=true,
 	--TeleportToSafeHouseOnMissionStart = false,
 	RandomMissionSpawnRadius = 150.0, --keep a float for enemy ped wandering to work
@@ -11281,7 +11281,7 @@ StartMessage = "Ensure that the asset and their helicopter~n~ make it to the des
 	--SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 	SpawnSafeHouseComponents = {"COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 
-	SafeHouseCrackDownModeHealthAmount=200,
+	--SafeHouseCrackDownModeHealthAmount=200,
 	--IsDefendTargetDrivetoBlip=true,
 	--TeleportToSafeHouseOnMissionStart = false,
 	RandomMissionSpawnRadius = 250.0, --keep a float for enemy ped wandering to work
@@ -11634,7 +11634,7 @@ StartMessage = "Fly the asset and their helicopter~n~ to the destination~n~~r~Hu
 	--SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 	SpawnSafeHouseComponents = {"COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
 
-	SafeHouseCrackDownModeHealthAmount=200,
+	--SafeHouseCrackDownModeHealthAmount=200,
 	--IsDefendTargetDrivetoBlip=true,
 	--TeleportToSafeHouseOnMissionStart = false,
 	RandomMissionSpawnRadius = 250.0, --keep a float for enemy ped wandering to work
