@@ -32,7 +32,7 @@ need to do this if you are on OneSync.
 MIGRATION: There is no built in support for when a player whose machine spawned mission entities disconnects mid-mission. No NetIDs 
 or calls to native Migration functions. Behavior can be unpredictable. NPCs may become inert etc... It does seem that there is some 
 migration of the host's session to other connected peers built into the platform without calling these natives. 
-If there are problems with the mission after a host leaves, then players can use the /vote commands to restart the mission, see the README.TXT
+If there are problems with the mission after a host leaves, then players can use the /vote commands to restart the mission, see the README.TXT. (I did test this on my local/private server, and regardless of which player left, the host, the non-host, the one who spawned the entities or not, the mission continued for the other player fine). 
 
 RELATIONSHIP GROUPS AND MISSION PLAYERS: 
 You may want to have it so that enemy npcs in missions only attack players that are in missions, rather than any player they see. 
