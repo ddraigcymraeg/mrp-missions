@@ -437,22 +437,48 @@ RegisterCommand("stop", function(source, args, rawCommand)
 end, false)
 
 
+function getIsDefendTargetSeatId(input,vehmodel)
+	
+	if not Config.Missions[input].IsDefendTargetSeatIds then 
+		return
+	end
+	for i, v in pairs(Config.Missions[input].IsDefendTargetSeatIds) do
+		
+        if vehmodel == i then
+			--print("hey")
+			--print(v)
+			return v
+			
+        end
+    end
+	
+	return
+
+end 
+
 RegisterNetEvent("mt:dotargetpassenger")
-AddEventHandler('mt:dotargetpassenger', function(ped,pvehicle)
-	--print("hey")
+AddEventHandler('mt:dotargetpassenger', function(ped,pvehicle,tseatid)
+	--print("hey:"..tostring(tseatid))
+	local seatid  = 0
+	if tseatid then 
+		seatid = tseatid
+		
+	end
+	--print("heyddd:"..tostring(seatid))
 	while Active ==1 and MissionName ~= "N/A" do
 	
 		Citizen.Wait(0)
 		--local ped = GetPlayerPed( -1 )
 		local vehicle = GetVehiclePedIsIn( ped, false )
-		local passenger = GetPedInVehicleSeat(vehicle, 0)
+		local passenger = GetPedInVehicleSeat(vehicle, seatid)
 
 		  if ( DoesEntityExist( ped ) and not IsEntityDead( ped ) ) then 
 			--if ( IsPedSittingInAnyVehicle( ped ) ) then
 				
 				--if IsVehicleSeatFree(vehicle, -1) then
 					if ped == passenger then
-						SetPedIntoVehicle(ped, vehicle, 0)
+						--print("hey")
+						SetPedIntoVehicle(ped, vehicle, seatid)
 					end
 				--end
 			--end
@@ -9727,17 +9753,36 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 								SetRelationshipBetweenGroups(5, GetHashKey("HATES_PLAYER"), GetHashKey("ISDEFENDTARGET"))
 								SetRelationshipBetweenGroups(5, GetHashKey("TRUENEUTRAL"), GetHashKey("ISDEFENDTARGET"))
 								SetRelationshipBetweenGroups(0, GetHashKey("ISDEFENDTARGET"), GetHashKey("PLAYER"))	
+								
+								
 
 								if not Config.Missions[input].IsDefendTargetPassenger then
 									SetPedIntoVehicle(TargetPed,TargetPedVehicle, -1)
 								else
 									--check where the targetped passenger should go:
+									
+									local passengerseatid = getIsDefendTargetSeatId(input,veh)
 									if not Config.Missions[input].IsDefendTargetPassengerSeatId then
-										SetPedIntoVehicle(TargetPed,TargetPedVehicle, 0)
-									else									
+										if not passengerseatid then 
+											SetPedIntoVehicle(TargetPed,TargetPedVehicle, 0)
+										else 
+											SetPedIntoVehicle(TargetPed,TargetPedVehicle,  passengerseatid)
+										end
+									else
+										passengerseatid = Config.Missions[input].IsDefendTargetPassengerSeatId
 										SetPedIntoVehicle(TargetPed,TargetPedVehicle, Config.Missions[input].IsDefendTargetPassengerSeatId)
 									end
-									TriggerEvent("mt:dotargetpassenger",TargetPed,TargetPedVehicle)
+									--print(GetVehicleMaxNumberOfPassengers(TargetPedVehicle))
+									--local passengerseatid = getIsDefendTargetSeatId(input,veh)
+									
+									--override when seatid is explicity set:
+									--if Config.Missions[input].IsDefendTargetPassengerSeatId then 
+										 --passengerseatid = Config.Missions[input].IsDefendTargetPassengerSeatId
+								
+									--end		
+								
+									
+									TriggerEvent("mt:dotargetpassenger",TargetPed,TargetPedVehicle,passengerseatid)
 									-- TriggerEvent("mt:missiontext2", "You are the driver. Protect the target.", 1000)
 								end				
 								--SetPedIntoVehicle(TargetPed,TargetPedVehicle, -1)
@@ -10127,12 +10172,19 @@ function SpawnProps(input)
 									SetPedIntoVehicle(TargetPed,TargetPedVehicle, -1)
 								else
 									--check where the targetped passenger should go:
+									
+									local passengerseatid = getIsDefendTargetSeatId(input,veh)
 									if not Config.Missions[input].IsDefendTargetPassengerSeatId then
-										SetPedIntoVehicle(TargetPed,TargetPedVehicle, 0)
-									else									
+										if not passengerseatid then 
+											SetPedIntoVehicle(TargetPed,TargetPedVehicle, 0)
+										else 
+											SetPedIntoVehicle(TargetPed,TargetPedVehicle,  passengerseatid)
+										end
+									else
+										passengerseatid = Config.Missions[input].IsDefendTargetPassengerSeatId
 										SetPedIntoVehicle(TargetPed,TargetPedVehicle, Config.Missions[input].IsDefendTargetPassengerSeatId)
-									end
-									TriggerEvent("mt:dotargetpassenger",TargetPed,TargetPedVehicle)
+									end								
+									TriggerEvent("mt:dotargetpassenger",TargetPed,TargetPedVehicle,passengerseatid)
 									-- TriggerEvent("mt:missiontext2", "You are the driver. Protect the target.", 1000)
 								end
 								local movespeed = GetVehicleMaxSpeed(GetEntityModel(TargetPedVehicle))
@@ -17149,7 +17201,7 @@ AddEventHandler("doParadrop",function(dropCoords,k)
 
         local aircraft = CreateVehicle(GetHashKey(aircraftmodel), rPlaneSpawn, heading, true, true)
 		
-		--doVehicleMods(aircraftmodel,aircraft,MissionName)
+		doVehicleMods(aircraftmodel,aircraft,MissionName)
 		DecorSetInt(aircraft,"mrpvehdid",65432) --not really needed
 		doVehicleMods(aircraftmodel,aircraft,MissionName) 
         SetEntityHeading(aircraft, heading)
@@ -17892,7 +17944,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
---[[
+
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -17910,4 +17962,3 @@ Citizen.CreateThread(function()
     end
 end)
 
-]]--
