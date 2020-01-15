@@ -31,6 +31,12 @@ Config.MissionVehicleRandomizeLiveries=true
 Config.UseMissionDrop=true
 Config.UseMissionDropFee=500
 
+--Not only for Indoors Misssions...
+--Used with IndoorsMissions=true which turns on 
+--dynamic spawning. Which means when the player is within 
+--IndoorsMissionSpawnRadius of where entity should spawn at.
+Config.IndoorsMissionSpawnRadius=30
+
 --Dont teleport vehicle with player if in vehicle?
 Config.UseMissionDropNoVehicle=false
 --recommend a helicopter, *not supported atm*
