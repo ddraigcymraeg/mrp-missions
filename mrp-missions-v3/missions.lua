@@ -307,6 +307,10 @@ Config.SafeHousePedWeapons = {0x83BF0278,0x05FC3C11}
 --there are random waits, but about a 30 to 40 second loop where they wiil
 --do 3 anims and will attempt to greet at lease once... if chance ==100
 Config.SafeHouseDoAnimsAndGreets=true
+--overrides to have one or the other, since the leader can protect the safe house
+--STILL NEEDS SafeHouseDoAnimsAndGreets=true to work:
+Config.SafeHouseDoAnimsAndGreetsLeader=false
+Config.SafeHouseDoAnimsAndGreetsDoctor=true
 --Since the code looks at 3rd character in model name for 'f' to 
 --determine if use female voicename, but you have an ig_* model say
 --setting either below to true will force a female voice. Only works when 
