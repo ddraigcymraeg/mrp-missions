@@ -30,11 +30,16 @@ local MissionStartTime = 0
 local MissionEndTime = 0
 local MissionNoTimeout = false
 
+
 MissionIsDefendTargetGoalDestIndex = nil
 GlobalGotoGoalX = nil
 GlobalGotoGoalY = nil
 GlobalGotoGoalZ = nil
 GlobalTargetPed=nil
+PlayingAnimL=false
+PlayingAnimD=false
+PedLeaderModel=nil
+PedDoctorModel=nil	
 
 local MissionDoneSMS=false
 
@@ -2363,6 +2368,10 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
 		GlobalGotoGoalY = nil
 		GlobalGotoGoalZ = nil
 		GlobalTargetPed=nil
+		PlayingAnimL=false
+		PlayingAnimD=false
+		PedLeaderModel=nil
+		PedDoctorModel=nil	
 		
 	if(not isstop) then --allow bonuses for isfail as well
 		if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
@@ -9183,6 +9192,231 @@ function getGoodSpawnSpot(pos)
 end
 
 
+RegisterNetEvent("mt:playvoicesound")
+AddEventHandler("mt:playvoicesound",function(decorid,decorval,greetspeech,voicename)
+	--print(decorid..decorval..greetspeech..voicename)
+	for ped in EnumeratePeds() do
+		
+			if DecorGetInt(ped, decorval) > 0 then
+				if DecorGetInt(ped, decorval) == decorid then
+					
+					PlayAmbientSpeechWithVoice(ped, greetspeech, voicename, "SPEECH_PARAMS_STANDARD", false)
+					break
+				end
+				
+			end
+	end
+
+
+
+end)
+
+
+
+RegisterNetEvent("SafeHouseAnims")
+AddEventHandler("SafeHouseAnims",function(entD,entL,input)
+	
+	
+
+	
+	
+	local PedDoctor = entD.ent
+	local PedLeader = entL.ent
+	local PedDoctorModelL = entD.model
+	local PedLeaderModelL = entL.model
+	
+	
+	
+	while (PedDoctor or PedLeader)  do
+    Citizen.Wait(0)
+	
+		--if PedDoctor or PedLeader then 
+			
+			RequestAnimDict("random@shop_gunstore")
+			while (not HasAnimDictLoaded("random@shop_gunstore")) do 
+				Citizen.Wait(0) 
+			end
+			
+			
+			local ply = GetPlayerPed(-1)
+			local plyCoords = GetEntityCoords(ply, 0)
+			
+			if PedLeader and not PlayingAnimL then 
+				local voicename 
+				local greetspeech
+				
+				local doGreet = (math.random(1,100) <= getMissionConfigProperty(input, "SafeHousePedLeaderChanceToGreet"))
+			
+				
+				
+				if string.sub(string.lower(PedLeaderModelL),3,3) == 'f' or 
+				getMissionConfigProperty(input, "SafeHouseLeaderForceFemale")
+				then
+					local index = math.random(1, #getMissionConfigProperty(input, "SafeHousePedFemaleLeaderVoiceNames"))
+					voicename =  getMissionConfigProperty(input, "SafeHousePedFemaleLeaderVoiceNames")[index]
+					greetspeech =  getMissionConfigProperty(input, "SafeHousePedFemaleLeaderGreetSpeech")[index]
+				else
+					local index = math.random(1, #getMissionConfigProperty(input, "SafeHousePedMaleLeaderVoiceNames"))
+					voicename =  getMissionConfigProperty(input, "SafeHousePedMaleLeaderVoiceNames")[index]
+						
+					greetspeech =  getMissionConfigProperty(input, "SafeHousePedMaleLeaderGreetSpeech")[index]	
+				end
+				
+				local ped = PedLeader
+				local pcoords =  GetEntityCoords(ped, 0)
+				
+			
+				distance = GetDistanceBetweenCoords(pcoords.x, pcoords.y, pcoords.z, GetEntityCoords(GetPlayerPed(-1)))
+				if PlayingAnimL ~= true then
+					
+					 local anim = getMissionConfigProperty(input, "SafeHousePedLeaderAnims")[math.random(1, #getMissionConfigProperty(input, "SafeHousePedLeaderAnims"))]
+					
+					--TaskPlayAnim(ped,"random@shop_gunstore","_idle_b", 1.0, -1.0, -1, 0, 1, true, true, true)
+					TaskStartScenarioInPlace(ped, anim, 0, true)
+					Citizen.Wait(math.random(1000,6000))
+					ClearPedTasks(ped)
+					PlayingAnimL = true
+					
+					anim = getMissionConfigProperty(input, "SafeHousePedLeaderAnims")[math.random(1, #getMissionConfigProperty(input, "SafeHousePedLeaderAnims"))]
+					TaskStartScenarioInPlace(ped, anim, 0, true)
+					if doGreet then
+							--TaskPlayAnim(ped,"random@shop_gunstore","_greeting", 1.0, -1.0, 4000, 0, 1, true, true, true)
+							
+							TriggerServerEvent("sv:playvoicesound",1,"mrppedsafehouse", greetspeech,voicename)
+							--PlayAmbientSpeechWithVoice(ped, greetspeech, voicename, "SPEECH_PARAMS_STANDARD", false);
+					end 					
+					Citizen.Wait(4000)
+					ClearPedTasks(ped)
+					if PlayingAnimL == true then
+						
+						--TaskPlayAnim(ped,"random@shop_gunstore","_positive_b", 1.0, -1.0, -1, 0, 1, true, true, true)
+						anim = getMissionConfigProperty(input, "SafeHousePedLeaderAnims")[math.random(1, #getMissionConfigProperty(input, "SafeHousePedLeaderAnims"))]
+						TaskStartScenarioInPlace(ped, anim, 0, true)
+						Citizen.Wait(math.random(1000,6000))
+						ClearPedTasks(ped)
+						
+					end
+				else
+					--TaskPlayAnim(ped,"random@shop_gunstore","_impatient_b", 1.0, -1.0, -1, 0, 1, true, true, true)
+				end
+							
+			end
+			
+			
+			if PedDoctor and not PlayingAnimD then 
+			
+				local ped = PedDoctor
+				local pcoords =  GetEntityCoords(ped, 0)
+
+				local voicename 
+				local greetspeech 
+			
+				local doGreet = (math.random(1,100) <= getMissionConfigProperty(input, "SafeHousePedDoctorChanceToGreet"))
+				
+				if string.sub(string.lower(PedDoctorModelL),3,3) == 'f' or 
+				getMissionConfigProperty(input, "SafeHouseDoctorForceFemale")
+				then
+					local index = math.random(1, #getMissionConfigProperty(input, "SafeHousePedFemaleDoctorVoiceNames"))
+					voicename =  getMissionConfigProperty(input, "SafeHousePedFemaleDoctorVoiceNames")[index]
+					greetspeech =  getMissionConfigProperty(input, "SafeHousePedFemaleDoctorGreetSpeech")[index]
+				else
+					local index = math.random(1, #getMissionConfigProperty(input, "SafeHousePedMaleDoctorVoiceNames"))
+					voicename =  getMissionConfigProperty(input, "SafeHousePedMaleDoctorVoiceNames")[index]
+					greetspeech =  getMissionConfigProperty(input, "SafeHousePedMaleDoctorGreetSpeech")[index]
+							
+				end				
+				
+				
+				
+				
+				distance = GetDistanceBetweenCoords(pcoords.x, pcoords.y, pcoords.z, GetEntityCoords(GetPlayerPed(-1)))
+				if PlayingAnimD ~= true then
+					--TaskPlayAnim(ped,"random@shop_gunstore","_impatient_a", 1.0, -1.0, -1, 0, 1, true, true, true)
+					 local anim = getMissionConfigProperty(input, "SafeHousePedDoctorAnims")[math.random(1, #getMissionConfigProperty(input, "SafeHousePedDoctorAnims"))]
+					 TaskStartScenarioInPlace(ped, anim, 0, true)
+					
+					Citizen.Wait(math.random(1000,6000))
+					ClearPedTasks(ped)
+					PlayingAnimD = true
+					
+					anim = getMissionConfigProperty(input, "SafeHousePedDoctorAnims")[math.random(1, #getMissionConfigProperty(input, "SafeHousePedDoctorAnims"))]
+					TaskStartScenarioInPlace(ped, anim, 0, true)
+					if doGreet then
+						--TaskPlayAnim(ped,"random@shop_gunstore","_greeting", 1.0, -1.0, 4000, 0, 1, true, true, true)
+						--PlayAmbientSpeechWithVoice(ped, greetspeech, voicename, "SPEECH_PARAMS_STANDARD", false);
+						TriggerServerEvent("sv:playvoicesound",2,"mrppedsafehouse", greetspeech,voicename)
+					end
+					
+					PlayingAnimD = true
+					Citizen.Wait(4000)
+					ClearPedTasks(ped)
+					if PlayingAnimD == true  then
+						
+						
+						--TaskPlayAnim(ped,"random@shop_gunstore","_positive_a", 1.0, -1.0, -1, 0, 1, true, true, true)
+						
+						anim = getMissionConfigProperty(input, "SafeHousePedDoctorAnims")[math.random(1, #getMissionConfigProperty(input, "SafeHousePedDoctorAnims"))]
+						TaskStartScenarioInPlace(ped, anim, 0, true)						
+						Citizen.Wait(math.random(1000,6000))
+						ClearPedTasks(ped)
+					end
+				
+				else
+					--TaskPlayAnim(ped,"random@shop_gunstore","_impatient_a", 1.0, -1.0, -1, 0, 1, true, true, true)
+				end
+				
+				
+			end			
+			
+			Citizen.Wait(math.random(10000,30000))
+		
+		--end 
+			--only want to run this once... lets break out
+			--if PlayingAnimD and PlayingAnimL then
+				--print("break")
+				--break
+			--end
+			
+			--reset to loop
+			PlayingAnimD = false
+			PlayingAnimL = false
+		end 
+
+end)
+
+
+--[[
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(0)
+	
+	
+		RequestAnimDict("random@shop_gunstore")
+		while (not HasAnimDictLoaded("random@shop_gunstore")) do 
+			Citizen.Wait(0) 
+		end
+		
+		local ply = GetPlayerPed(-1)
+		local plyCoords = GetEntityCoords(ply, 0)
+		local pcoords =  GetEntityCoords(ply, 0)
+		
+			distance = GetDistanceBetweenCoords(ShopClerk[i].x, ShopClerk[i].y, ShopClerk[i].z, GetEntityCoords(GetPlayerPed(-1)))
+			if distance < 5.5 and PlayingAnim ~= true then
+				TaskPlayAnim(ShopClerk[i].id,"random@shop_gunstore","_greeting", 1.0, -1.0, 4000, 0, 1, true, true, true)
+				PlayingAnim = true
+				Citizen.Wait(4000)
+				if PlayingAnim == true then
+					TaskPlayAnim(ShopClerk[i].id,"random@shop_gunstore","_idle_b", 1.0, -1.0, -1, 0, 1, true, true, true)
+				end
+			else
+				TaskPlayAnim(ShopClerk[i].id,"random@shop_gunstore","_idle_b", 1.0, -1.0, -1, 0, 1, true, true, true)
+			end
+		
+		
+  end
+end)
+]]--
+
 --Spawn Safe House Props
 --Only for non IsRandom atm
 function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo) 
@@ -9191,6 +9425,8 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 		local Prop
 		local PedLeader
 		local PedDoctor
+
+		
 		
 		--if we have already spawned props at the mission launch. 
 		if MissionSpawnedSafeHouseProps then
@@ -9266,6 +9502,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 			if #getMissionConfigProperty(input, "SafeHousePedLeaders")  > 0 then 
 			--spawn leader
 				randomPropModelHash = getMissionConfigProperty(input, "SafeHousePedLeaders")[math.random(1, #getMissionConfigProperty(input, "SafeHousePedLeaders"))]
+				PedLeaderModel = randomPropModelHash
 				local randomPedWeapon = getMissionConfigProperty(input, "SafeHousePedWeapons")[math.random(1, #getMissionConfigProperty(input, "SafeHousePedWeapons"))]
 					
 				if randomPropModelHash then 	
@@ -9318,7 +9555,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				--spawn doctor
 				randomPropModelHash = getMissionConfigProperty(input, "SafeHousePedDoctors")[math.random(1, #getMissionConfigProperty(input, "SafeHousePedDoctors"))]
 				randomPedWeapon = getMissionConfigProperty(input, "SafeHousePedWeapons")
-					
+				PedDoctorModel = randomPropModelHash
 				RequestModel(randomPropModelHash)
 				while not HasModelLoaded(randomPropModelHash) do
 					Wait(1)
@@ -9342,7 +9579,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				--lets forget about ground z checks, since they will be close to the center of the marker
 				PedDoctor = CreatePed(2, randomPropModelHash,  rXoffset, rYoffset, randomLocation.z, rHeading, true, true)
 				SetModelAsNoLongerNeeded(randomPropModelHash)
-				DecorSetInt(PedDoctor,"mrppedsafehouse",1)
+				DecorSetInt(PedDoctor,"mrppedsafehouse",2)
 				DecorSetInt(PedDoctor,"mrppedid",1)	
 				SetPedFleeAttributes(PedDoctor, 0, 0)
 				SetEntityInvincible(PedDoctor, true)
@@ -9361,6 +9598,12 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 			
 			end
 			
+		end
+		
+		if getMissionConfigProperty(input, "SafeHouseDoAnimsAndGreets") then
+			TriggerEvent('SafeHouseAnims',{ent=PedDoctor,model=PedDoctorModel},{ent=nil,model=PedLeaderModel},input)
+		
+			TriggerEvent('SafeHouseAnims',{ent=nil,model=PedDoctorModel},{ent=PedLeader,model=PedLeaderModel},input)
 		end
 		
 		--lets spawn vehicles now on both land and sea 
@@ -11514,7 +11757,23 @@ function calcMissionStats()
 				
 			
 			end
+			--[[
+			if  DecorGetInt(ped, "mrppedsafehouse") == 1 and not PlayingAnimL and PedLeaderModel  then
 			
+		
+				 TriggerEvent('SafeHouseAnims',{ent=nil,model=PedDoctorModel},{ent=ped,model=PedLeaderModel},input)
+				
+			
+			end
+			
+			if  DecorGetInt(ped, "mrppedsafehouse") == 2 and not PlayingAnimD and PedDoctorModel then
+			print("hey2")
+				 TriggerEvent('SafeHouseAnims',{ent=ped,model=PedDoctorModel},{ent=nil,model=PedLeaderModel},input)
+		
+				
+			
+			end			
+			]]--
 			if not isNPCDead and DecorGetInt(ped, "mrpvpeddriverid") > 0 and GlobalTargetPed then 
 			
 			
@@ -13768,6 +14027,12 @@ function BuyObj()
 	local BuyStartTime = 30
     local BuyTime = BuyStartTime
     while buying == true do
+		
+		if not (Active == 1 and MissionName ~="N/A") then 
+			buying = false
+			return
+		end		
+	
 	
 		if(getMissionConfigProperty(MissionName, "SafeHouseGiveImmediately")) then 
 			BuyTime = 0
@@ -17944,7 +18209,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
-
+--[[
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -17961,4 +18226,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-
+]]--
