@@ -469,6 +469,39 @@ Config.ResetSafeHouseOnRespawn = false
 Config.ResetSafeHouseOnNewMission = false
 
 
+--turn on ambient anims and chance of greeting from safe house peds
+--this will run throughout the mission, by the host peer that spawned them.
+--there are random waits, but about a 30 to 40 second loop where they wiil
+--do 3 anims and will attempt to greet at lease once... if chance ==100
+Config.SafeHouseDoAnimsAndGreets=true
+--Since the code looks at 3rd character in model name for 'f' to 
+--determine if use female voicename, but you have an ig_* model say
+--setting either below to true will force a female voice. Only works when 
+--there are no male ig_* etc... or regular male models:
+Config.SafeHouseLeaderForceFemale=false
+Config.SafeHouseDoctorForceFemale=false
+--https://gist.github.com/alexguirre/0af600eb3d4c91ad4f900120a63b8992
+Config.SafeHousePedMaleLeaderVoiceNames = {"S_M_Y_BLACKOPS_01_WHITE_01","TREVOR_NORMAL","S_M_Y_SWAT_01_WHITE_FULL_01"
+,"S_M_Y_BLACKOPS_01_WHITE_MINI_01"
+}
+Config.SafeHousePedMaleLeaderGreetSpeech = {"GENERIC_HI","GENERIC_HI","GENERIC_HI","GENERIC_HOWS_IT_GOING"
+
+} --MUST be same length as above array/\
+Config.SafeHousePedFemaleLeaderVoiceNames = {"S_F_Y_COP_01_WHITE_FULL_02","S_F_Y_COP_01_WHITE_FULL_01"}
+Config.SafeHousePedFemaleLeaderGreetSpeech = {"GENERIC_HI","GENERIC_HI"} --MUST be same length as above array/\
+Config.SafeHousePedLeaderChanceToGreet=10 --per mission
+--https://pastebin.com/6mrYTdQv
+Config.SafeHousePedLeaderAnims={"WORLD_HUMAN_SMOKING","CODE_HUMAN_POLICE_INVESTIGATE","EAR_TO_TEXT","WORLD_HUMAN_STAND_MOBILE_UPRIGHT","WORLD_HUMAN_GUARD_PATROL","WORLD_HUMAN_GUARD_STAND","WORLD_HUMAN_GUARD_STAND_ARMY",
+"WORLD_HUMAN_STAND_IMPATIENT_UPRIGHT"}
+
+Config.SafeHousePedMaleDoctorVoiceNames = {"MICHAEL_NORMAL","DAVE","S_M_Y_COP_01_WHITE_FULL_01"}
+Config.SafeHousePedMaleDoctorGreetSpeech = {"GENERIC_HI","GENERIC_HI","GENERIC_HI"}--MUST be same length as above array/\
+Config.SafeHousePedFemaleDoctorVoiceNames = {"S_F_Y_COP_01_WHITE_FULL_02","S_F_Y_COP_01_WHITE_FULL_01"}
+Config.SafeHousePedFemaleDoctorGreetSpeech = {"GENERIC_HI","GENERIC_HI"}--MUST be same length as above array/\
+Config.SafeHousePedDoctorChanceToGreet=10  --per mission
+Config.SafeHousePedDoctorAnims={"EAR_TO_TEXT","WORLD_HUMAN_CLIPBOARD","WORLD_HUMAN_STAND_MOBILE_UPRIGHT","CODE_HUMAN_MEDIC_TIME_OF_DEATH","CODE_HUMAN_POLICE_INVESTIGATE","WORLD_HUMAN_GUARD_PATROL","WORLD_HUMAN_GUARD_STAND","WORLD_HUMAN_GUARD_STAND_ARMY","WORLD_HUMAN_STAND_IMPATIENT_UPRIGHT"}
+
+--end safehouse ambient greets and anims
 
 --pawns player to the current mission safehouse when they spawn/respawn
 Config.TeleportToSafeHouseOnSpawn = true
