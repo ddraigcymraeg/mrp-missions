@@ -1384,6 +1384,10 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 				HelpMessage("The safe house needs to be open to deploy, and it will count towards a safe house vehicle",false,5000)		
 				
 			end
+			Wait(5000)
+			HelpMessage("Some Escort/Transport/Rescue/Defend missions can allow you to enter the target vehicle, if in range",false,0)
+			Wait(5000)
+			HelpMessage("Press ~INPUT_WEAPON_WHEEL_PREV~ and ~INPUT_PICKUP~ to enter the target's vehicle, if a seat is free",false,0)
 			
 			Wait(5000)
 			HelpMessage("To see this tutorial again, press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~",false,5000)		
@@ -1416,7 +1420,7 @@ AddEventHandler("mt:doisDefendVehicleHelp", function()
 					then
 
 						--print("hey")
-						HelpMessage("Press ~INPUT_WEAPON_WHEEL_PREV~ and ~INPUT_PICKUP~ to enter the target's vehicle",false,0)
+						HelpMessage("Press ~INPUT_WEAPON_WHEEL_PREV~ and ~INPUT_PICKUP~ to enter the target's vehicle",true,0)
 					
 					
 					
@@ -18232,4 +18236,5 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
+
 ]]--
