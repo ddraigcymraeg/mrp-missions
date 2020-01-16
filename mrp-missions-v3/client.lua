@@ -9218,14 +9218,20 @@ AddEventHandler("SafeHouseAnims",function(entD,entL,input)
 	
 	
 
-	
+		
 	
 	local PedDoctor = entD.ent
 	local PedLeader = entL.ent
 	local PedDoctorModelL = entD.model
 	local PedLeaderModelL = entL.model
 	
+	if PedLeader and not getMissionConfigProperty(input, "SafeHouseDoAnimsAndGreetsLeader") then 
+		return
+	end 
 	
+	if PedDoctor and not getMissionConfigProperty(input, "SafeHouseDoAnimsAndGreetsDoctor") then 
+		return
+	end 
 	
 	while (PedDoctor or PedLeader)  do
     Citizen.Wait(0)
