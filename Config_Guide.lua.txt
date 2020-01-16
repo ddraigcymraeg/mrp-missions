@@ -28,6 +28,10 @@ MissionTriggerStartPoint={x=0.0,y=0.0,z=0.0}
 IndoorMissions=true --Add this to Regular indoor missions that happen in indoor locations like Doomsday Heist Bunker or Humane Labs to have Peds/Vehicles spawn dynamically, which fixes this problem: 
 --https://forum.fivem.net/t/spawning-indoors-and-underground-have-invisible-peds-npcs/373532
 --You can override this, to have the vehicle/ped spawn at mission start by adding the attribute 'outside=true' to the Ped or Vehicle (**see Regular Mission Setup further down**)
+-- Creates dynamic spawns, not only for indoors missions
+-- which means spawns entities for the nearest player who is within
+--IndoorsMissionSpawnRadius of where the entity should spawn. NOTE: Does not work for IsRandom missions.
+
 
 --Not only for Indoors Misssions...
 --Used with IndoorsMissions=true which turns on 
