@@ -11704,7 +11704,7 @@ StartMessage = "Fly the asset and their helicopter~n~ to the destination~n~~r~Hu
 	"valkyrie","buzzard","savage","akula",
 	},
 	IsDefendTargetSeatIds = {
-	valkyrie=2,akula = 0, savage=2,buzzard=0
+	valkyrie=0,akula = 2, savage=2,buzzard=0
 	},
 	SafeHouseAircraft = 
 	{
