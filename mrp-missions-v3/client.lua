@@ -17722,7 +17722,7 @@ function CrateDropMRP(weapon, ammo, planeSpawnDistance, dropCoords,thisMission)
         SetBlipSprite(blip, 408) -- 351 or 408 are both fine, 408 is just bigger
         --SetBlipNameFromTextFile(blip, "AMD_BLIPN")
 		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString("Safe House Supplies Drop")
+		AddTextComponentString("Safehouse Supplies Drop")
 		EndTextCommandSetBlipName(blip)	
         SetBlipScale(blip, 0.9)
         SetBlipColour(blip, 3)
@@ -17764,6 +17764,7 @@ function CrateDropMRP(weapon, ammo, planeSpawnDistance, dropCoords,thisMission)
 				Wait(0)
 				SetModelAsNoLongerNeeded(GetHashKey(requiredModels[i]))
 			end
+			doingDrop=false
 			return	
 		end
 		
@@ -18219,7 +18220,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
---[[
+
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -18237,4 +18238,3 @@ Citizen.CreateThread(function()
     end
 end)
 
-]]--
