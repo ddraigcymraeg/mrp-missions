@@ -11361,13 +11361,16 @@ StartMessage = "Ensure that the asset and their helicopter~n~ make it to the des
 	
 	RandomMissionAircraft = {
 	"valkyrie",
-	"valkyrie2",
 	"buzzard2",
 	"maverick",
 	"akula",
 	"mogul",
 	"seabreeze",
-	"microlight"
+	"microlight",
+	"buzzard2",
+	"maverick",
+	"buzzard2",
+	"maverick"
 },
 --[[
 Events = {
@@ -11717,13 +11720,16 @@ StartMessage = "Fly the asset and their helicopter~n~ to the destination~n~~r~Hu
 	
 	RandomMissionAircraft = {
 	"valkyrie",
-	"valkyrie2",
 	"buzzard2",
 	"maverick",
 	"akula",
 	"mogul",
 	"seabreeze",
-	"microlight"
+	"microlight",
+	"buzzard2",
+	"maverick",
+	"buzzard2",
+	"maverick"
 },
 --[[
 Events = {
