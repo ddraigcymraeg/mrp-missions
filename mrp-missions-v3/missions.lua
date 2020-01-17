@@ -8678,7 +8678,7 @@ StartMessage = "Defend the asset and their vehicle~n~eliminate all hostiles~n~~r
 	IsDefendTargetGoalDistance=50.0,
 	--RandomMissionDoBoats = true,
 	MissionTriggerRadius = 20.0,
-	RemoveWeaponsAndUpgradesAtMissionStart = true,
+	--RemoveWeaponsAndUpgradesAtMissionStart = true,
 	SafeHouseCrackDownModeHealthAmount=1000,
 	
 	
