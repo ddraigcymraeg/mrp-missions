@@ -12,6 +12,8 @@ To build your own missions, check out the Config_Guide.lua.txt, and see notes be
 
 CONTROLS (which can be turned on/off depending on mission config settings): 
 
+Mission Help in-game, which has all the control information below + more, can be viewed by pressing RIGHT STICK DOWN & LB.
+
 Mission Stats can be viewed in the lower right hand side by pressing DPAD DOWN or '[' key
 
 Players can press  (DPAD LEFT & RB) of their gamepad or Q key & SCROLLWHEEL UP together,  to call in an air drop of mission weapons and upgrades for a $ cost. If they dont want to make it to the safe house.
@@ -19,10 +21,15 @@ The safe house has to be open for this work.
 
 Players can press  (LEFT STICK DOWN & RB) of their gamepad or equivalent keys, to toggle a Mission Reinforcement Drop at their location. When on, players can fast travel there after they respawn using the  (RIGHT STICK DOWN & RB) or equivalent keys.
 
+Players can press  (RIGHT STICK DOWN & DPAD LEFT) of their gamepad or equivalent keys, to spawn a mission ally nearby to help with combat and ride in turrets etc... 
+Players can press  (RIGHT STICK DOWN & DPAD RIGHT) of their gamepad or equivalent keys, to cycle through different ally types, like 
+regular which gets same equipment as player for mission, as well as by default: RPG, Homing Launcher and Minigun.
+Players can press  (RIGHT STICK DOWN & DPAD DOWN) of their gamepad or equivalent keys to dismiss an ally. 
+
 There is a working RC Bandito remote detonation vehicle as well to use on missions. Use LB on the gamepad, or E key to detonate it.
 
 Players can spawn/deploy rcbandito remote detonate vehicles on the fly using RB+DPAD-Right or A + D keys. This will use one of their safe house vehicles for the mission though, will cost same $ amount 
-as a safehouse vehicle, and players will need to wait until the safehouse is open to be able to deploy.
+as a safehouse vehicle, and players will need to wait until the safehouse is open to beRight stick down + LB able to deploy.
 
 Players can toggle night vision and thermal vision if enabled. Player will press and hold both Left stick down + right stick down ( C + Left Ctrl by default) to cycle through.
 
