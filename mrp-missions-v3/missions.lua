@@ -23,6 +23,56 @@ Config.ObjectRescueReward = 3000
 
 Config.GoalReachedReward = 2000
 
+
+Config.BackupPeds={ 's_m_y_blackops_01', 's_m_y_blackops_02', 's_m_y_blackops_03',  's_m_y_swat_01' }
+
+-- L3 + DPAD LEFT,
+Config.MissionDoBackup=true
+
+Config.BackupPedHealth=5000
+
+Config.BackupPedFee=1000
+
+Config.BackupPedRegen=true
+
+--spawn the backup ped not within 1m of the player, but at the nearest vehicle node on a road. 
+Config.BackupPedSpawnAtRoad=true
+
+--allow extra backup peds with special weapons? 
+Config.BackupPedHeavyMunitionsAllow=true
+
+-- toggle regular backup ped with these 3 via  L3 + DPAD RIGHT
+Config.BackupPedHeavyMunitions={"weapon_rpg","weapon_hominglauncher","weapon_minigun"}
+Config.BackupPedHeavyMunitionsText={"RPG Launcher","Homing Launcher","Minigun"}
+Config.BackupPedHeavyMunitionsCost={2500,3500,2500}
+
+--
+
+
+--what sight and hearing range?
+Config.BackupPedSensesDistance=1500.0 --heavy sniper max range
+
+--https://gist.github.com/alexguirre/0af600eb3d4c91ad4f900120a63b8992
+Config.BackupVoiceName="S_M_Y_BLACKOPS_01_WHITE_MINI_01"
+Config.BackupVoiceGreet="COVER_YOU"
+--how far away should the backup start trying to move back to the player
+--should be less than 300m
+
+Config.BackupPedMaxDistance=10
+
+--Distance away from the ped for them to 
+--teleport in, when player is on foot
+Config.BackupPedTeleportDistance=300
+
+
+--when joining a vehicle in IsDefendTarget mission vehicle, 
+--or when a player backup ped tries to join
+--where should the player or backup go go to?
+--overrides  the turrets first logic... for vehicles like apcs.
+Config.PreferrableSeatIds = {
+	 apc=0
+}
+
 --Spawn mission vehicles with a random livery
 --provides more variety in how vehicles look
 Config.MissionVehicleRandomizeLiveries=true
@@ -787,7 +837,7 @@ Config.IsDefendTargetCheckLoop=false
 
 --How close to the IsDefendTargetVehicle does the player need to be 
 --in order to be able to teleport to a free seat?
-Config.IsDefendTargetVehiclePassengerRadius=25.0
+Config.IsDefendTargetVehiclePassengerRadius=250.0
 
 --Make the target keep to set task, usually driving...
 Config.IsDefendTargetSetBlockingOfNonTemporaryEvents=false
@@ -800,6 +850,12 @@ Config.IsDefendTargetEnemySetBlockingOfNonTemporaryEvents=false
 --missions, where the target reaches a goal.
 --NOTE: IsDefendTargetEnemySetBlockingOfNonTemporaryEvents should be true
 Config.IsDefendTargetGoalDistance=30.0
+
+--when IsDefendTarget is a passenger, when IsDefendTargetPassenger=true
+--where should the target go to?
+Config.IsDefendTargetSeatIds = {
+	valkyrie=0,akula = 2, savage=2,buzzard=0, apc=1
+	}
 
 --Config.IsDefendTargetMaxArmor = 100 --just give armor = 100
 
@@ -814,8 +870,9 @@ Config.IsDefendTargetRandomPedWeapons = {0xE284C527,0x83BF0278,0xBFEFFF6D}
 
 
 Config.IsDefendTargetRandomVehicles = {	
-"kuruma2",
-"insurgent3"
+--"kuruma2",
+--"insurgent3"
+"apc"
 }
 
 
@@ -828,7 +885,11 @@ Config.IsDefendTargetRandomAircraft = {
 
 Config.IsDefendTargetRandomBoat = {
 
+"dinghy4",
 "seashark",
+"toro2",
+"marquis",
+"jetmax"
 
 }
 
