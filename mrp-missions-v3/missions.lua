@@ -31,7 +31,7 @@ Config.MissionDoBackup=true
 
 Config.BackupPedHealth=5000
 
-Config.BackupPedFee=1000
+Config.BackupPedFee=500
 
 Config.BackupPedRegen=true
 
@@ -44,7 +44,7 @@ Config.BackupPedHeavyMunitionsAllow=true
 -- toggle regular backup ped with these 3 via  L3 + DPAD RIGHT
 Config.BackupPedHeavyMunitions={"weapon_rpg","weapon_hominglauncher","weapon_minigun"}
 Config.BackupPedHeavyMunitionsText={"RPG Launcher","Homing Launcher","Minigun"}
-Config.BackupPedHeavyMunitionsCost={2500,3500,2500}
+Config.BackupPedHeavyMunitionsCost={1000,1000,1000}
 
 --
 
