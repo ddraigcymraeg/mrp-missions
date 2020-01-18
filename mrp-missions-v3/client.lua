@@ -1389,7 +1389,7 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 			
 			if(getMissionConfigProperty(input, "UseSafeHouseCrateDrop")) then 
 				Wait(5000)
-				HelpMessage("Call in an air supply drop using ~INPUT_WEAPON_WHEEL_PREV~ and ~INPUT_COVER~. Cost: $"..getMissionConfigProperty(input, "SafeHouseCostCrate"),false,5000)
+				HelpMessage("Call in an air supply drop using ~INPUT_DUCK~ and ~INPUT_SELECT_WEAPON~. Cost: $"..getMissionConfigProperty(input, "SafeHouseCostCrate"),false,5000)
 				Wait(5000)
 				HelpMessage("It's the same equipment and upgrades. The safe house needs to be open to call in an air supply drop",false,5000)
 				
@@ -18164,9 +18164,9 @@ while true do
 			end
 		end					
 	
-		if (IsControlPressed(0, 15) and IsControlPressed(0, 44)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
+		if (IsControlPressed(0, 36) and IsControlPressed(0, 37)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
 			if  Active == 1 and MissionName ~="N/A" then
-				--left  + right bumpers pressed together
+				
 				if (getMissionConfigProperty(MissionName, "UseSafeHouseCrateDrop") and (GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse")) > playerSafeHouse) then
 					
 					--if IsPedOnFoot(GetPlayerPed(-1)) then
@@ -19168,5 +19168,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-
 ]]--
