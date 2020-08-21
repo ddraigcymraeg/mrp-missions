@@ -43,6 +43,8 @@ PedDoctorModel=nil
 GlobalBackup=nil
 GlobalBackupIndex=0
 
+
+
 local MissionDoneSMS=false
 
 local MissionSpawnedSafeHouseProps = false
@@ -100,6 +102,9 @@ local RescueMarkers = {}
 
 --for GTAO sounds
 SetAudioFlag("LoadMPData", true)
+
+--Disable Flight music?
+SetAudioFlag("DisableFlightMusic", true)
 
 Blips = {}
 
@@ -11439,6 +11444,7 @@ function aliveCheck()
     MissionName = MissionName
    
    while Active == 1 do
+   --print("alivecheck")
    
 		for ped in EnumeratePeds() do
 
@@ -11710,6 +11716,7 @@ Citizen.CreateThread(function()
 				
 				--try to minimize infighting on the whole: 
 				if Config.HostileAmbientPeds == 1 then
+					
 					SetRelationshipBetweenGroups(RELATIONSHIP_COMPANION,  GetHashKey('CIVMALE'), GetHashKey('CIVFEMALE'))
 					SetRelationshipBetweenGroups(RELATIONSHIP_COMPANION,  GetHashKey('CIVFEMALE'), GetHashKey('CIVMALE'))
 					SetRelationshipBetweenGroups(RELATIONSHIP_COMPANION,  GetHashKey('CIVMALE'), GetHashKey("HATES_PLAYER"))
@@ -12696,7 +12703,7 @@ function calcMissionStats()
 				
 				end
 			
-			elseif Config.HostileAmbientPeds and Config.HostileAmbientPeds > 0 then 
+			--elseif Config.HostileAmbientPeds and Config.HostileAmbientPeds > 0 then 
 				--local pcoords = GetEntityCoords(ped) --(GetPlayerPed(-1))
 				--print("do 1 hostile zone")
 				
@@ -12709,7 +12716,7 @@ function calcMissionStats()
 				
 				--if GetDistanceBetweenCoords(coords.x,coords.y,coords.z,Config.Missions[MissionName].Marker.Position.x,Config.Missions[MissionName].Marker.Position.y,Config.Missions[MissionName].Marker.Position.z,false) <= getMissionConfigProperty(MissionName, "HostileZoneRadius") then 
 					--print("do hostile zone")
-					doHostileZone(ped)
+					--doHostileZone(ped)
 				--end
 			end
 			
@@ -15617,6 +15624,18 @@ Citizen.CreateThread(function()
         
 		
 		Citizen.Wait(1000) --10000
+		
+		for ped in EnumeratePeds() do
+			if not((DecorGetInt(ped, "mrppedid") > 0 or DecorGetInt(ped, "mrpvpedid") > 0)) 
+			and Config.HostileAmbientPeds and Config.HostileAmbientPeds > 0
+			and Active == 1 and MissionName ~="N/A"  
+			
+			then
+			
+				--print("do hostile zone")
+				doHostileZone(ped)
+			end
+		end
 		
         if Active == 1 and MissionName ~="N/A" and getMissionConfigProperty(MissionName, "IsDefendTargetCheckLoop") then
 		
@@ -19151,7 +19170,7 @@ end)
 --END SCALEFORM FUNCTIONS
 
 --weather/time 
---[[
+
 Citizen.CreateThread(function()
     while true do
 		SetWeatherTypePersist("EXTRASUNNY")
@@ -19168,4 +19187,4 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
-]]--
+
