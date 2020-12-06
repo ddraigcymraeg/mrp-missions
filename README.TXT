@@ -198,7 +198,7 @@ Mission25 is the same as Mission24, except for aircraft, where in
 	and an aircraft is randomly chosen from IsDefendTargetRandomAircraft array
 
 
-Mission26 is the same as Mission26, exept we have in
+Mission26 is the same as Mission24, exept we have in
 RandomMissionPositions: 
 	DefendTargetInVehicle = true,
 	DefendTargetVehicleIsBoat=true,
@@ -240,7 +240,78 @@ Mission39 is an example of a mission that uses Blips array to have multi objecti
 Mission42 is an example of the use of  NextMission and NextMissionIfFailed mission attributes to combine missions into 
 stages, where if a mission is passed the next is loaded right away, else if failed, you need to restart the mission. 
 This can be done to create campaigns/multi stage missions that join together.
+
+Mission43 is the same as Mission25, except all aircraft are helicopters 
+Mission44 is the same as Mission28, except all the aircraft are helicopters
+
+Mission45 is the first Type=Checkpoint mission, which is random, meaning checkpoints are spawned randomly around the whole map. 
+For Mission45, these checkpoints are only spawned on land, and anywhere on land, not just roads.
+so IsRandom = true, & IsRandomSpawnAnywhere=true is set. and so can IsRandomSpawnAnywhereCoordRange = {xrange={-1000,3000},yrange={3000,5000}},
+where like any IsRandom = true, & IsRandomSpawnAnywhere=true mission, it can can specify a part of the map to spawn within.
+https://drive.google.com/file/d/0B-zvE86DVcv2MXhVSHZnc01QWm8/view
+
+Various enemies are spawned at each checkpoint, which is also randomized. The rewards set for killing enemies should be set to 
+0 for Checkpoint missions, and set  MissionShareMoney=false, -preferrable to set this to false, since players are competing more in Checkpoint missions, and that 
+should be the main source of money. 
+
+
+
+The following settings are used by random checkpoint races:
+MaxCheckpoints=10, --Min is 2, so here between 2 and 10 checkpoints can be spawned randomly around the map for the race
+CheckpointsDoLand=true, --force checkpoints to only spawn on land, if true other 2 settings need to be set to false.
+CheckpointsStartPos={x=0.0,y=0.0,z=0.0}, --leave as this for random checkpoint races
+RecordedCheckpoints={}, --leave as this for random checkpoint races
+CheckpointsDoWater=false, --force checkpoints to only spawn on water, if true other 2 settings need to be set to false.
+CheckpointsDoWaterAndLand=false, --force checkpoints to spawn on both water and land, if true other 2 settings need to be set to false.
+SpawnCheckpointsOnRoadsOnly=false,  --force generated checkpoints to spawn only on roads/trails. if CheckpointsDoLand=true or  CheckpointsDoWaterAndLand=true
+CheckpointsAirBattle=false, --only spawn enemy aicraft from each checkpoint, good for flying missions.
+CheckPointClaimdReward=1000, --drivers and passengers get this $ if the vehicle reaches the checkpoint first
+RaceWinReward=20000, --only driver gets this in the winning vehicle
+CheckpointRaceJoinTime=3600, --not used
+MissionShareMoney=false, --preferrable to set this to false, since players are competing more in Checkpoint missions. 
+
+Mission46 A non-random, regular Checkpoint race mission around Mt Chiliad. For this type of mission, most of the Checkpoint mission settings in Mission45 are not used. 
+All that needs to be defined is: 
+Type = "Checkpoint"
+CheckpointsStartPos={ x = 2526.39, y = 5154.27, z = 55.24}, --where the race starts
+Events = {...} --your own created events to generate enemies for the race. 
+RecordedCheckpoints={{blip=blip,coords={x = 2474.65, y = 5238.01, z = 68.19}}, etc... --the checkpoints themselves (include blip=blip for now for each checkpoint, 
+ though it may work without it)
+ There is a safehouse and vehicle safe house both defined for the mission to spawn near the start of the race
+ You can also use Peds={} and Vehicles={} like any regular mission... for spawning enemies/hostages, extra vehicles for players or enemy vehicles
+CheckPointClaimdReward=1000, --drivers and passengers get this $ if the vehicle reaches the checkpoint first
+RaceWinReward=20000, --only driver gets this in the winning vehicle
+
+Mission47 is the same as Mission46, except there are no enemies (Events is blank) 
  
+Mission48 is the same as Mission45, except that CheckpointsAirBattle=true so all enemies that spawn are aircraft guarding checkpoints. 
+CheckpointsDoLand=true is set so all checkpoints are on land
+ The players get hydras and the enemy planes are defined as so.. so it is an air battle check point race mission: 
+ SafeHouseAircraft = 
+{
+"Hydra",
+},
+RandomMissionAircraft = {
+	"hydra",
+	"lazer",
+	"strikeforce",
+	"starling",
+	"rogue",
+	"nokota",
+	"molotok",
+	"pyro",
+},
+
+ 
+Mission49 is the same as Mission45, but SpawnCheckpointsOnRoadsOnly=true, so all  checkpoints spawn on road/trail nodes. 
+Also IsRandomSpawnAnywhereCoordRange is set to only spawn checkpoints in the lower part of San Andreas, basically in the city and up to vinewood.
+
+Mission50 is the same as Mission45 but CheckpointsDoWater=true, and IsRandomSpawnAnywhereCoordRange is set to only spawn checkpoints in The Alamo Sea. 
+when CheckpointsDoWater=true, only boats or amphibious enemys are spawned. A mission boat safehouse is used for the mission as well and is the near the race start.
+
+Mission51 is the same as Mission50, except CheckpointsDoWaterAndLand=true and IsRandomSpawnAnywhereCoordRange is set to be around the Alamo Sea to include land. 
+So checkpoints are spawned in land and sea. Players will need to use the mission boat safehouse and mission land safehouse (or steal vehicles) to finish the race.
+
 
 	
 
