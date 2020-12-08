@@ -123,6 +123,89 @@ AddEventHandler("sv:spawned", function(input,i,isVehicle)
 	
 end)
 
+RegisterServerEvent("sv:playvoicesound")
+AddEventHandler("sv:playvoicesound", function(decorid,decorval,greetspeech,voicename)
+	
+	--print(decorid..decorval..greetspeech..voicename)
+	TriggerClientEvent("mt:playvoicesound",-1, decorid, decorval,greetspeech,voicename)
+
+end)
+
+RegisterServerEvent("sv:setgroundingdecor")
+AddEventHandler("sv:setgroundingdecor", function(decorid,decorval)
+	
+	--print(decorid..decorval..greetspeech..voicename)
+	TriggerClientEvent("mt:setgroundingdecor",-1, decorid, decorval)
+
+end)
+
+
+RegisterServerEvent("sv:generateCheckpointsAndEvents")
+AddEventHandler("sv:generateCheckpointsAndEvents", function(MissionName,recordedCheckpoints,Events,startCoords)
+	--print("chk3")
+	TriggerClientEvent("mt:generateCheckpointsAndEvents",-1, MissionName,recordedCheckpoints,Events)
+	--trigger StreetRaces createrace event
+	
+	--print(#recordedCheckpoints)
+	--local startCoords = recordedCheckpoints[1].coords
+	--print(startCoords.x)
+	
+	TriggerEvent("mrpStreetRaces:createRace_sv",1, 300000, startCoords, recordedCheckpoints, 360000)
+	
+	Config.Missions[MissionName].TotalCheckpoints=#recordedCheckpoints
+	
+	Config.Missions[MissionName].CheckpointsStartPos=startCoords
+	
+	Config.Missions[MissionName].RecordedCheckpoints=recordedCheckpoints
+	
+	
+	--used for saving which player completed which checkpoint first
+	Config.Missions[MissionName].Checkpoints={}
+	
+	Config.Missions[MissionName].Events=Events
+
+end)
+
+--make global
+local checkpointdata
+
+RegisterServerEvent("sv:updatePlayerCheckpoints")
+AddEventHandler("sv:updatePlayerCheckpoints", function(MissionName,checkpointnum,PlayerServerId)
+	--print("chk"..checkpointnum)
+	
+	--dont care about start of race
+	if checkpointnum == 0 then
+		--print("chkreturn"..checkpointnum)
+		return
+	end
+	local claimedcheckpoint = {checkpointnum=checkpointnum,PlayerServerId=PlayerServerId}
+	
+	checkpointdata = Config.Missions[MissionName].Checkpoints
+	local checkpointclaimed = false
+	for i = 1,#checkpointdata do
+	
+		if ( checkpointdata[i] and checkpointdata[i].checkpointnum and checkpointdata[i].checkpointnum ==checkpointnum) then
+			checkpointclaimed = true
+			break; --checkpoint already claimed by a player. 
+		
+		end
+	end
+	
+	if checkpointclaimed == false then
+		--print("checkpoint claimed")
+		table.insert(checkpointdata,claimedcheckpoint)
+		local messagestr = "~h~~r~"..GetPlayerName(source).."~y~ has claimed checkpoint "..checkpointnum.. " and earned ~g~$"..getMissionConfigProperty(MissionName, "CheckPointClaimdReward")
+		TriggerClientEvent("mt:missiontext2",-1,messagestr,5000)
+		TriggerClientEvent("mt:rewardPassengers",-1,PlayerServerId)
+		
+	end 
+	Config.Missions[MissionName].Checkpoints=checkpointdata
+	
+end)
+
+
+
+
 
 RegisterServerEvent("sv:one")
 AddEventHandler("sv:one", function(input,input2, timet,rMissionLocationIndex,rMissionType,rIsRandomSpawnAnywhereInfo,rSafeHouseLocationIndex,rMissionDestinationIndex)
@@ -148,6 +231,7 @@ AddEventHandler("sv:one", function(input,input2, timet,rMissionLocationIndex,rMi
 			MissionNoTimeout = getMissionConfigProperty(MissionName, "MissionNoTimeout")
 			blMadeIt = false
 			blFailedMission=false
+
 		end
 		
 	else 
@@ -166,7 +250,11 @@ AddEventHandler("sv:one", function(input,input2, timet,rMissionLocationIndex,rMi
 		--print("sv:one rIsRandomSpawnAnywhereInfo.x found:".. rIsRandomSpawnAnywhereInfo.x)
 		--print("hey:"..timet)
 		TriggerClientEvent('missionBlips', -1, input,rMissionLocationIndex,rMissionType,rIsRandomSpawnAnywhereInfo,rSafeHouseLocationIndex,true,rMissionDestinationIndex) 
+		
 		TriggerClientEvent("SpawnPedBlips",-1, input)
+		
+
+		
 		ActiveMission=true
 		MissionName=input
 		MissionType = rMissionType
@@ -182,11 +270,12 @@ AddEventHandler("sv:one", function(input,input2, timet,rMissionLocationIndex,rMi
 		MissionNoTimeout = getMissionConfigProperty(MissionName, "MissionNoTimeout")
 		blMadeIt = false
 		blFailedMission=false
+		--used for saving which player completed which checkpoint first
+		Config.Missions[MissionName].Checkpoints={}
 	end 
 	
 	
 end)
-
 
 
 --move this to bottom of file:
@@ -514,8 +603,10 @@ end)
 --to spawn the NPCs and vehicles on, who will start the mission
 RegisterServerEvent("sv:getClientWhoIsHostAndStartNextMission")
 AddEventHandler("sv:getClientWhoIsHostAndStartNextMission", function(isHost,newMission)
+  
   local nextmission = getNextMission(MissionName)
   if newMission then 
+    --TEST 
 	nextmission = newMission
   end
   
@@ -655,6 +746,17 @@ RegisterServerEvent("sv:done")
 AddEventHandler("sv:done", function(input,isstop,isfail,reasontext,blGoalReached)
 	--make sure not multiple done messages
 	if ActiveMission and MissionName~="N/A" then
+	
+			if Config.Missions[MissionName].Type=="Checkpoint" then 
+				--print("cance race")
+				TriggerEvent("mrpStreetRaces:cancelRace_sv")
+			end	
+	
+			--used for mrpStreetRaces:
+			local MName = input
+			if MName == '' then
+			  MName = MissionName
+			end
 			ActiveMission=false
 			--MissionName="N/A" --< **Leave the mission as is, so the missions will rotate**
 			servercheckspawns = false
@@ -665,8 +767,8 @@ AddEventHandler("sv:done", function(input,isstop,isfail,reasontext,blGoalReached
 			IsRandomDoEventRadius = 1000.0
 			IsRandomDoEventType = 0
 			MissionTriggered = false
-			ResetIndoorSpawns (input)
-			TriggerClientEvent('DONE', -1, input,isstop,isfail,reasontext,blGoalReached) --GHK
+			ResetIndoorSpawns (MName)
+			TriggerClientEvent('DONE', -1, MName,isstop,isfail,reasontext,blGoalReached,checkpointdata) --GHK
 			blMadeIt = false
 			
 			if not isstop and isfail then 
@@ -731,6 +833,17 @@ AddEventHandler("sv:checkhostandremovepickups", function(oldmission,nextmission,
 end)
 
 
+RegisterServerEvent("sv:getmillisecondsleft")
+AddEventHandler("sv:getmillisecondsleft", function()
+local timeLeft = MilliSecondsLeft
+TriggerClientEvent('mrpStreetRaces:getmillisecondsleft', source,timeLeft) 
+
+end)
+
+
+
+
+
 
 --called when a player joins
 --if mission is currently running on server (ActiveMission=true), and they are only player
@@ -761,7 +874,13 @@ local onlinePlayers = GetNumPlayerIndices()
 			
 			TriggerClientEvent('mt:setactive', source, 1,MissionName,onlinePlayers,servercheckspawns,MilliSecondsLeft,ActiveMission,MissionType,MissionLocationIndex,IsRandomSpawnAnywhereInfo,SafeHouseLocationIndex,Config.Missions[MissionName].Peds,Config.Missions[MissionName].Vehicles,Config.Missions[MissionName].Props,Config.Missions[MissionName].Events,IsRandomDoEvent,IsRandomDoEventRadius,IsRandomDoEventType,MissionDestinationIndex)
 			blInSpaceTime = false
-
+			
+			--do checkpoint mission stuff
+			if Config.Missions[MissionName].Type=="Checkpoint" then 
+				--this just generates Events
+				--TriggerClientEvent("mt:generateCheckpointsAndEvents",-1, MissionName,Config.Missions[MissionName].RecordedCheckpoints,Config.Missions[MissionName].Events)
+				TriggerClientEvent("mrpStreetRaces:createRace_cl", source, 1, 1, 300000, Config.Missions[MissionName].CheckpointsStartPos, Config.Missions[MissionName].RecordedCheckpoints)
+			end
 			--send host the mission triggered flag if it is true
 			if MissionTriggered then 
 				TriggerClientEvent('mt:TriggerMission', -1,MissionName)  
@@ -924,6 +1043,11 @@ Citizen.CreateThread(function()
         if voteActive then
             if voteCount == minVoteAmt then
 				if ActiveMission and MissionName~="N/A" then
+					if Config.Missions[MissionName].Type=="Checkpoint" then 
+						--print("cance race")
+						TriggerEvent("mrpStreetRaces:cancelRace_sv")
+					end					
+				
 					ActiveMission=false
 					--MissionName="N/A" --< **Leave the mission as is, so the missions will rotate**
 					IsRandomMissionHostageCount = 0

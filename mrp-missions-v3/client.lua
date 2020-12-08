@@ -43,6 +43,112 @@ PedDoctorModel=nil
 GlobalBackup=nil
 GlobalBackupIndex=0
 
+--[[
+local entitys = {} --entitys table
+Citizen.CreateThread(function()			 
+
+while true do
+Wait(0)		
+
+local player = GetPlayerPed(-1)
+local pos = GetEntityCoords(player,1)
+local ground 
+
+if #entitys < 30 then--repeat until 15 entitys are spawned
+
+RequestModel("STRATUM")
+while not HasModelLoaded("STRATUM") or not HasCollisionForModelLoaded("STRATUM") do --for each types of entity
+Wait(1)
+end			    
+
+--RequestModel("A_F_M_BODYBUILD_01")
+--while not HasModelLoaded("A_F_M_BODYBUILD_01") or not HasCollisionForModelLoaded("A_F_M_BODYBUILD_01") do
+--Wait(1)
+--end	
+
+--RequestModel("prop_barbell_100kg")
+--while not HasModelLoaded("prop_drug_package") or not HasCollisionForModelLoaded("prop_barbell_100kg") do
+--Wait(1)
+--end					
+
+posX = pos.x+math.random(-5000,5000)--radius example
+posY = pos.y+math.random(-5000,5000)--radius example
+Z = pos.z+999.0
+
+ground,posZ = GetGroundZFor_3dCoord(posX+.0,posY+.0,Z,1)--set Z pos as on ground
+
+--if(ground) then--if ground find
+--print("found ground")	  
+entity = CreateVehicle("STRATUM",posX,posY,posZ,0.0, true, true)--vehicle example
+--entity = CreatePed(4,"A_F_M_BODYBUILD_01",posX,posY,posZ,0.0, true, true)--peds example
+--entity = CreateObject(GetHashKey("prop_barbell_100kg"),posX,posY,posZ,true, false, true)--object example
+SetEntityAsMissionEntity(entity, true, true)--for it to don't be delete if too far from players
+
+if posZ  == 0.0 then 
+DecorSetInt(entity,"mrpcheckspawn",0)
+print("entity at 0.0")
+FreezeEntityPosition(entity,true)
+else
+print("entity at "..posZ)
+DecorSetInt(entity,"mrpcheckspawn",1)
+TriggerServerEvent("sv:rescuehostage",DecorGetInt(entity,"mrpcheckspawn"),"mrpcheckspawn")
+end
+
+table.insert(entitys,entity)--insert entity in tables
+
+local blip = AddBlipForEntity(entity)--add blip for entity
+SetBlipSprite(blip,66)
+SetBlipColour(blip,46)
+BeginTextCommandSetBlipName("STRING")
+AddTextComponentString("Spawned entity")
+EndTextCommandSetBlipName(blip)
+
+
+--end	
+--else 
+--print("posZ"..posZ)	
+--print("not found ground")	              			   
+--end
+end	
+
+ --this part avoid entity to spawn in water
+ for i, entity in pairs(entitys) do
+     if IsEntityInWater(entity) then--detect if entity is in water.If in water the entity is deleted and the loop restart until the 15 entitys are well on ground
+	    print("entity in water...deleted")
+		local model = GetEntityModel(entity)
+	    SetEntityAsNoLongerNeeded(entity)
+		SetModelAsNoLongerNeeded(model)
+	    DeleteEntity(entity)
+	    table.remove(entitys,i)	
+	 end
+	 local checkpoint = GetEntityCoords(entity)
+	
+	 if GetDistanceBetweenCoords(pos.x, pos.y, pos.z, checkpoint.x, checkpoint.y, 0, false) < 300 and DecorGetInt(entity,"mrpcheckspawn") == 0 then
+		 
+		 --if checkpoint.z == 0.0 then
+		 print(checkpoint.z)
+		-- Z = 1999.0
+		 --ground,posZ = GetGroundZFor_3dCoord(checkpoint.x, checkpoint.y,Z,1)
+		 --print(posZ)
+		
+			Z = 1999.0
+			ground,posZ = GetGroundZFor_3dCoord(checkpoint.x, checkpoint.y,Z,1)
+			if ground then
+				FreezeEntityPosition(entity,false)
+				SetEntityCoords(entity,checkpoint.x, checkpoint.y, posZ)
+				print(i.." grounded:"..posZ)
+				DecorSetInt(entity,"mrpcheckspawn",1)
+			else
+				print(i.." grounded:"..tostring(ground))
+			end
+			
+		--end
+	 end
+ end
+ ------------------------------------------
+end
+end)
+]]--
 
 
 local MissionDoneSMS=false
@@ -78,7 +184,8 @@ local mrpvehsafehousemaxG = 0
 local mrpplayermissioncountG = 0
 local mrpplayermoneyG = 0
 local mrprescuecountG = 0
-
+local mrpcheckpointG = 0
+local mrpcheckpointsclaimedG = 0
 local playerwasinmissionG = 0
 
 --Used for Type="HostageRescue" when IsRandom=true
@@ -149,8 +256,13 @@ DecorRegister("mrppedskydiver",1) --used to single out parachuting enemies
 DecorRegister("mrppedskydiverexplode",1) --used to single out enemies who left aircraft but never opened chute
 DecorRegister("mrppedskydivertarget",1) --used to single out which client the parachuting ped targets
 
+DecorRegister("mrpvehdidGround",1) --used for zgrounding peds and vehicles in random missions
+
 DecorRegister("mrpoptin",1)
 DecorRegister("mrpoptout",1)
+DecorRegister("mrpcheckpoint",1) --used for checkpoint races
+DecorRegister("mrpcheckpointsclaimed",1) --used for checkpoint races
+
 --DecorRegister("mrpoptin_teleportcheck",1) --bit of a hack
 
 --DecorRegisterLock()
@@ -291,6 +403,15 @@ function findBestSafeHouseLocation(randomlocation)
 end
 
 
+RegisterNetEvent("mt:getmillisecondsleft")
+AddEventHandler("mt:getmillisecondsleft", function()
+local timeLeft = MilliSecondsLeft
+--print("mt:getmillisecondsleft called:"..MilliSecondsLeft)
+TriggerEvent('mrpStreetRaces:getmillisecondsleft', timeLeft) --how to get source?
+
+end)
+
+
 
 RegisterCommand("mission", function(source, args, rawCommand)
     input = args[1]
@@ -345,6 +466,33 @@ RegisterCommand("mission", function(source, args, rawCommand)
 								--if a water/boat mission, make it only Assassinate
 								rMissionType = "Assassinate"
 							end
+							
+							if Config.Missions[MissionName].Type=="Checkpoint" then 
+								if getMissionConfigProperty(MissionName, "CheckpointsDoLand") and 
+								getMissionConfigProperty(MissionName, "SpawnCheckpointsOnRoadsOnly") then
+								
+									rIsRandomSpawnAnywhereInfo = doLandBattle(MissionName)
+									local retval1, coords1 = GetClosestVehicleNode(rIsRandomSpawnAnywhereInfo[1].x,rIsRandomSpawnAnywhereInfo[1].y, rIsRandomSpawnAnywhereInfo[1].z, 1)
+									rIsRandomSpawnAnywhereInfo[1]=coords1
+								elseif getMissionConfigProperty(MissionName, "CheckpointsDoLand") then
+								
+									rIsRandomSpawnAnywhereInfo = doLandBattle(MissionName)
+								elseif getMissionConfigProperty(MissionName, "CheckpointsDoWater") then
+									rIsRandomSpawnAnywhereInfo = doBoatBattle(MissionName)
+								elseif  getMissionConfigProperty(MissionName, "CheckpointsDoWaterAndLand") then
+									rIsRandomSpawnAnywhereInfo = getRandomAnywhereLocation(MissionName)
+									
+									--not on water...
+									if not rIsRandomSpawnAnywhereInfo[2] and getMissionConfigProperty(MissionName, "SpawnCheckpointsOnRoadsOnly") then 
+										local retval1, coords1 = GetClosestVehicleNode(rIsRandomSpawnAnywhereInfo[1].x,rIsRandomSpawnAnywhereInfo[1].y, rIsRandomSpawnAnywhereInfo[1].z, 1)
+										rIsRandomSpawnAnywhereInfo[1]=coords1
+									
+									end
+								
+								
+								end	
+
+							end							
 						
 						end
 						--[[
@@ -401,8 +549,19 @@ RegisterCommand("mission", function(source, args, rawCommand)
 						--print(getMissionConfigProperty(input, "RandomMissionPositions")[rMissionLocationIndex].z)
 						TriggerEvent("SpawnRandomPed", input,rMissionType, math.random(getMissionConfigProperty(MissionName, "RandomMissionMinPedSpawns"), getMissionConfigProperty(MissionName, "RandomMissionMaxPedSpawns")), math.random(getMissionConfigProperty(MissionName, "RandomMissionMinVehicleSpawns"),getMissionConfigProperty(MissionName, "RandomMissionMaxVehicleSpawns")),rMissionLocationIndex,rIsRandomSpawnAnywhereInfo)
 						
+
+						--NEW CHECKPOINT CODE. 
+						--print("chk1")
+						--print(rSafeHouseLocationIndex)
+						if(rMissionType=="Checkpoint") then 
+							generateCheckpointsAndEvents(MissionName,rSafeHouseLocationIndex,rIsRandomSpawnAnywhereInfo)						
+						end
 					else
-						
+					
+						if Config.Missions[MissionName].Type=="Checkpoint" then 
+							TriggerServerEvent("mrpStreetRaces:createRace_sv",1, 300000, Config.Missions[MissionName].CheckpointsStartPos, Config.Missions[MissionName].RecordedCheckpoints, 360000)				
+						end					
+					
 						TriggerEvent("SpawnPed", input)
 					end
 					
@@ -434,6 +593,7 @@ RegisterCommand("stop", function(source, args, rawCommand)
 			--TriggerEvent("DONE", MissionName) --ghk needed?
 			aliveCheck()
 			MissionName = "N/A"
+			
 		--else
 			--print("made it 4")
 			--Active = 0
@@ -494,6 +654,29 @@ function getPreferrableSeatId(input,vehmodel)
 	return
 
 end 
+
+
+RegisterNetEvent("mt:generateCheckpointsAndEvents")
+AddEventHandler("mt:generateCheckpointsAndEvents", function(MissionName,recordedCheckpoints,Events)
+	--print(#Events)
+	Config.Missions[MissionName].Events=Events
+	--[[
+	for index, data in ipairs(Events) do
+    print(index)
+
+    for key, value in pairs(data) do
+        print('\t', key, value)
+		if key=="Position" then
+		print("Position size:"..#value)
+		--print("coordsx="..value.x)
+		--print("coordsy="..value.y)
+		--print("coordsz="..value.z)
+		end
+    end
+end
+]]--
+end)
+
 
 RegisterNetEvent("mt:dotargetpassenger")
 AddEventHandler('mt:dotargetpassenger', function(ped,pvehicle,tseatid)
@@ -638,46 +821,46 @@ AddEventHandler("mt:UpdateEvents", function(k,PlayerServerId)
 	--print("mt:UpdateEvents called")
 	--doParaDrop=false
 	if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
-		
-		 Config.Missions[MissionName].Events[k].done = PlayerServerId
-		 if Config.Missions[MissionName].Events[k].Type=="Paradrop" then 
-			if not Config.Missions[MissionName].Events[k].Message then 
-				Notify("~r~An enemy paradrop has deployed!")
-			else 
-				Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
+		if getMissionConfigProperty(MissionName, "AnnounceEvents") then 
+			 Config.Missions[MissionName].Events[k].done = PlayerServerId
+			 if Config.Missions[MissionName].Events[k].Type=="Paradrop" then 
+				if not Config.Missions[MissionName].Events[k].Message then 
+					Notify("~r~An enemy paradrop has deployed!")
+				else 
+					Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
+				end
+				
+			elseif Config.Missions[MissionName].Events[k].Type=="Aircraft" then
+				if not Config.Missions[MissionName].Events[k].Message then 
+					Notify("~r~An enemy aircraft has deployed!")
+				else 
+					Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
+				end			
+				
+			elseif Config.Missions[MissionName].Events[k].Type=="Vehicle" then
+				if not Config.Missions[MissionName].Events[k].Message then 			
+					Notify("~r~An enemy vehicle has deployed!")	
+				else 
+					Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
+				end		
+				
+			elseif Config.Missions[MissionName].Events[k].Type=="Squad" then
+				if not Config.Missions[MissionName].Events[k].Message then 			
+					Notify("~r~An enemy squad has deployed!")
+				else 
+					Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
+				end			
+				
+				
+			elseif Config.Missions[MissionName].Events[k].Type=="Boat" then
+				if not Config.Missions[MissionName].Events[k].Message then 			
+					Notify("~r~An enemy boat has deployed!")
+				else 
+					Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
+				end
+				
 			end
-			
-		elseif Config.Missions[MissionName].Events[k].Type=="Aircraft" then
-			if not Config.Missions[MissionName].Events[k].Message then 
-				Notify("~r~An enemy aircraft has deployed!")
-			else 
-				Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
-			end			
-			
-		elseif Config.Missions[MissionName].Events[k].Type=="Vehicle" then
-			if not Config.Missions[MissionName].Events[k].Message then 			
-				Notify("~r~An enemy vehicle has deployed!")	
-			else 
-				Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
-			end		
-			
-		elseif Config.Missions[MissionName].Events[k].Type=="Squad" then
-			if not Config.Missions[MissionName].Events[k].Message then 			
-				Notify("~r~An enemy squad has deployed!")
-			else 
-				Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
-			end			
-			
-			
-		elseif Config.Missions[MissionName].Events[k].Type=="Boat" then
-			if not Config.Missions[MissionName].Events[k].Message then 			
-				Notify("~r~An enemy boat has deployed!")
-			else 
-				Notify("~r~"..Config.Missions[MissionName].Events[k].Message)
-			end
-			
-		end
-	
+		end 
 	end
 	
 end)
@@ -730,7 +913,7 @@ function checkSpawnLocations(MissionName, Peds, Vehicles,Props,Events)
 			end
 			
 		end
-		
+		--print("Events type:"..type(Events))
 		if (Active == 1) and  MissionName ~="N/A" then 
 		if Config.Missions[MissionName].Events then 			
 				for i, v in pairs(Events) do
@@ -920,6 +1103,35 @@ AddEventHandler("mt:startnextmission", function(nextmission)
 								--if a water/boat mission, make it only Assassinate
 								rMissionType = "Assassinate"
 							end
+							
+							if Config.Missions[MissionName].Type=="Checkpoint" then 
+								if getMissionConfigProperty(MissionName, "CheckpointsDoLand") and 
+								getMissionConfigProperty(MissionName, "SpawnCheckpointsOnRoadsOnly") then
+								
+									rIsRandomSpawnAnywhereInfo = doLandBattle(MissionName)
+									local retval1, coords1 = GetClosestVehicleNode(rIsRandomSpawnAnywhereInfo[1].x,rIsRandomSpawnAnywhereInfo[1].y, rIsRandomSpawnAnywhereInfo[1].z, 1)
+									rIsRandomSpawnAnywhereInfo[1]=coords1
+								elseif getMissionConfigProperty(MissionName, "CheckpointsDoLand") then
+								
+									rIsRandomSpawnAnywhereInfo = doLandBattle(MissionName)
+								elseif getMissionConfigProperty(MissionName, "CheckpointsDoWater") then
+									rIsRandomSpawnAnywhereInfo = doBoatBattle(MissionName)
+								elseif  getMissionConfigProperty(MissionName, "CheckpointsDoWaterAndLand") then
+									rIsRandomSpawnAnywhereInfo = getRandomAnywhereLocation(MissionName)
+									
+									--not on water...
+									if not rIsRandomSpawnAnywhereInfo[2] and getMissionConfigProperty(MissionName, "SpawnCheckpointsOnRoadsOnly") then 
+										local retval1, coords1 = GetClosestVehicleNode(rIsRandomSpawnAnywhereInfo[1].x,rIsRandomSpawnAnywhereInfo[1].y, rIsRandomSpawnAnywhereInfo[1].z, 1)
+										rIsRandomSpawnAnywhereInfo[1]=coords1
+									
+									end
+								
+								
+								end	
+
+							end											
+							
+							
 						
 						end
 						
@@ -948,7 +1160,16 @@ AddEventHandler("mt:startnextmission", function(nextmission)
 					
 					if(Config.Missions[nextmission].IsRandom) then 
 						TriggerEvent("SpawnRandomPed", nextmission,rMissionType, math.random(getMissionConfigProperty(MissionName, "RandomMissionMinPedSpawns"), getMissionConfigProperty(MissionName, "RandomMissionMaxPedSpawns")), math.random(getMissionConfigProperty(MissionName, "RandomMissionMinVehicleSpawns"),getMissionConfigProperty(MissionName, "RandomMissionMaxVehicleSpawns")),rMissionLocationIndex,rIsRandomSpawnAnywhereInfo)
+						
+						if(rMissionType=="Checkpoint") then 
+							generateCheckpointsAndEvents(MissionName,rSafeHouseLocationIndex,rIsRandomSpawnAnywhereInfo)						
+						end						
+						
 					else
+					
+						if Config.Missions[MissionName].Type=="Checkpoint" then 
+							TriggerServerEvent("mrpStreetRaces:createRace_sv",1, 300000, Config.Missions[MissionName].CheckpointsStartPos, Config.Missions[MissionName].RecordedCheckpoints, 360000)				
+						end							
 						TriggerEvent("SpawnPed", nextmission)
 					end					
 					
@@ -1013,6 +1234,10 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 				rMissionDestinationIndex = MissionDestinationIndex				
 			end
 			
+			--Events generated on the server for Checkpoint mission.
+			if(Config.Missions[MissionName].Type == "Checkpoint") then 
+				Config.Missions[MissionName].Events=Events
+			end
 			--check if we need to update spawn locations if an IndoorsMission=true mission
 			checkSpawnLocations(MissionName, Peds, Vehicles,Props,Events)
 			--update IsRandomDoEvent
@@ -1055,8 +1280,38 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 							--if a water/boat mission, make it only Assassinate
 							rMissionType = "Assassinate"
 						end
+						
+							if Config.Missions[MissionName].Type=="Checkpoint" then 
+								if getMissionConfigProperty(MissionName, "CheckpointsDoLand") and 
+								getMissionConfigProperty(MissionName, "SpawnCheckpointsOnRoadsOnly") then
+								
+									rIsRandomSpawnAnywhereInfo = doLandBattle(MissionName)
+									local retval1, coords1 = GetClosestVehicleNode(rIsRandomSpawnAnywhereInfo[1].x,rIsRandomSpawnAnywhereInfo[1].y, rIsRandomSpawnAnywhereInfo[1].z, 1)
+									rIsRandomSpawnAnywhereInfo[1]=coords1
+								elseif getMissionConfigProperty(MissionName, "CheckpointsDoLand") then
+								
+									rIsRandomSpawnAnywhereInfo = doLandBattle(MissionName)
+								elseif getMissionConfigProperty(MissionName, "CheckpointsDoWater") then
+									rIsRandomSpawnAnywhereInfo = doBoatBattle(MissionName)
+								elseif  getMissionConfigProperty(MissionName, "CheckpointsDoWaterAndLand") then
+									rIsRandomSpawnAnywhereInfo = getRandomAnywhereLocation(MissionName)
+									
+									--not on water...
+									if not rIsRandomSpawnAnywhereInfo[2] and getMissionConfigProperty(MissionName, "SpawnCheckpointsOnRoadsOnly") then 
+										local retval1, coords1 = GetClosestVehicleNode(rIsRandomSpawnAnywhereInfo[1].x,rIsRandomSpawnAnywhereInfo[1].y, rIsRandomSpawnAnywhereInfo[1].z, 1)
+										rIsRandomSpawnAnywhereInfo[1]=coords1
+									
+									end
+								
+								
+								end	
+
+							end										
+						
 							
 					end
+					
+					
 					
 						if getMissionConfigProperty(MissionName, "UseSafeHouse") and getMissionConfigProperty(MissionName, "UseSafeHouseLocations") then
 							
@@ -1085,7 +1340,21 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 			--print("MADE IT")
 			if(Config.Missions[MissionName].IsRandom) then 
 				TriggerEvent("SpawnRandomPed", input,rMissionType, math.random(getMissionConfigProperty(MissionName, "RandomMissionMinPedSpawns"), getMissionConfigProperty(MissionName, "RandomMissionMaxPedSpawns")), math.random(getMissionConfigProperty(MissionName, "RandomMissionMinVehicleSpawns"),getMissionConfigProperty(MissionName, "RandomMissionMaxVehicleSpawns")),rMissionLocationIndex,rIsRandomSpawnAnywhereInfo)
+					
+				--NEW CHECKPOINT CODE. 
+				--print("chk1")
+				--print(rSafeHouseLocationIndex)
+				--SHOULD BE FINE
+				if(rMissionType=="Checkpoint") then 
+					generateCheckpointsAndEvents(MissionName,rSafeHouseLocationIndex,rIsRandomSpawnAnywhereInfo)						
+				end							
+				
+				
+				
 			else
+				if Config.Missions[MissionName].Type=="Checkpoint" then 
+					TriggerServerEvent("mrpStreetRaces:createRace_sv",1, 300000, Config.Missions[MissionName].CheckpointsStartPos, Config.Missions[MissionName].RecordedCheckpoints, 360000)				
+				end				
 				TriggerEvent("SpawnPed", input)		
 			end	
 			--wait 5 seconds for the peds to spawn
@@ -1095,6 +1364,8 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 			TriggerEvent("SpawnPedBlips", input)
 			TriggerServerEvent("sv:one",input, Config.Missions[MissionName].MissionTitle, time,rMissionLocationIndex,rMissionType,rIsRandomSpawnAnywhereInfo,rSafeHouseLocationIndex,
 			rMissionDestinationIndex)
+			
+			
 			
 			
 		elseif(currentplayercount > 0) then 
@@ -2405,7 +2676,7 @@ function setBestRandomDestination(randomlocation,input,currentfound)
 end
 
 RegisterNetEvent('DONE')
-AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
+AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,checkpointdata)
 
 	
 		local targetPedsKilledByPlayer = 0
@@ -2455,9 +2726,40 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
 
 		if DecorGetInt(GetPlayerPed(-1),"mrprescuetarget") > 0 then 
 			rescuedIsDefendTarget = 1
-		end		
+		end	
+
+		local GoalReached = blGoalReached
+	    
+		--checkpoint mission data 
+		local claimedcheckpoints = DecorGetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed") --0
+		local claimedwin = false
 		
-		calcCompletionRewards(nontargetPedsKilledByPlayer,targetPedsKilledByPlayer,hostagePedsKilledByPlayer,totalDeadHostages,vehiclePedsKilledByPlayer,bossPedsKilledByPlayer,blGoalReached)
+		if checkpointdata and checkpointdata[#checkpointdata] and checkpointdata[#checkpointdata].PlayerServerId ==GetPlayerServerId(PlayerId()) then 
+			claimedwin = true
+		end
+		
+		--[[ OLDER CODE:
+		if checkpointdata then 
+			for i = 1,#checkpointdata do
+		
+				if ( checkpointdata[i] and checkpointdata[i].checkpointnum and checkpointdata[i].PlayerServerId ==GetPlayerServerId(PlayerId())) then
+					claimedcheckpoints = claimedcheckpoints + 1
+				end
+			end
+			
+			if checkpointdata[#checkpointdata] and checkpointdata[#checkpointdata].PlayerServerId ==GetPlayerServerId(PlayerId()) then 
+				claimedwin = true
+			end
+			
+			--in case is nil, for the calcCompletionRewards to take all args
+			if not GoalReached then 
+				GoalReached = false
+			end
+		end
+		--]]
+		
+		
+		calcCompletionRewards(nontargetPedsKilledByPlayer,targetPedsKilledByPlayer,hostagePedsKilledByPlayer,totalDeadHostages,vehiclePedsKilledByPlayer,bossPedsKilledByPlayer,GoalReached,claimedcheckpoints,claimedwin)
 		if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
 			local msg = ""
 			if(targetPedsKilledByPlayer+nontargetPedsKilledByPlayer) > 0 then
@@ -2484,6 +2786,12 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
 				msg = "~r~Hostages Killed~c~:"..hostagePedsKilledByPlayer
 				Notify(msg)
 			end
+			
+			if(claimedcheckpoints) > 0  then
+				msg = "~y~Claimed Checkpoints~c~:"..claimedcheckpoints
+				Notify(msg)
+			end
+			
 			if not getMissionConfigProperty(MissionName, "MissionShareMoney")  then 
 				Notify("~g~Money Earned~c~: $"..playerMissionMoney)
 			end
@@ -2585,6 +2893,8 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
 			DecorRemove(ped, "mrprescuetarget")
 			DecorRemove(ped, "mrppedskydiver")
 			DecorRemove(ped, "mrppedskydivertarget")
+			DecorRemove(ped, "mrpvehdidGround")
+			
 			DeleteEntity(ped)
 			
 			--print("del dead")
@@ -2608,6 +2918,7 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
 			DecorRemove(ped, "mrppeddefendtarget")
 			DecorRemove(ped, "mrprescuetarget")
 			DecorRemove(ped, "mrppedkilledbyplayervehicle")
+			DecorRemove(ped, "mrpvehdidGround")
 			
 			DeleteEntity(ped)
 			
@@ -2627,6 +2938,7 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
 			DecorRemove(ped, "mrppeddefendtarget")
 			DecorRemove(ped, "mrprescuetarget")
 			DecorRemove(ped, "mrppedkilledbyplayervehicle")
+			DecorRemove(ped, "mrpvehdidGround")
 			DeleteEntity(ped)
 			
 			--print("del id2")
@@ -2681,6 +2993,7 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
 				DeleteEntity(veh)
 			
 				DecorRemove(veh, "mrpvehdid")
+				DecorRemove(veh, "mrpvehdidGround")
 			--else
 				
 			end 
@@ -2817,6 +3130,8 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached)
 	DecorSetInt(GetPlayerPed(-1),"mrprescuecount",0)
 	DecorSetInt(GetPlayerPed(-1),"mrpobjrescuecount",0)
 	DecorSetInt(GetPlayerPed(-1),"mrprescuetarget",0)
+	DecorSetInt(GetPlayerPed(-1),"mrpcheckpoint",0)
+	DecorSetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed",0)
 	--print("DONE...mrprescuecount:"..DecorGetInt(GetPlayerPed(-1),"mrprescuecount"))
 	playerMissionMoney = 0
 	--print('playerMissionMoney is:'..playerMissionMoney)
@@ -2991,7 +3306,7 @@ AddEventHandler('SpawnPedBlips', function(input)
 	--end
 	
 	if getMissionConfigProperty(input, "MissionTriggerRadius") then 
-	
+		
 		local mcoords = {x=0,y=0,z=0}
 		if getMissionConfigProperty(input, "MissionTriggerStartPoint") then 
 			
@@ -3028,9 +3343,10 @@ AddEventHandler('SpawnPedBlips', function(input)
 			 
 			 --if mission is stopped, exit out of the event:
 			if Active == 0 or MissionName =="N/A" then
+				
 				return
 			end	
-					 
+					 --print('spawnpedblips2 called1')
 		until playerTriggered or MissionTriggered or MissionTimeOut
 		
 		if MissionTimeOut then 
@@ -3042,7 +3358,7 @@ AddEventHandler('SpawnPedBlips', function(input)
 			--TriggerEvent("DONE", MissionName) --ghk needed?
 			aliveCheck() --<-- NEEDED?
 			MissionName = "N/A"			
-			
+			--print('spawnpedblips2 called2')
 			return
 		
 		end
@@ -3058,6 +3374,7 @@ AddEventHandler('SpawnPedBlips', function(input)
 			Wait(1000)
 			--if mission is stopped, exit out of the event:
 			if Active == 0 or MissionName =="N/A" then
+				--print('spawnpedblips2 called3')
 				return
 			end	
 					 			
@@ -3070,7 +3387,7 @@ AddEventHandler('SpawnPedBlips', function(input)
 				--TriggerEvent("DONE", MissionName) --ghk needed?
 				aliveCheck() --<-- NEEDED?
 				MissionName = "N/A"	
-
+--print('spawnpedblips2 called4')
 				return
 				
 			end 			
@@ -3241,6 +3558,7 @@ AddEventHandler('SpawnPedBlips', function(input)
 	
 	end
 	]]--
+	--print("spawnpedblips")
 	PedsSpawned = 1 --needed for other clients
     aliveCheck()
 end)
@@ -3276,19 +3594,25 @@ local ground
 		if blFindGroundZ then 
 			
 			for i,height in ipairs(groundCheckHeights) do
-				RequestCollisionAtCoord(x, y, height)
-				Wait(0) --< NEEDED?
+			
+			--for i=0, 800 do
+			--print("i"..i)
+				RequestCollisionAtCoord(x, y, i*1.0)
+				--Wait(0) --< NEEDED?
 				--SetEntityCoordsNoOffset(Ped, rXoffset,rYoffset,height, 0, 0, 1)
-				ground,zGround = GetGroundZFor_3dCoord(x,y,height)
+				ground,zGround = GetGroundZFor_3dCoord(x,y,i*1.0)
 				if(ground) then
 					zGround = zGround + 3
 					groundFound = true
 					break;
 				end
+			--end
+			 --Citizen.Wait(5)
 			end
 			if(not groundFound) or zGround < 0.0 then --zGround < 0.0 is water. turn off for boat missions
 				--print("checkAndGetGroundZ: findZoffset:"..zGround) 
 				--print("checkAndGetGroundZ: groundFound:"..tostring(groundFound)) 
+				--print("zground = 0.0")
 				zGround = 0.0 
 			else 
 				--print("checkAndGetGroundZ: findZoffset:"..zGround) 
@@ -3362,6 +3686,224 @@ local ground
 
 end
 
+function generateCheckpointsAndEvents(MissionName,SafeHouseLocationIndex,MissionInfo)
+
+    local recordedCheckpoints = {}
+	local Events = {}
+	
+	local waypointCoords = getMissionConfigProperty(MissionName, "SafeHouseLocations")[SafeHouseLocationIndex].BlipSL.Position
+	
+	local retval, coords = GetClosestVehicleNode(waypointCoords.x, waypointCoords.y, waypointCoords.z, 1)
+	
+	
+	if getMissionConfigProperty(MissionName, "CheckpointsDoWater") then 
+		--print("SAFE HOUSE SB START")
+		waypointCoords = getMissionConfigProperty(MissionName, "SafeHouseLocations")[SafeHouseLocationIndex].BlipSB.Position
+	
+	end
+	
+	
+	--coords = waypointCoords
+	--local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+    --SetBlipColour(blip, 5)
+    --SetBlipAsShortRange(blip, true)
+    --ShowNumberOnBlip(blip, #recordedCheckpoints+1)
+	 -- Add checkpoint to array
+    --table.insert(recordedCheckpoints, {blip = blip, coords = coords})
+	--print("generateCheckpointsAndEvents")
+	local checkpoints = math.random(getMissionConfigProperty(MissionName, "MaxCheckpoints")) --MissionInfo has the last checkpoint
+	--Get last checkpoint index:
+	local k
+	for i = 1,checkpoints,1 
+	do 
+		local retval 
+		local coords
+		
+			
+		if getMissionConfigProperty(MissionName, "CheckpointsDoLand") then 
+			retval = doLandBattle(MissionName)
+			coords = retval[1]
+		
+			if getMissionConfigProperty(MissionName, "SpawnCheckpointsOnRoadsOnly") then
+				--print("closestroad")
+				local retval1, coords1 = GetClosestVehicleNode(coords.x,coords.y, coords.z, 1)
+				coords = coords1
+			end
+		
+		elseif getMissionConfigProperty(MissionName, "CheckpointsDoWater") then 
+			retval = doBoatBattle(MissionName)
+			coords = retval[1]	
+
+		elseif getMissionConfigProperty(MissionName, "CheckpointsDoWaterAndLand") then
+			retval = getRandomAnywhereLocation(MissionName)
+			coords = retval[1]	
+			
+			
+			--spawned on land...
+			if not retval[2] and getMissionConfigProperty(MissionName, "SpawnCheckpointsOnRoadsOnly") then
+				local retval1, coords1 = GetClosestVehicleNode(coords.x,coords.y, coords.z, 1)
+				coords = coords1			
+			
+			end
+			
+		end
+		
+		--print("i=.."..i)
+		--print("coordsx="..coords.x)
+		--print("coordsy="..coords.y)
+		--print("coordsz="..coords.z)
+		
+		--local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+		--SetBlipColour(blip, 5)
+		--SetBlipAsShortRange(blip, true)
+		--ShowNumberOnBlip(blip, #recordedCheckpoints+1)	   
+	    table.insert(recordedCheckpoints, {blip = blip, coords = coords})
+		local numEventsForCheckpoint = math.random(1,3)
+		--create events around each checkpoint
+		k=i
+		for j=1,math.random(2),1
+		do
+			Events = createEvents(coords,Events,i,retval[2])
+			
+		end
+		
+		k=k+1
+		--print("k:"..k)
+	end
+	
+	--last checkpoint for mission end:
+	coords = MissionInfo[1]
+	--local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+	--SetBlipColour(blip, 5)
+	--SetBlipAsShortRange(blip, true)
+	--ShowNumberOnBlip(blip, #recordedCheckpoints+1)	   
+	table.insert(recordedCheckpoints, {blip = blip, coords = coords})
+	local numEventsForCheckpoint = math.random(1,3)
+		--create events around each checkpoint
+		
+		for j=1,math.random(3,3),1
+		do
+		 Events = createEvents(coords,Events,k,MissionInfo[2])
+		end	
+	
+	
+	Config.Missions[MissionName].Events = Events
+	--print("sv:generateCheckpointsAndEvents CALLED")
+	TriggerServerEvent("sv:generateCheckpointsAndEvents",MissionName, recordedCheckpoints,Config.Missions[MissionName].Events,waypointCoords)
+	 
+
+
+end
+
+function createEvents(coords,Events,checkpoint,isWater)
+local eventtypes = {"Squad","Vehicle","Paradrop","Aircraft"}
+local eventtype= eventtypes[math.random(#eventtypes)]
+
+	if isWater then
+		eventtypes = {"Boat","Boat","Boat","Boat","Aircraft"}
+		eventtype= eventtypes[math.random(#eventtypes)]
+	end
+	
+	if getMissionConfigProperty(MissionName, "CheckpointsAirBattle") then 
+		
+		eventtype = "Aircraft"
+	
+	end
+	
+	
+
+	--print("evt"..eventtype)
+	--print("checkpoint"..checkpoint)
+	--print("iswater:"..tostring(isWater))
+	if eventtype=="Squad" and not isWater then
+		local isBoss = false
+		local NumberPeds = math.random(10,25)
+		if math.random(4) > 3 then
+			isBoss = true
+			NumberPeds = math.random(5,10)
+		end
+		local radius =math.random(200.0,300.0)*1.0
+		table.insert(Events, {Type="Squad", Position = {x=coords.x,y=coords.y,z=coords.z},
+		 Size     = {radius=radius},
+		 NumberPeds=NumberPeds,isBoss=isBoss, CheckGroundZ=true,
+		 SquadSpawnRadius=math.random(20,100),checkpoint=checkpoint,Message=nil})	
+		 
+		 --local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)
+	
+	elseif eventtype=="Vehicle" and not isWater then
+		local radius =math.random(200.0,1000.0)*1.0
+		table.insert(Events, {Type="Vehicle", Position = {x=coords.x+math.random(-10,10),y=coords.y + math.random(-10,10), z=coords.z},
+		Size     = {radius=radius},
+		FacePlayer = true,checkpoint=checkpoint,Message=nil}
+		)	
+	
+		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)
+
+	elseif eventtype=="Paradrop" and not isWater then
+		local radius = math.random(200.0,300.0)*1.0
+		table.insert(Events, {Type="Paradrop", Position = {x=coords.x,y=coords.y,z=coords.z},
+		 Size     = {radius=radius},
+		NumberPeds=math.random(10,25),checkpoint=checkpoint,
+		SpawnAt =  {x=coords.x,y=coords.y,z=coords.z},Message=nil}
+		 )
+		-- local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)
+	
+	elseif eventtype=="Aircraft" then
+		local radius = math.random(1000.0,3000.0)*1.0
+		table.insert(Events, {Type="Aircraft", Position = {x=coords.x+math.random(-50,50),y=coords.y+math.random(-50,50),z=coords.z},
+		SpawnAt =  {x=coords.x,y=coords.y,z=coords.z},
+		Size     = {radius=radius},
+		SpawnHeight =math.random(200.0,400.0),
+		FacePlayer = true,checkpoint=checkpoint,Message=nil}
+		)
+		
+		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)
+		
+	elseif eventtype=="Boat" and isWater then
+		local radius = math.random(200.0,500.0)*1.0
+		table.insert(Events, {Type="Boat", Position = {x=coords.x+math.random(-10,10),y=coords.y+math.random(-10,10),z=coords.z + 5.0},
+		Size     = {radius=radius},
+		FacePlayer = true,checkpoint=checkpoint,Message=nil}
+		)
+		
+		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)		
+		
+	end
+	
+	
+
+
+	return Events
+end
+
+
+--finds only locations where there is water
+function doBoatBattle(MissionName)
+
+	local doBoatMission = false
+	local tries = 0
+	local retval -- = {false,{x=0.0,y=0.0,z=0.0}}
+	repeat
+		retval = getRandomAnywhereLocation(MissionName)
+		doBoatMission = retval[2]
+		tries = tries + 1
+		Wait(0)
+
+	until( doBoatMission == true or tries > 100 )
+
+	return retval
+end
+
 --finds only locations where there is land
 function doLandBattle(MissionName)
 
@@ -3421,6 +3963,8 @@ function getRandomAnywhereLocation(MissionName)
 		--randomplace.z = randomplace.z - 3 --**take away the + 3 that checkAndGetGroundZ added**
 	--end
 	
+	
+
 	--randomplace.z = checkAndGetGroundZ(randomplace.x,randomplace.y,randomplace.z,true)
 	--print("groundz3 at:"..randomplace.z)
 	
@@ -4621,7 +5165,7 @@ if not doBoatMission then
 		
 		
         RequestModel(GetHashKey(randomPedModelHash))
-        while not HasModelLoaded(GetHashKey(randomPedModelHash)) or not HasCollisionForModelLoaded(GetHashKey(randomPedModelHash)) do
+        while not HasModelLoaded(GetHashKey(randomPedModelHash)) do
           Wait(1)
         end
 		local raytestsuccess = true
@@ -4635,8 +5179,9 @@ if not doBoatMission then
 			
 			--rYoffset = randomLocation.y + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)		
 	
-	
-		if not randomLocation.force then --force is on, means we are OK to not check. 
+		
+		if not getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") and not randomLocation.force then --force is on, means we are OK to not check. 
+
 				--print("FORCE OFF")
 				--if spawnAircraft == 0 then --Also dont check for aircraft, they spawn + 200 above
 				
@@ -4649,11 +5194,13 @@ if not doBoatMission then
 			
 					rYoffset = randomLocation.y + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)	
 					
+					
 					rZoffset = checkAndGetGroundZ(rXoffset, rYoffset,randomLocation.z,false) --LAST ARG: blFindGroundZ 
 						if rZoffset == 0.0 then --flag for checkspawn
 							checkspawns = true --global for all clients and mission
 							checkthisspawn=true
-							rZoffset = randomLocation.z   --***SPAWN AT THE DEFAULT Z POSITION? YES It will be corrected later
+							--rZoffset = randomLocation.z   --***SPAWN AT THE DEFAULT Z POSITION? YES It will be corrected later
+							
 							--print("NOT AIRCRAFT")
 						end
 					--else 
@@ -4694,7 +5241,7 @@ if not doBoatMission then
 				until( raytestsuccess == true or tries > 250 )
 			
 			
-		else
+		elseif not getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") and randomLocation.force then 
 				IsRandomMissionForceSpawning=true
 				rXoffset = randomLocation.x + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
 			
@@ -4714,6 +5261,64 @@ if not doBoatMission then
 			
 				--print("FORCE ON")
 				rZoffset = randomLocation.z
+				
+		elseif getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") then 
+				local tries = 0
+				local RandomMissionDoLandBattle = getMissionConfigProperty(input, "RandomMissionDoLandBattle")
+				repeat
+					rXoffset = randomLocation.x + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
+			
+					rYoffset = randomLocation.y + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)	
+					
+					
+					
+					
+
+					
+					rZoffset = checkAndGetGroundZ(rXoffset, rYoffset,randomLocation.z,false) --LAST ARG: blFindGroundZ 
+						if rZoffset == 0.0 then --flag for checkspawn
+							checkspawns = true --global for all clients and mission
+							checkthisspawn=true
+							--rZoffset = randomLocation.z   --***SPAWN AT THE DEFAULT Z POSITION? YES It will be corrected later
+							--print("NOT AIRCRAFT")
+						end
+					--else 
+					--print("AIRCRAFT")
+						--rZoffset = randomLocation.z
+					--end
+					--if spawnAircraft == 0 then --Also dont check for aircraft, they spawn + 200 above
+					local ray = Citizen.InvokeNative( 0x377906D8A31E5586, vector3(rXoffset, rYoffset, rZoffset) + vector3(0.0, 0.0, 1000.0), vector3(rXoffset, rYoffset, rZoffset), -1, -1, 0)
+					--local ray = StartShapeTestRay(vector3(rXoffset, rYoffset, rZoffset) + vector3(0.0, 0.0, 500.0), vector3(rXoffset, rYoffset, rZoffset), -1, -1, 0)
+					-- local _, hit, impactCoords  = Citizen.InvokeNative( 0x3D87450E15D98694, ray,hit)
+					local _, hit, impactCoords = GetRaycastResult(ray) --GetShapeTesResult(ray)
+					-- print("HIT: " .. hit)
+					-- print(("IMPACT COORDS: X = %.4f; Y = %.4f; Z = %.4f"):format(impactCoords.x, impactCoords.y, impactCoords.z))
+					-- print("DISTANCE BETWEEN DROP AND IMPACT COORDS: " ..  #(vector3(dropCoords.x, dropCoords.y, dropCoords.z) - vector3(impactCoords)))
+					if hit == 0 or (hit == 1 and #(vector3(rXoffset, rYoffset, rZoffset) - vector3(impactCoords)) < 0.5) then -- ± 0.5 units
+						--print("ROOFCHECK: vehicle success")
+						raytestsuccess = true
+					else
+						--print("ROOFCHECK: vehicles fail")
+						raytestsuccess = false
+					   
+					end	
+					
+					if RandomMissionDoLandBattle then 
+						local watertest = GetWaterHeight(rXoffset, rYoffset, rZoffset)
+						if watertest  == 1 or watertest  == true then 
+							--water mission
+							--print("water mission at:") 
+							--print(randomplace.x..","..randomplace.y..","..randomplace.z)
+							
+							raytestsuccess = false
+						end
+					end 									
+					
+
+				tries = tries + 1
+				--end				
+				until( raytestsuccess == true or tries > 250 )		
+		
 		end 
 
 		--if(rZoffset <= 0.0) then 
@@ -4771,6 +5376,11 @@ if not doBoatMission then
 		
 			Ped = CreatePed(2, randomPedModelHash, rXoffset, rYoffset, rZoffset, rHeading, true, true)
 			SetModelAsNoLongerNeeded(randomPedModelHash)
+			
+			if rZoffset ==0.0 then 
+				DecorSetInt(Ped,"mrpvehdidGround",1)
+				FreezeEntityPosition(Ped,true)
+			end
 			
 			SetEntityAsMissionEntity(Ped,true,true)
 			
@@ -5211,7 +5821,7 @@ end
 			--print("SPAWNPEDRANDOMVEH")
 		
 			local IsBountyHuntDoBoatsFoundWater = false
-			if not randomLocation.force then --force is on, means we are OK to not check. 
+			if not getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") and not randomLocation.force then --force is on, means we are OK to not check. 
 				--print("FORCE OFF")
 				--if spawnAircraft == 0 then --Also dont check for aircraft, they spawn + 200 above
 				
@@ -5231,7 +5841,7 @@ end
 						if rZoffset == 0.0 then --flag for checkspawn
 							checkspawns = true --global for all clients and mission
 							checkthisspawn=true
-							rZoffset = randomLocation.z   --***SPAWN AT THE DEFAULT Z POSITION? YES It will be corrected later
+							--rZoffset = randomLocation.z   --***SPAWN AT THE DEFAULT Z POSITION? YES It will be corrected later
 							--print("NOT AIRCRAFT")
 						end
 					--else 
@@ -5279,7 +5889,7 @@ end
 								vehiclehash = GetHashKey(veh)
 								RequestModel(vehiclehash)
 								RequestModel(randomPedModelHash)
-								while not HasModelLoaded(vehiclehash) do
+								while not HasModelLoaded(vehiclehash)  do
 								  Wait(1)
 								end
 								
@@ -5348,6 +5958,12 @@ end
 					if raytestsuccess then 
 						--print("hey"..i)
 						PedVehicle = CreateVehicle(vehiclehash, rXoffset, rYoffset, rZoffset + spawnAircraft,  rHeading, 1, 0)
+						
+						if rZoffset ==0.0 and not (IsThisModelABoat(vehiclehash) or IsThisModelAPlane(vehiclehash) or IsThisModelAHeli(vehiclehash)) then 
+							DecorSetInt(PedVehicle,"mrpvehdidGround",1)
+							FreezeEntityPosition(PedVehicle,true)
+						end						
+						
 					end 
 					
 					if not DoesEntityExist(PedVehicle) then 
@@ -5362,7 +5978,7 @@ end
 				until( raytestsuccess == true or tries > 250 )
 			
 			
-			else
+			elseif not getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") and randomLocation.force then
 				IsRandomMissionForceSpawning=true
 				rXoffset = randomLocation.x + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
 			
@@ -5388,7 +6004,174 @@ end
 				if raytestsuccess then 
 						--print("hey"..i)
 						PedVehicle = CreateVehicle(vehiclehash, rXoffset, rYoffset, rZoffset + spawnAircraft,  rHeading, 1, 0)
-				end 							
+						
+						
+					if rZoffset ==0.0 and not (IsThisModelABoat(vehiclehash) or IsThisModelAPlane(vehiclehash) or IsThisModelAHeli(vehiclehash)) then 
+							DecorSetInt(PedVehicle,"mrpvehdidGround",1)
+							FreezeEntityPosition(PedVehicle,true)
+					end						
+						
+				end
+			elseif  getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") then --force is on, means we are OK to not check. 
+				--print("FORCE OFF")
+				--if spawnAircraft == 0 then --Also dont check for aircraft, they spawn + 200 above
+				
+				--rXoffset = randomLocation.x + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
+			
+				--rYoffset = randomLocation.y + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)		
+				
+				local tries = 0
+				local RandomMissionDoLandBattle = getMissionConfigProperty(input, "RandomMissionDoLandBattle")
+				repeat
+					Wait(1)
+					rXoffset = randomLocation.x + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
+			
+					rYoffset = randomLocation.y + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
+					
+
+					
+					
+					rZoffset = checkAndGetGroundZ(rXoffset, rYoffset,randomLocation.z,false) --LAST ARG: blFindGroundZ 
+						if rZoffset == 0.0 then --flag for checkspawn
+							checkspawns = true --global for all clients and mission
+							checkthisspawn=true
+							--rZoffset = randomLocation.z   --***SPAWN AT THE DEFAULT Z POSITION? YES It will be corrected later
+							--print("NOT AIRCRAFT")
+						end
+					--else 
+					--print("AIRCRAFT")
+						--rZoffset = randomLocation.z
+					--end
+					--if spawnAircraft == 0 then --Also dont check for aircraft, they spawn + 200 above
+					local ray = Citizen.InvokeNative( 0x377906D8A31E5586, vector3(rXoffset, rYoffset, rZoffset) + vector3(0.0, 0.0, 1000.0), vector3(rXoffset, rYoffset, rZoffset), -1, -1, 0)
+					--local ray = StartShapeTestRay(vector3(rXoffset, rYoffset, rZoffset) + vector3(0.0, 0.0, 500.0), vector3(rXoffset, rYoffset, rZoffset), -1, -1, 0)
+					-- local _, hit, impactCoords  = Citizen.InvokeNative( 0x3D87450E15D98694, ray,hit)
+					local _, hit, impactCoords = GetRaycastResult(ray) --GetShapeTesResult(ray)
+					-- print("HIT: " .. hit)
+					-- print(("IMPACT COORDS: X = %.4f; Y = %.4f; Z = %.4f"):format(impactCoords.x, impactCoords.y, impactCoords.z))
+					-- print("DISTANCE BETWEEN DROP AND IMPACT COORDS: " ..  #(vector3(dropCoords.x, dropCoords.y, dropCoords.z) - vector3(impactCoords)))
+					if hit == 0 or (hit == 1 and #(vector3(rXoffset, rYoffset, rZoffset) - vector3(impactCoords)) < 0.5) then -- ± 0.5 units
+						--print("ROOFCHECK: vehicle success")
+						raytestsuccess = true
+					else
+						--print("ROOFCHECK: vehicles fail")
+						raytestsuccess = false
+					   
+					end
+					--local IsBountyHuntDoBoatsFoundWater = false
+					if RandomMissionDoLandBattle then 
+						local watertest = GetWaterHeight(rXoffset, rYoffset, rZoffset)
+						--print("water mission at:"..watertest)
+						if watertest  == 1 or watertest  == true then 
+							--water mission
+							 
+							--print(rXoffset..","..rYoffset..","..rZoffset)
+						
+						--override for IsBountyHunt
+
+						if not (getMissionConfigProperty(input, "IsBountyHunt") and getMissionConfigProperty(input, "IsBountyHuntDoBoats") ) and not (getMissionConfigProperty(input, "RandomMissionDoBoats")) then
+							
+							raytestsuccess = false
+						else
+							
+							if (rXoffset > -3500 and rXoffset < 4000) and (rYoffset > -4000 and rYoffset < 7700) then
+								--do boat swap...only if not too far out in water
+								IsBountyHuntDoBoatsFoundWater = true
+								SetModelAsNoLongerNeeded(vehiclehash)							
+								randomPedVehicleHash = randomPedBoatHash
+								veh         =  randomPedVehicleHash
+								vehiclehash = GetHashKey(veh)
+								RequestModel(vehiclehash)
+								RequestModel(randomPedModelHash)
+								while not HasModelLoaded(vehiclehash)  do
+								  Wait(1)
+								end
+								
+								local zGround = checkAndGetGroundZ(rXoffset, rYoffset,  rZoffset + 800.0,true)
+								--print("water mission Z:"..zGround) 
+								if zGround > 0.0 then --flag for checkspawn
+									--randomLocation.z = zGround
+									--rZoffset = zGround	
+										watertest = zGround								
+								end													
+							--print("water mission at:") 
+							rZoffset = 1.0*watertest + 5.0
+							--print(rXoffset..","..rYoffset..","..rZoffset)
+													
+								
+							else
+								raytestsuccess = false
+							end	
+						end	
+							
+						end
+					end
+					
+
+					rHeading = roundToNthDecimal(math.random() + math.random(0,359),2)	
+					
+					--
+					if not (getMissionConfigProperty(input, "IsBountyHunt")) and 
+					IsThisModelABoat(vehiclehash) then 
+						rZoffset = rZoffset + 1.0
+						--print("found boat")
+					end
+					
+					if getMissionConfigProperty(input, "IsDefendTarget") and 
+						spawnAircraft ==0 and not IsThisModelABoat(vehiclehash) then 
+						--print("made it path 1")
+						
+						--LoadAllPathNodes(true)
+						--print("loading path nodes1")
+						--while not AreAllNavmeshRegionsLoaded() do
+							--print("loading path nodes2")
+							--Wait(1)
+						--end					
+						--does not seem to work in city/downtown, vehicles 
+						--get placed in odd places, above commented out code did not seem to help
+						local boolval, npos, heading = GetNthClosestVehicleNodeWithHeading(rXoffset,rYoffset,rZoffset,1,9,3.0,2.5)
+						
+						
+						
+						--local boolval2, npos2, headin2g GetNthClosestVehicleNodeIdWithHeading(rXoffset,rYoffset,rZoffset,1,9,3.0,2.5)
+						
+						--print(IsVehicleNodeIdValid(npos2))
+						
+						if boolval then 
+						
+							--print("made it path")
+							rXoffset = npos.x
+							rYoffset = npos.y
+							rZoffset = npos.z
+							rHeading = heading
+						
+						
+						end 
+					end
+					
+					if raytestsuccess then 
+						--print("hey"..i)
+						PedVehicle = CreateVehicle(vehiclehash, rXoffset, rYoffset, rZoffset + spawnAircraft,  rHeading, 1, 0)
+						
+						if rZoffset ==0.0 and not (IsThisModelABoat(vehiclehash) or IsThisModelAPlane(vehiclehash) or IsThisModelAHeli(vehiclehash)) then 
+							DecorSetInt(PedVehicle,"mrpvehdidGround",1)
+							FreezeEntityPosition(PedVehicle,true)
+						end
+					end 
+					
+					if not DoesEntityExist(PedVehicle) then 
+						--print("veh retry:"..veh)
+						--print("spawnaircraft:"..rXoffset..", "..rYoffset..",".. rZoffset + spawnAircraft)
+						Wait(1)
+						raytestsuccess = false
+					end	
+
+					tries = tries + 1
+				--end				
+				until( raytestsuccess == true or tries > 250 )			
+			
+			
+					
 			end 
 			
 			--print("rZoffset:"..rZoffset)
@@ -5525,7 +6308,7 @@ end
 						RequestModel(randomPedModelHash)
 					end
 					--END IsBountyHunt HACK
-					while not HasModelLoaded(randomPedModelHash) do
+					while not HasModelLoaded(randomPedModelHash)  do
 						Wait(1)
 					end
 					Ped = CreatePed(2, randomPedModelHash, rXoffset, rYoffset,rZoffset, rHeading, true, true)
@@ -5794,7 +6577,7 @@ end
 										local vehname = "TRAILERSMALL"
 								
 										RequestModel(GetHashKey(vehname))
-										while not HasModelLoaded(GetHashKey(vehname)) do
+										while not HasModelLoaded(GetHashKey(vehname))   do
 											Wait(1)
 										end
 									
@@ -6253,7 +7036,7 @@ AddEventHandler('SpawnPed', function(input)
     for i=1, #Config.Missions[input].Peds do
 		
         RequestModel(GetHashKey(Config.Missions[input].Peds[i].modelHash))
-        while not HasModelLoaded(GetHashKey(Config.Missions[input].Peds[i].modelHash)) do
+        while not HasModelLoaded(GetHashKey(Config.Missions[input].Peds[i].modelHash))  do
           Wait(1)
         end
 		
@@ -6622,7 +7405,7 @@ AddEventHandler('SpawnPed', function(input)
         vehiclehash = GetHashKey(veh)
         RequestModel(vehiclehash)
         RequestModel(GetHashKey(Config.Missions[input].Vehicles[i].modelHash))
-        while not HasModelLoaded(vehiclehash) do
+        while not HasModelLoaded(vehiclehash)  do
           Wait(1)
         end
  
@@ -6659,7 +7442,7 @@ AddEventHandler('SpawnPed', function(input)
 				
 		
 		if Config.Missions[input].Vehicles[i].id2 ~=nil then 
-			while not HasModelLoaded(GetHashKey(Config.Missions[input].Vehicles[i].modelHash)) do
+			while not HasModelLoaded(GetHashKey(Config.Missions[input].Vehicles[i].modelHash))  do
 				Wait(1)
 			end
 			--Config.Missions[input].Vehicles[i].id2 = CreatePed(2, Config.Missions[input].Vehicles[i].modelHash, Config.Missions[input].Vehicles[i].x, Config.Missions[input].Vehicles[i].y, Config.Missions[input].Vehicles[i].z, Config.Missions[input].Vehicles[i].heading, true, true)
@@ -7584,6 +8367,8 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 			
 		
 		end
+		
+		
 		--print("post:")
 		--print(i)
 		if getMissionConfigProperty(input, "IsBountyHunt") and (not Config.Missions[input].Peds[i] or not Config.Missions[input].Peds[i].modelHash) and EventName == "RandomSquadEvent" then 
@@ -7593,7 +8378,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 		--print(Config.Missions[input].Peds[i].modelHash)
 		local rModelHash = Config.Missions[input].Peds[i].modelHash
         RequestModel(GetHashKey(rModelHash))
-        while not HasModelLoaded(GetHashKey(rModelHash)) do
+        while not HasModelLoaded(GetHashKey(rModelHash))  do
           Wait(1)
 		  --extra checks for IsBountyHunt doRandomSquad
 		  --if not Config.Missions[input].Peds[i] then return end
@@ -7608,6 +8393,11 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
         Config.Missions[input].Peds[i].id = CreatePed(2, rModelHash, Config.Missions[input].Peds[i].x, Config.Missions[input].Peds[i].y, Config.Missions[input].Peds[i].z, Config.Missions[input].Peds[i].heading, true, true)
         SetModelAsNoLongerNeeded(rModelHash)
 		SetEntityAsMissionEntity(Config.Missions[input].Peds[i].id,true,true)
+		
+		if Config.Missions[input].Peds[i].z ==0.0 and getMissionConfigProperty(input, "IsRandom") then 
+				DecorSetInt(Config.Missions[input].Peds[i].id,"mrpvehdidGround",1)
+				FreezeEntityPosition(Config.Missions[input].Peds[i].id,true)
+		end
 		
 		
 		if DoBlockingOfNonTemporaryEvents then
@@ -8020,7 +8810,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
        -- vehiclehash = GetHashKey(veh)
         RequestModel(GetHashKey(Config.Missions[input].Vehicles[i].Vehicle))
        -- RequestModel(GetHashKey(Config.Missions[input].Vehicles[i].modelHash))
-        while not HasModelLoaded(GetHashKey(Config.Missions[input].Vehicles[i].Vehicle)) do
+        while not HasModelLoaded(GetHashKey(Config.Missions[input].Vehicles[i].Vehicle))  do
           Wait(1)
         end
 		--print("veh"..i..":"..veh)
@@ -8062,7 +8852,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 		
 		if Config.Missions[input].Vehicles[i].id2 ~=nil then 
 			RequestModel(GetHashKey(Config.Missions[input].Vehicles[i].modelHash))
-			while not HasModelLoaded(GetHashKey(Config.Missions[input].Vehicles[i].modelHash)) do
+			while not HasModelLoaded(GetHashKey(Config.Missions[input].Vehicles[i].modelHash))  do
 				Wait(1)
 			end
 			Config.Missions[input].Vehicles[i].id2 = CreatePed(2, Config.Missions[input].Vehicles[i].modelHash, Config.Missions[input].Vehicles[i].x, Config.Missions[input].Vehicles[i].y, Config.Missions[input].Vehicles[i].z, Config.Missions[input].Vehicles[i].heading, true, true)
@@ -8762,7 +9552,7 @@ function PutPedsIntoTurrets(PedVehicle,vehicleHash,modelHash,weaponHash,MissionT
 				--print("found seat:"..v)
 				local Ped
 				local coords = GetEntityCoords(vehicle)
-				while not HasModelLoaded(modelHash) do
+				while not HasModelLoaded(modelHash)  do
 					Wait(1)
 				end
 				
@@ -9403,6 +10193,41 @@ AddEventHandler("mt:playvoicesound",function(decorid,decorval,greetspeech,voicen
 end)
 
 
+RegisterNetEvent("mt:setgroundingdecor")
+AddEventHandler("mt:setgroundingdecor",function(decorid,decorval)
+	--print(decorid..decorval..greetspeech..voicename)
+	
+	if (decorval =="mrppedid" or decorval=="mrpvpedid") then
+		for ped in EnumeratePeds() do
+			
+				if DecorGetInt(ped, decorval) > 0 then
+					if DecorGetInt(ped, decorval) == decorid then
+						DecorSetInt(ped,"mrpvehdidGround",0)
+						--print("set mrppedid:"..DecorGetInt(ped, decorval))
+						break
+					end
+				end
+		end
+	elseif decorval =="mrpvehdid" then
+	
+		for ped in EnumerateVehicles() do
+			
+				if DecorGetInt(ped, decorval) > 0 then
+					if DecorGetInt(ped, decorval) == decorid then
+						DecorSetInt(ped,"mrpvehdidGround",0)
+						--print("set mrpvehdid:"..DecorGetInt(ped, decorval))
+						break
+					end
+				end
+		end	
+	
+	end
+
+
+
+end)
+
+
 
 RegisterNetEvent("SafeHouseAnims")
 AddEventHandler("SafeHouseAnims",function(entD,entL,input)
@@ -9675,7 +10500,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				--add the san andreas map for garnish if using the defautl table.
 				if randomPropModelHash == "v_ilev_liconftable_sml" then 
 					RequestModel("hei_prop_dlc_heist_map")
-					while not HasModelLoaded("hei_prop_dlc_heist_map") do
+					while not HasModelLoaded("hei_prop_dlc_heist_map")  do
 						Wait(1)
 					end
 					local PropMap = CreateObject("hei_prop_dlc_heist_map",  randomLocation.x, randomLocation.y, randomLocation.z-0.25, true, false, true)
@@ -9704,7 +10529,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 					
 				if randomPropModelHash then 	
 					RequestModel(randomPropModelHash)
-					while not HasModelLoaded(randomPropModelHash) do
+					while not HasModelLoaded(randomPropModelHash)  do
 						Wait(1)
 					end
 					
@@ -9754,7 +10579,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				randomPedWeapon = getMissionConfigProperty(input, "SafeHousePedWeapons")
 				PedDoctorModel = randomPropModelHash
 				RequestModel(randomPropModelHash)
-				while not HasModelLoaded(randomPropModelHash) do
+				while not HasModelLoaded(randomPropModelHash)  do
 					Wait(1)
 				end
 				
@@ -9850,7 +10675,9 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				DecorSetInt(PedVehicle,"mrpvehdid",i)
 				DecorSetInt(PedVehicle,"mrpvehsafehouse",i)
 				
-				
+				if getMissionConfigProperty(input, "SafeHouseDoInvincibleVehicles") then
+					SetEntityInvincible(PedVehicle,true)
+				end 
 				
 				--stop player griefing
 				SetEntityCanBeDamagedByRelationshipGroup(PedVehicle, false, GetHashKey("PLAYER"))
@@ -9875,7 +10702,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				
 				local vehiclehash = GetHashKey(randomPropModelHash)
 				RequestModel(vehiclehash)
-				while not HasModelLoaded(vehiclehash) do
+				while not HasModelLoaded(vehiclehash)   do
 					Wait(1)
 				end			
 				
@@ -9885,6 +10712,10 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				SetEntityAsMissionEntity(PedVehicle,true,true)
 				DecorSetInt(PedVehicle,"mrpvehdid",i)
 				DecorSetInt(PedVehicle,"mrpvehsafehouse",i)
+				
+				if getMissionConfigProperty(input, "SafeHouseDoInvincibleVehicles") then
+					SetEntityInvincible(PedVehicle,true)
+				end 
 				
 				--stop player griefing
 				SetEntityCanBeDamagedByRelationshipGroup(PedVehicle, false, GetHashKey("PLAYER"))				
@@ -9911,7 +10742,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				
 				local vehiclehash = GetHashKey(randomPropModelHash)
 				RequestModel(vehiclehash)
-				while not HasModelLoaded(vehiclehash) do
+				while not HasModelLoaded(vehiclehash) do --or not  HasCollisionForModelLoaded(vehiclehash) do
 					Wait(1)
 				end			
 				
@@ -9922,6 +10753,11 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				SetBoatAnchor(PedVehicle,true)
 				DecorSetInt(PedVehicle,"mrpvehdid",i)
 				DecorSetInt(PedVehicle,"mrpvehsafehouse",i)
+				
+				if getMissionConfigProperty(input, "SafeHouseDoInvincibleVehicles") then
+					SetEntityInvincible(PedVehicle,true)
+				end 				
+				
 				
 				--stop player griefing
 				SetEntityCanBeDamagedByRelationshipGroup(PedVehicle, false, GetHashKey("PLAYER"))				
@@ -9957,7 +10793,7 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 			local randomPropModelHash = getMissionConfigProperty(input, "RandomMissionProps")[math.random(1, #getMissionConfigProperty(input, "RandomMissionProps"))]		
 			
 			RequestModel(randomPropModelHash)
-			while not HasModelLoaded(randomPropModelHash) do
+			while not HasModelLoaded(randomPropModelHash)  do
 				Wait(1)
 			end
 			
@@ -10023,7 +10859,7 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 			local randomPropModelHash = getMissionConfigProperty(input, "RandomMissionFriendlies")[math.random(1, #getMissionConfigProperty(input, "RandomMissionFriendlies"))]		
 			
 			RequestModel(randomPropModelHash)
-			while not HasModelLoaded(randomPropModelHash) do
+			while not HasModelLoaded(randomPropModelHash)  do
 				Wait(1)
 			end
 			
@@ -10147,14 +10983,14 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 							end
 							
 							local rHeading = roundToNthDecimal(math.random() + math.random(0,359),2)
-		
+							print("z"..z)
 							TargetPedVehicle = CreateVehicle(vehiclehash, x, y, z + 1.0*spawnedAircraft, rHeading , 1, 0)
 							SetModelAsNoLongerNeeded(vehiclehash)
 							--print('SPAWNED TargetRandomPedVehicle')
 							SetEntityAsMissionEntity(TargetPedVehicle,true,true)
 							DecorSetInt(TargetPedVehicle,"mrpvehdid",22222222)	
 							doVehicleMods(veh,TargetPedVehicle,input)
-								while not HasModelLoaded(modelHash) do
+								while not HasModelLoaded(modelHash)  do
 									Wait(1)
 								end
 								TargetPed = CreatePed(2, modelHash, x, y, z,rHeading, true, true)
@@ -10248,7 +11084,7 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 									local vehname = "TRAILERSMALL"
 								--end
 										RequestModel(GetHashKey(vehname))
-										while not HasModelLoaded(GetHashKey(vehname)) do
+										while not HasModelLoaded(GetHashKey(vehname))  do
 											Wait(1)
 										end
 									
@@ -10333,7 +11169,7 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 						--print("ISDEFENTARGET WEAPON:"..Weapon)
 						
 						RequestModel(modelHash)
-						while not HasModelLoaded(modelHash) do
+						while not HasModelLoaded(modelHash)  do
 							Wait(1)
 						end
 					
@@ -10478,7 +11314,7 @@ function SpawnProps(input)
 			if(Config.Missions[input].Props) then 
 				 for i=1, #Config.Missions[input].Props do     
 					RequestModel(Config.Missions[input].Props[i].Name)
-					while not HasModelLoaded(Config.Missions[input].Props[i].Name) do
+					while not HasModelLoaded(Config.Missions[input].Props[i].Name)  do
 						Wait(1)
 					end
 					
@@ -10575,7 +11411,7 @@ function SpawnProps(input)
 							end							
 							--doVehicleMods(veh,TargetPedVehicle)
 							
-								while not HasModelLoaded(GetHashKey(Config.Missions[input].IsDefendTargetEntity[1].modelHash)) do
+								while not HasModelLoaded(GetHashKey(Config.Missions[input].IsDefendTargetEntity[1].modelHash))  do
 									Wait(1)
 								end
 								TargetPed = CreatePed(2, Config.Missions[input].IsDefendTargetEntity[1].modelHash, x, y, z,Config.Missions[input].IsDefendTargetEntity[1].heading, true, true)
@@ -10661,7 +11497,7 @@ function SpawnProps(input)
 											vehname = Config.Missions[input].IsDefendTargetEntity[1].movetovehicle
 										end
 										RequestModel(GetHashKey(vehname))
-										while not HasModelLoaded(GetHashKey(vehname)) do
+										while not HasModelLoaded(GetHashKey(vehname))  do
 											Wait(1)
 										end										
 										
@@ -10692,7 +11528,7 @@ function SpawnProps(input)
 											vehname = Config.Missions[input].IsDefendTargetEntity[1].movetovehicle
 										end
 										RequestModel(GetHashKey(vehname))
-										while not HasModelLoaded(GetHashKey(vehname)) do
+										while not HasModelLoaded(GetHashKey(vehname))   do
 											Wait(1)
 										end											
 										
@@ -10742,7 +11578,7 @@ function SpawnProps(input)
 					
 					else
 						RequestModel(GetHashKey(Config.Missions[input].IsDefendTargetEntity[1].modelHash))
-						while not HasModelLoaded(Config.Missions[input].IsDefendTargetEntity[1].modelHash) do
+						while not HasModelLoaded(Config.Missions[input].IsDefendTargetEntity[1].modelHash)  do
 							Wait(1)
 						end
 					
@@ -10847,7 +11683,7 @@ function SpawnProps(input)
 					vehname = Config.Missions[input].VehicleGotoMissionTarget
 				end
 				RequestModel(GetHashKey(vehname))
-				while not HasModelLoaded(GetHashKey(vehname)) do
+				while not HasModelLoaded(GetHashKey(vehname))  do
 					Wait(1)
 				end										
 										
@@ -11507,7 +12343,7 @@ local Melee = { -1569615261, 1737195953, 1317494643, -1786099057, 1141786504, -2
  
  function MakeNeutral(ped)
 	if DoesEntityExist(ped) and (not (IsEntityDead(ped) == 1)) then
-		print("MakeNeutral")
+		--print("MakeNeutral")
 		SetPedRelationshipGroupHash(ped, hash)
 		SetPedRelationshipGroupHash(Ped, GetHashKey("TRUENEUTRAL"))
 		SetRelationshipBetweenGroups(0, GetHashKey("TRUENEUTRAL"), GetHashKey("PLAYER"))
@@ -11945,8 +12781,37 @@ function calcMissionStats()
 	local totalRescuedObjects = 0
 	local isDefendGoalReached = 0
 	
+	
 	local playerPed = GetPlayerPed(-1)
 	local pcoords = GetEntityCoords(playerPed,true)
+	
+	
+	
+		for ped in EnumerateVehicles() do
+		if DecorGetInt(ped, "mrpvehdid") > 0 and DecorGetInt(ped, "mrpvehdidGround") > 0  then 
+			local ecoords = GetEntityCoords(ped,true)
+			
+			if GetDistanceBetweenCoords(pcoords,ecoords,false) <= 600 then
+				
+				
+				local Z =ecoords.z+999.0
+				local ground,posZ = GetGroundZFor_3dCoord(ecoords.x+.0,ecoords.y+.0,Z,1)
+				
+				if ground then 
+					if IsThisModelAPlane(GetEntityModel(ped)) or IsThisModelAHeli(GetEntityModel(ped)) then 
+						posZ = posZ + ecoords.z
+					end
+					FreezeEntityPosition(ped,false)
+					SetEntityCoords(ped,ecoords.x+.0, ecoords.y+.0,posZ)
+					DecorSetInt(ped,"mrpvehdidGround",0)
+					
+					TriggerServerEvent("sv:setgroundingdecor",DecorGetInt(ped, "mrpvehdid"),"mrpvehdid")
+				end	
+			end
+			
+		end
+		
+		end
 		for ped in EnumeratePeds() do
 			
 			local isNPCDead = (IsEntityDead(ped) ==1 or GetEntityHealth(ped) < 100 or DecorGetInt(ped, "mrppedead") > 0) 
@@ -12003,6 +12868,53 @@ function calcMissionStats()
 
 			
 			if (DecorGetInt(ped, "mrppedid") > 0 or DecorGetInt(ped, "mrpvpedid") > 0)  then
+			
+			
+			
+				if DecorGetInt(ped, "mrppedid") > 0 and DecorGetInt(ped, "mrpvehdidGround") > 0  then 
+					local ecoords = GetEntityCoords(ped,true)
+					--print("set ")
+					if GetDistanceBetweenCoords(pcoords,ecoords,false) <= 300 then
+				
+				
+						local Z =ecoords.z+999.0
+						local ground,posZ = GetGroundZFor_3dCoord(ecoords.x+.0,ecoords.y+.0,Z,1)
+					
+						if ground then 
+
+							FreezeEntityPosition(ped,false)
+							SetEntityCoords(ped,ecoords.x+.0, ecoords.y+.0,posZ)
+							DecorSetInt(ped,"mrpvehdidGround",0)
+							
+							TriggerServerEvent("sv:setgroundingdecor",DecorGetInt(ped, "mrppedid"),"mrppedid")
+						end	
+					end
+			
+				end
+				
+				--[[
+				if DecorGetInt(ped, "mrpvpedid") > 0 and DecorGetInt(ped, "mrpvehdidGround") > 0  then 
+					local ecoords = GetEntityCoords(ped,true)
+					
+					if GetDistanceBetweenCoords(pcoords,ecoords,true) <= 300 then
+				
+				
+						local Z =ecoords.z+999.0
+						local ground,posZ = GetGroundZFor_3dCoord(ecoords.x+.0,ecoords.y+.0,Z,1)
+					
+						if ground then 
+
+							FreezeEntityPosition(ped,false)
+							SetEntityCoords(ped,ecoords.x+.0, ecoords.y+.0,posZ)
+							DecorSetInt(ped,"mrpvehdidGround",0)
+							
+							TriggerServerEvent("sv:setgroundingdecor",DecorGetInt(ped, "mrpvpedid"),"mrpvpedid")
+						end
+					end
+			
+				end				
+				
+			]]--
 			
 				--SetEntityVisible(ped,true)
 				--SetEntityAlpha(ped, 255, false)
@@ -12767,8 +13679,17 @@ function calcMissionStats()
 						
 						local p1 = GetEntityCoords(playerPed, true)
 						if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,ObjectivePos.x,ObjectivePos.y,ObjectivePos.z,true) <= 300 then
-							DecorSetInt(obj,"mrppropobj",2)
-							PlaceObjectOnGroundProperly(obj)
+							
+							local ground,posZ = GetGroundZFor_3dCoord(ObjectivePos.x,ObjectivePos.y,ObjectivePos.z + 999.0,1)
+							if ground then 
+								DecorSetInt(obj,"mrppropobj",2)
+								SetEntityCoords(ObjectivePos.x,ObjectivePos.y,posZ)
+								PlaceObjectOnGroundProperly(obj)
+								---print('object placed')
+							end
+							
+							--PlaceObjectOnGroundProperly(obj)
+							
 							ObjectivePos = GetEntityCoords(obj)
 							--print('object placed')
 						end
@@ -12906,14 +13827,17 @@ function calcMissionStats()
 		end
 		
 	--end
-				
+				--print(type(Config.Missions[MissionName].Events))
 				if Config.Missions[MissionName].Events then 
+					--print("Events")
 					for k,v in pairs(Config.Missions[MissionName].Events) do
-					
-						if Config.Missions[MissionName].Events[k].Type =="Aircraft" then 
+						
+						--print("event.."..k)
+						--print("made it:".. Config.Missions[MissionName].Events[k].Position.x)
+						--if Config.Missions[MissionName].Events[k].Type =="Aircraft" then 
 							
 							--print("made it:".. Config.Missions[MissionName].Events[k].Position.x)
-						end
+						--end
 						
 						local ecoords = pcoords
 						
@@ -12928,9 +13852,41 @@ function calcMissionStats()
 							ecoords = EventIsDefendtargetPedDistance(ecoords,k) 
 						
 						end
-						 
+						
+						--Checkpoint support
+						local eventOK=true
+						if(Config.Missions[MissionName].Type=="Checkpoint" and Config.Missions[MissionName].IsRandom==true and DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint") ~= Config.Missions[MissionName].Events[k].checkpoint) 
+						or getMissionConfigProperty(MissionName, "CheckpointsNoEvents")
+						
+						then
+							 eventOK=false
+							 
+							
+							--print('oventok:'..k)
+							--print("decor:"..DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint"))
+							 --print(tostring(eventOK))
+						--else
+							--print('oventnotok:'..k)
+							--print("decor:"..DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint"))
+						end
+						
+						--dont trigger event if 
+						local pvehicle = GetVehiclePedIsIn( GetPlayerPed(-1), false )
+						
+						--if player ped is in a vehicle, is a passenger, which has a driver
+						--then dont trigger event, allow the driver to do that, who will 
+						--invariably be a player. Need this check to stop multiple event triggers
+						if pvehicle ~= 0 and not IsVehicleSeatFree(-1) and GetPlayerPed(-1) ~= GetPedInVehicleSeat(pvehicle, -1) then 
+							--print("Triggered event is false")
+							eventOK=false
+						end
 					
-						if(GetDistanceBetweenCoords(ecoords.x,ecoords.y,ecoords.z, Config.Missions[MissionName].Events[k].Position.x, Config.Missions[MissionName].Events[k].Position.y, Config.Missions[MissionName].Events[k].Position.z, true) < Config.Missions[MissionName].Events[k].Size.radius) and not Config.Missions[MissionName].Events[k].done then
+						if(GetDistanceBetweenCoords(ecoords.x,ecoords.y,ecoords.z, Config.Missions[MissionName].Events[k].Position.x, Config.Missions[MissionName].Events[k].Position.y, Config.Missions[MissionName].Events[k].Position.z, true) < Config.Missions[MissionName].Events[k].Size.radius) and not Config.Missions[MissionName].Events[k].done and eventOK
+						
+						then
+						
+						
+						--print("made it:".. k)
 							--[[
 							local aircraft = false
 							if (IsPedInAnyVehicle(playerPed,false)) then 
@@ -13171,7 +14127,7 @@ function calcHostageKillPenalty(hostagePedsKilledByPlayer,totalDeadHostages,isDe
 
 end
 
-function calcCompletionRewards(nonTargetPedsKilledByPlayer,targetPedsKilledByPlayer,hostagePedsKilledByPlayer,totalDeadHostages,vehiclePedsKilledByPlayer,bossPedsKilledByPlayer,blGoalReached)
+function calcCompletionRewards(nonTargetPedsKilledByPlayer,targetPedsKilledByPlayer,hostagePedsKilledByPlayer,totalDeadHostages,vehiclePedsKilledByPlayer,bossPedsKilledByPlayer,blGoalReached,claimedCheckpoints,claimedWin)
 		
 		local targetmoney = 0
 		local regularmoney = 0
@@ -13184,9 +14140,28 @@ function calcCompletionRewards(nonTargetPedsKilledByPlayer,targetPedsKilledByPla
 		local vehiclepedbonusmoney = 0
 		local bosspedbonusmoney = 0
 		local goalreachedmoney = 0
+		local racemoney = 0
 		--local currentmoney = 0
 		--StatSetInt('MP0_WALLET_BALANCE', 0, true)
 		--StatSetInt('BANK_BALANCE', 0, true)
+		
+		
+		if claimedCheckpoints > 0 then
+			if Config.Missions[MissionName].CheckPointClaimdReward  then
+				 racemoney = Config.Missions[MissionName].CheckPointClaimdReward*claimedCheckpoints
+			else 
+				racemoney = Config.CheckPointClaimdReward*claimedCheckpoints
+			end
+		end
+		
+		if claimedWin then
+			if Config.Missions[MissionName].CheckPointClaimdReward  then
+				 racemoney = racemoney+Config.Missions[MissionName].RaceWinReward
+			else 
+				racemoney = racemoney+Config.RaceWinReward
+			end
+		end	
+		
 		
 		if blGoalReached then
 			if Config.Missions[MissionName].GoalReachedReward  then
@@ -13300,8 +14275,8 @@ function calcCompletionRewards(nonTargetPedsKilledByPlayer,targetPedsKilledByPla
 		
 		--playerSecured = false
 		local _,currentmoney = StatGetInt('MP0_WALLET_BALANCE',-1)
-		playerMissionMoney = targetmoney + regularmoney + objectivemoney + hostagerecuemoney + isdefendtargetrescuemoney + vehiclepedbonusmoney + bosspedbonusmoney + objectrecuemoney + goalreachedmoney - penaltymoney
-		totalmoney =  currentmoney + targetmoney + regularmoney + objectivemoney + hostagerecuemoney + isdefendtargetrescuemoney + vehiclepedbonusmoney + bosspedbonusmoney + objectrecuemoney + goalreachedmoney - penaltymoney
+		playerMissionMoney = targetmoney + regularmoney + objectivemoney + hostagerecuemoney + isdefendtargetrescuemoney + vehiclepedbonusmoney + bosspedbonusmoney + objectrecuemoney + goalreachedmoney + racemoney - penaltymoney
+		totalmoney =  currentmoney + targetmoney + regularmoney + objectivemoney + hostagerecuemoney + isdefendtargetrescuemoney + vehiclepedbonusmoney + bosspedbonusmoney + objectrecuemoney + goalreachedmoney + racemoney - penaltymoney
 		
 
 		--set local player decor for simple scoreboard
@@ -13362,6 +14337,49 @@ function calcCompletionRewards(nonTargetPedsKilledByPlayer,targetPedsKilledByPla
 
 
 end
+
+RegisterNetEvent("mt:updatePlayerCheckpoints")
+AddEventHandler("mt:updatePlayerCheckpoints",function(checkpointnum)
+	--print("checkpoint update called"..checkpointnum)
+	DecorSetInt(GetPlayerPed(-1),"mrpcheckpoint",checkpointnum)
+	
+	local player = GetPlayerPed(-1)
+
+	--send previous checkpoint...
+	
+	--send previous checkpoint...
+	--only give claimed checkpoints to a driver
+	local vehicle = GetVehiclePedIsIn(player, false )
+	if vehicle ~= 0 and player == GetPedInVehicleSeat(vehicle,-1) then
+	
+		if checkpointnum > 1 then 
+			DecorSetInt(player,"mrpcheckpointsclaimed",DecorGetInt(player,"mrpcheckpointsclaimed") + 1)
+			--print("mrpcheckpointsclaimed:"..DecorGetInt(player,"mrpcheckpointsclaimed"))
+		end	
+	
+		TriggerServerEvent("sv:updatePlayerCheckpoints",MissionName,checkpointnum-1,GetPlayerServerId(PlayerId()))
+	end
+end)
+
+--checks to see if a passenger at a checkpoint
+RegisterNetEvent("mt:rewardPassengers")
+AddEventHandler("mt:rewardPassengers",function(playerserverid)
+	
+	--DecorSetInt(GetPlayerPed(-1),"mrpcheckpoint",checkpointnum)
+	
+	local player = GetPlayerPed(-1)
+	local scoringplayer = GetPlayerPed(GetPlayerFromServerId(playerserverid))
+	local svehicle = GetVehiclePedIsIn(scoringplayer, false )
+	local pvehicle = GetVehiclePedIsIn(player, false )
+	
+	--are we a passenger in the scoring player's vehicle?
+	if pvehicle == svehicle and GetPedInVehicleSeat(pvehicle,-1) ~= player then
+		--print("rewarded passenger")
+		DecorSetInt(player,"mrpcheckpointsclaimed",DecorGetInt(player,"mrpcheckpointsclaimed") + 1)
+		
+	end
+	
+end)
 
 --players share money?
 --local sharedmoney = 0
@@ -16603,6 +17621,8 @@ AddEventHandler("baseevents:onPlayerDied", function(player, reason, pos)
      --  print("mrprescuecount"..DecorGetInt(GetPlayerPed(-1),"mrprescuecount"))
 	mrprescuecountG = DecorGetInt(GetPlayerPed(-1),"mrprescuecount")
 	mrpobjectivecountG = DecorGetInt(GetPlayerPed(-1),"mrpobjrescuecount")
+	mrpcheckpointG = DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint")
+	mrpcheckpointsclaimedG = DecorGetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed")
 	--print("made it died")
 	if (Active == 1) and  MissionName ~="N/A" and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
 		if SHOWWASTEDMESSAGE  then 
@@ -16637,6 +17657,8 @@ AddEventHandler("baseevents:onPlayerKilled", function(player, killer, reason, po
 	
 	mrprescuecountG = DecorGetInt(GetPlayerPed(-1),"mrprescuecount")
 	mrpobjectivecountG = DecorGetInt(GetPlayerPed(-1),"mrpobjrescuecount")
+	mrpcheckpointG = DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint")
+	mrpcheckpointsclaimedG = DecorGetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed")
 	--print("made it killed")
 	if (Active == 1) and  MissionName ~="N/A" and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
 		if SHOWWASTEDMESSAGE  then 
@@ -16686,7 +17708,9 @@ AddEventHandler("playerSpawned", function(spawn)
 	DecorSetInt(GetPlayerPed(-1),"mrpplayermissioncount",mrpplayermissioncountG)
 	--carry over hostage & object rescue counts?
 	DecorSetInt(GetPlayerPed(-1),"mrprescuecount",mrprescuecountG)
-	DecorSetInt(GetPlayerPed(-1),"mrpobjrescuecount",mrpobjectivecountG)		
+	DecorSetInt(GetPlayerPed(-1),"mrpobjrescuecount",mrpobjectivecountG)	
+	DecorSetInt(GetPlayerPed(-1),"mrpcheckpoint",mrpcheckpointG)	
+	DecorSetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed",mrpcheckpointsclaimedG)		
 	
 	local ped  = GetPlayerPed(-1)
 		--GHK Add blackops preferred variations
@@ -17361,8 +18385,7 @@ AddEventHandler("doRandomSquad",function(k,rX, rY, rZ,MissionName)
 							Config.Missions[MissionName].Peds[i]={id=i,modelHash=para, x=rPedSpawn.x,y=rPedSpawn.y,z=rPedSpawn.z,heading=rPheading,spawned=true,target=lptarget,CheckGroundZ=GroundZ,faceplayer=facePlayer,friendly=true} --set spawned=true, so it is not sent to the server, which does not know about these new Peds							
 						end						
 						
-					--print("pre:")					
-					--print(i)
+					
 					else
 						if exactWeapon then
 							Config.Missions[MissionName].Peds[i]={id=i,modelHash=para, Weapon=pweapon,x=rPedSpawn.x,y= rPedSpawn.y,z=rPedSpawn.z,heading=rPheading,spawned=true,isBoss=pIsBoss,target=lptarget,CheckGroundZ=GroundZ,faceplayer=facePlayer} --set spawned=true, so it is not sent to the server, which does not know about these new Peds	
@@ -17552,7 +18575,10 @@ AddEventHandler("doBoat",function(k)
 		spawnz = Config.Missions[MissionName].Events[k].SpawnAt.z
 			
 	end	
-	
+	if Config.Missions[MissionName].IsRandom then
+		spawnz = GetWaterHeight(spawnx,spawny,spawnz) + 5
+		print("doboat spawnz="..spawnz)
+	end
 	
 	if Active == 1 and MissionName ~="N/A" then
 		for i=nextVehicle, totalVehicles  do
@@ -17703,7 +18729,7 @@ AddEventHandler("doParadrop",function(dropCoords,k)
 
          RequestModel(GetHashKey("s_m_m_pilot_02"))
 		  
-           while not HasModelLoaded(GetHashKey("s_m_m_pilot_02")) do
+           while not HasModelLoaded(GetHashKey("s_m_m_pilot_02"))  do
               Wait(0)
            end		
 		
@@ -17737,7 +18763,9 @@ AddEventHandler("doParadrop",function(dropCoords,k)
 			doingDrop=false
            -- do return end -- <--still allow the paradrop to happen even if the plane is not there or the pilot.
         end
-		Notify("~r~Enemy paradrop on its way!")
+		if getMissionConfigProperty(MissionName, "AnnounceEvents") then  
+		 Notify("~r~Enemy paradrop on its way!")
+		end
 		if not doingDrop then 
 			TaskVehicleDriveToCoord(pilot, aircraft, 0.0, 0.0, 500.0, 60.0, 0, GetHashKey(aircraftmodel), 262144, -1.0, -1.0) -- disposing of the plane like Rockstar does, send it to 0; 0 coords with -1.0 stop range, so the plane won't be able to achieve its task
 		end
@@ -17835,7 +18863,7 @@ function CrateDropMRP(weapon, ammo, planeSpawnDistance, dropCoords,thisMission)
 
         for i = 1, #requiredModels do
             RequestModel(GetHashKey(requiredModels[i]))
-            while not HasModelLoaded(GetHashKey(requiredModels[i])) do
+            while not HasModelLoaded(GetHashKey(requiredModels[i]))  do
                 Wait(0)
             end
         end
@@ -18231,7 +19259,7 @@ while true do
 							local y = math.sin(math.rad(pheading+90))
 							local pcoords = GetEntityCoords(GetPlayerPed(-1))
 							RequestModel(0xEEF345EC)
-							while not HasModelLoaded(0xEEF345EC) do
+							while not HasModelLoaded(0xEEF345EC)  do
 								Wait(1)
 							end			
 							local rcbandito = CreateVehicle(0xEEF345EC, pcoords.x + x,pcoords.y + y,pcoords.z, pheading, 1, 0)
@@ -18282,7 +19310,7 @@ AddEventHandler("SpawnBackup", function(input)
 		local modelHash = getMissionConfigProperty(input, "BackupPeds")[math.random(1, #getMissionConfigProperty(input, "BackupPeds"))]
 		--print("hey1")
 		RequestModel(GetHashKey(modelHash))
-		while not HasModelLoaded(GetHashKey(modelHash)) do
+		while not HasModelLoaded(GetHashKey(modelHash))  do
 			Wait(1)
 		end
 		--print("hey3")
@@ -19187,4 +20215,5 @@ Citizen.CreateThread(function()
         NetworkOverrideClockTime(12, 1, 1)
     end
 end)
---]]
+
+]]--

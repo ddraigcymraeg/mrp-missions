@@ -331,6 +331,42 @@ Config.SpawnRewardComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMP
 }    --space between attachment/component and weapon it goes on
 
 
+--Useful for certain missions like certain Checkpoint Missions
+Config.SafeHouseDoInvincibleVehicles=false
+
+
+Config.AnnounceEvents=false --have friendly notification of event triggered?
+
+--CHECKPOINT MISSION SETTINGS
+--See Mission45 -> Mission51 (Mission46 and Mission47 are standard (non-random) missions)
+--settings for IsRandom & IsRandomSpawnAnywhere checkpoint mission, and/or regular checkpoint missions.
+--for random missions have IsRandomSpawnAnywhere and IsRandom to be true. 
+--you can use IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, like for standard IsRandomSpawnAnywhere
+--missions to have a checkpoint and event spawn area https://drive.google.com/file/d/0B-zvE86DVcv2MXhVSHZnc01QWm8/view
+	
+	
+	--only used for IsRandom missions
+	Config.MaxCheckpoints=10 --NEEDS TO BE 2 OR MORE
+	
+	--only set manually for non-IsRandom mission:
+	Config.CheckpointsStartPos={x=0.0,y=0.0,z=0.0}
+	--only set manually for non-IsRandom mission:
+	Config.RecordedCheckpoints={}
+	--these are only for IsRandom Missions:
+	Config.CheckpointsDoLand=true --only spawn checkpoints on land, other 2 must be false
+	Config.CheckpointsDoWater=false --Spawn checkpoints only on water?  other 2 must be false
+	Config.CheckpointsDoWaterAndLand=false --Spawn checkpoints on both land and water? other 2 must be false
+	Config.SpawnCheckpointsOnRoadsOnly=true --if on land, only on roads?
+	--
+	
+	Config.CheckpointsAirBattle=false --only spawn enemy aircraft, good for aircraft battle races.
+	
+	
+	Config.CheckPointClaimdReward=1000 --drivers and passengers get this when they are in a vehicle that is first to a checkpoint
+	
+	Config.RaceWinReward=20000 --only driver gets this in the winning vehicle
+
+--
 
 
 --turn safehouses off/on
@@ -437,7 +473,7 @@ Config.SafeHousePlaneAttack = true
 Config.SpawnSafeHousePickups = {"WEAPON_COMBATPISTOL","weapon_heavysniper_mk2","weapon_marksmanrifle_mk2","weapon_heavysniper","weapon_combatmg_mk2","weapon_combatmg",
 "weapon_carbinerifle_mk2","weapon_assaultrifle_mk2","weapon_specialcarbine_mk2","weapon_bullpuprifle_mk2","weapon_advancedrifle","weapon_pumpshotgun_mk2","weapon_assaultshotgun",
 "weapon_smg_mk2","weapon_assaultsmg","weapon_pistol_mk2","weapon_snspistol_mk2","weapon_revolver_mk2","WEAPON_KNIFE","GADGET_NIGHTVISION","WEAPON_GRENADE","WEAPON_PROXMINE","WEAPON_STICKYBOMB","WEAPON_PIPEBOMB","WEAPON_FLARE",
-"weapon_molotov","weapon_hominglauncher","WEAPON_RPG","GADGET_PARACHUTE","weapon_microsmg"
+"weapon_molotov","weapon_hominglauncher","WEAPON_RPG","GADGET_PARACHUTE","weapon_microsmg","weapon_compactlauncher"
 }
 Config.SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL","COMPONENT_HEAVYSNIPER_MK2_CLIP_EXPLOSIVE weapon_heavysniper_mk2",
 "COMPONENT_AT_SCOPE_MAX weapon_heavysniper_mk2",
@@ -1193,7 +1229,16 @@ Config.RandomMissionBoat = {
 "seashark",
 "toro2",
 "jetmax",
+"dinghy4",
+"seashark",
+"toro2",
+"jetmax",
+"dinghy4",
+"seashark",
+"toro2",
+"jetmax",
 "technical2",
+"blazer5",
 "blazer5",
 "apc",
 }
@@ -1349,7 +1394,7 @@ Config.Missions = {
       {id = 1, id2 = 1, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01", x = -203.92, y = -1096.21, z = 21.16, heading = 143.9},
 	  {id = 2, id2 = 2, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -187.1, y = -1100.09, z = 42.14, heading = 68.51},
 	 {id = 3, id2 = 3, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -140.47, y = -1091.98, z = 42.14, heading = 250.11},
-	  {id = 4, id2 = 4, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = -161.65, y = -1077.89, z = 42.14+20, heading = 70.54,driving=true,pilot=true,isAircraft=true},
+	  {id = 4, id2 = 4, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = -161.65, y = -1077.89, z = 42.14+100, heading = 70.54,driving=true,pilot=true,isAircraft=true},
 	  {id = 5, id2 = 5, Vehicle = "trailersmall2", nomods=true, modelHash = "s_m_y_ammucity_01", x = -175.84, y = -1060.36, z = 42.14, heading = 20.14},
 	  -- {id = 6, id2 = 5, Vehicle = "savage", modelHash = "s_m_y_ammucity_01",  x = -1409.41, y = -2391.27, z = 14.73, heading = 160.04,isAircraft=true,pilot=true},
 	  
@@ -12055,6 +12100,2144 @@ RandomMissionDestinations = {
 
 	
  },  
+ 
+ 
+ 
+	Mission45 = {
+    
+	StartMessage = "Race Against Time",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Race Against Time",
+	MissionMessage = "Get to all the checkpoints before the time is up",	
+	
+	KillReward = 0,
+	KillBossPedBonus = 0, --stacks with both above
+	FinishedObjectiveReward =20000,
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Race Against Time",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Race Against Time",
+	MissionMessageObj = "Get to all the checkpoints before the time is up",	
+	--RandomMissionTypes ={"Objective","Assassinate"},
+	RandomMissionTypes ={"Checkpoint"},
+	StartMessageAss = "Race Against Time",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Race Against Time",
+	MissionMessageAss = "Get to all the checkpoints before the time is up",	
+	RandomMissionDoLandBattle=true, --needed for pier npcs to spawn!
+	Type = "Checkpoint",	
+	MaxCheckpoints=10, --NEEDS TO BE 2 OR MORE
+	CheckpointsDoLand=true,
+	CheckpointsStartPos={x=0.0,y=0.0,z=0.0},
+	RecordedCheckpoints={},
+	CheckpointsDoWater=false,
+	CheckpointsDoWaterAndLand=false,
+	SpawnCheckpointsOnRoadsOnly=false,
+	CheckpointsAirBattle=false, --only spawn enemy aicraft, good for flying missions.
+	CheckPointClaimdReward=1000, --drivers and passengers get this
+	RaceWinReward=20000, --only driver gets this in the winning vehicle
+	CheckpointRaceJoinTime=3600, --not used
+	MissionShareMoney=false,
+	--RandomMissionTypes ={"Objective","HostageRescue"},
+	IsRandomEvent=false,
+	IsRandom = true,
+	IsRandomSpawnAnywhere=true,
+	IsBountyHunt=true,
+	RandomMissionMaxPedSpawns = 0,
+	RandomMissionMinPedSpawns = 0,
+	RandomMissionBossChance =  0,
+	RandomMissionMaxVehicleSpawns = 0,
+	RandomMissionMinVehicleSpawns = 0,
+	RandomMissionSpawnRadius = 100.0,
+	IsBountyHuntMinSquadSize=0,
+	IsBountyHuntMaxSquadSize=0,
+	IsBountySquadMinRadius=0,
+	IsBountySquadMinRadius=0,
+	RandomMissionBountyBossChance=0,
+	RandomMissionGuardAircraft=true,
+	SafeHouseAircraftCount=0,
+	SafeHouseVehicleCount = 24,
+	SafeHouseBoatCount = 0,
+	TeleportToSafeHouseMinDistance = 10,
+	TeleportToSafeHouseMinVehicleDistance = 10,
+	SafeHouseVehiclesMaxClaim = 6,
+	SafeHouseTimeTillNextUse = 60000,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-500,2500},yrange={3500,4700}},	--just sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-1000,3000},yrange={3000,5000}},	--land and sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, --just land 
+	
+	
+	SMS_Subject="Race Against Time",
+	SMS_Message="Get to the mission vehicle safe house and grab a vehicle, then head to the marker that will appear",
+	SMS_Message2="Once you join the race, proceed through the enemy checkpoints. Beware they are heavily defended",
+	SMS_Message3="You earn $ when you are first to a checkpoint. More $ if you finish the race first",	
+		
+	--SMS_ContactPics={"CHAR_STEVE",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="Are you up for this?",
+	SMS_FailedMessage="What is going on?",
+	SMS_PassedSubject="Great Job! Congratulations!",
+	SMS_PassedMessage="You made it!",
+	
+	
+--IsRandomSpawnAnywhereCoordRange = {xrange={-30,30},yrange={1970,2030}},	
+	--RandomMissionSpawnRadius = 6000.0, --keep a float for enemy ped wandering to work
+	--IsBountyHuntAssassinateAll = true,
+	
+	--RandomMissionTypes ={"Objective"},	
+	--Config.RandomMissionPositions = { 
+--{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+--}
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Mission Goal",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	 
+	Events = {
+		--**need a stub entry set for the random default event**
+		--add custom events for mission with id=1 onwards
+      {id = 1, 
+		Position = { x = 50000.0, y = 50000.0, z = 50000.0, heading = 0 },
+	  	  Size     = {radius=1000.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  --NumberPeds=1,
+		  isBoss=false,
+		  Target=false,
+		  SquadSpawnRadius=25.0,
+		  
+	  
+	  },
+     },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  }, 
+  
+ Mission46 = {
+    
+	StartMessage = "Race across Mt Chiliad and into the underground base before the time is up",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Mt Chiliad Base Race",
+	MissionMessage = "Grab a vehicle, and get to all the checkpoints before the time is up",	
+	
+	KillReward = 0,
+	KillBossPedBonus = 0, --stacks with both above
+	FinishedObjectiveReward =20000,
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Race across Mt Chiliad and into the underground base before the time is up",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Mt Chiliad Base Race",
+	MissionMessageObj = "Grab a vehicle, and get to all the checkpoints before the time is up",	
+	--RandomMissionTypes ={"Objective","Assassinate"},
+	RandomMissionTypes ={"Checkpoint"},
+	StartMessageAss = "Race across Mt Chiliad and into the underground base before the time is up",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Mt Chiliad Base Race",
+	MissionMessageAss = "Grab a vehicle, and get to all the checkpoints before the time is up",	
+	RandomMissionDoLandBattle=true, --needed for pier npcs to spawn!
+	Type = "Checkpoint",	
+	MaxCheckpoints=2, --only applies to IsRandom races
+	CheckpointsDoLand=true,
+	CheckpointsStartPos={ x = 2526.39, y = 5154.27, z = 55.24},
+	RecordedCheckpoints={{blip=blip,coords={x = 2474.65, y = 5238.01, z = 68.19}},
+	{blip=blip,coords={x = 2329.55, y = 5348.81, z = 110.63}},
+	{blip=blip,coords={x = 2160.46, y = 5378.85, z = 150.1}},
+	{blip=blip,coords={x = 1850.25, y = 5407.32, z = 220.89}},
+	
+	--{blip=blip,coords={x = 2160.46, y = 5378.85, z = 165.1}},
+	
+	
+	{blip=blip,coords={x = 1493.41, y = 5532.87, z = 410.07}},
+	
+	
+	{blip=blip,coords={x = 1109.41, y = 5585.01, z = 554.53}},
+	
+	{blip=blip,coords={x = 883.34, y = 5651.25, z = 656.26}},
+	
+	{blip=blip,coords={x = 618.54, y = 5683.51, z = 735.0,}},
+	
+	{blip=blip,coords={x = 618.54, y = 5683.51, z = 735.0,}},
+	
+	{blip=blip,coords={x = 503.26, y = 5609.98, z = 782.34,}},
+	
+	{blip=blip,coords={x = 228.06, y = 5298.29, z = 608.55}},
+	
+	{blip=blip,coords={x = 99.13, y = 5089.51, z = 495.59}},
+	
+	{blip=blip,coords={ x = -167.35, y = 4905.18, z = 325.68}},
+	
+	{blip=blip,coords={ x = -402.81, y = 4925.61, z = 173.65}},
+	
+	{blip=blip,coords={ x = -595.74, y = 5073.06, z = 125.53}},
+	
+	{blip=blip,coords={x = -496.99, y = 4929.93, z = 135.8}},
+	
+	{blip=blip,coords={ x = -362.28, y = 4827.86, z = 138.2}},
+	
+	{blip=blip,coords={ x = 1291.18, y = 4882.77, z = -50.76}},
+	
+	
+	
+	{blip=blip,coords={ x = 1292.69, y = 5211.53, z = -83.71}},
+	
+	{blip=blip,coords={ x = 1139.4, y = 5489.49, z = -105.73}},
+	
+	{blip=blip,coords={ x = 696.55, y = 5866.2, z = -155.72}},
+	
+	{blip=blip,coords={ x = 589.13, y = 5948.34, z = -161.25}},	
+	
+	--[[
+	{blip=blip,coords={x = 2160.46, y = 5378.85, z = 165.1,}},
+	{blip=blip,coords={x = 2160.46, y = 5378.85, z = 165.1,}},
+	{blip=blip,coords={x = 2160.46, y = 5378.85, z = 165.1,}},
+	]]--
+	
+	},
+	CheckpointsDoWater=false,
+	CheckpointsDoWaterAndLand=false,
+	SpawnCheckpointsOnRoadsOnly=true,
+	CheckpointsAirBattle=false, --only spawn enemy aicraft, good for flying missions.
+	CheckPointClaimdReward=1000, --drivers and passengers get this
+	RaceWinReward=20000, --only driver gets this in the winning vehicle
+	CheckpointRaceJoinTime=3600, --not used
+	MissionShareMoney=false,
+	--RandomMissionTypes ={"Objective","HostageRescue"},
+	IsRandomEvent=false,
+	IsRandom = false,
+	IsRandomSpawnAnywhere=false,
+	IsBountyHunt=false,
+	RandomMissionMaxPedSpawns = 0,
+	RandomMissionMinPedSpawns = 0,
+	RandomMissionBossChance =  0,
+	RandomMissionMaxVehicleSpawns = 0,
+	RandomMissionMinVehicleSpawns = 0,
+	RandomMissionSpawnRadius = 100.0,
+	IsBountyHuntMinSquadSize=0,
+	IsBountyHuntMaxSquadSize=0,
+	IsBountySquadMinRadius=0,
+	IsBountySquadMinRadius=0,
+	RandomMissionBountyBossChance=0,
+	RandomMissionGuardAircraft=true,
+	MissionTriggerRadius = 20000.0,
+	MissionLengthMinutes = 20,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	SafeHousePedDoctors = {},
+	SafeHousePedLeaders = {},
+	SafeHouseProps = {"hei_prop_carrier_crate_01a"},
+	SafeHouseGiveImmediately = true,
+	SafeHouseDoInvincibleVehicles=true, --make the atvs invincible. 
+	AnnounceEvents=false, --have friendly notification of event triggered?
+	CheckpointsNoEvents=false, --Disable enemy events for checkpoint missions
+	SafeHouseAircraftCount=0,
+	SafeHouseVehicleCount = 24,
+	SafeHouseBoatCount = 0,
+	SafeHouseVehicles = 
+	{
+		"bf400",
+	},
+	TeleportToSafeHouseMinDistance = 10,
+	TeleportToSafeHouseMinVehicleDistance = 10,
+	SafeHouseVehiclesMaxClaim = 6,
+	SafeHouseTimeTillNextUse = 60000,
+	
+	
+	SMS_Subject="Race Against Time",
+	SMS_Message="Get to the mission vehicle safe house and grab a vehicle, then head to the marker that will appear",
+	SMS_Message2="Once you join the race, proceed through the enemy checkpoints. Beware they are heavily defended",
+	SMS_Message3="You earn $ when you are first to a checkpoint. More $ if you finish the race first",	
+		
+	--SMS_ContactPics={"CHAR_STEVE",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="Are you up for this?",
+	SMS_FailedMessage="What is going on?",
+	SMS_PassedSubject="Great Job! Congratulations!",
+	SMS_PassedMessage="You made it!",
+	
+	
+--IsRandomSpawnAnywhereCoordRange = {xrange={-30,30},yrange={1970,2030}},	
+	--RandomMissionSpawnRadius = 6000.0, --keep a float for enemy ped wandering to work
+	--IsBountyHuntAssassinateAll = true,
+	
+	--RandomMissionTypes ={"Objective"},	
+	--Config.RandomMissionPositions = { 
+--{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+--}
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Mission Goal",
+      Position = {x = 714.71, y = 5875.14, z = -150.79},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 2529.36, y = 5107.71, z = 44.98}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 2529.36, y = 5107.71, z = 44.98},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 2526.39, y = 5154.27, z = 61.24}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	 
+	Events = {
+	
+	  
+	{ 
+		  Type="Vehicle",
+		  Position = {x = 2140.13, y = 5378.98, z = 165.24, heading = 263.94 }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="blazer",
+		 --Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+		{
+		  Type="Squad",
+		  Position = { x = 1769.82, y = 5438.04, z = 264.06, heading = 248.2}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=20.0,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},	
+
+	{ 
+		  Type="Vehicle",
+		  Position = {x = 1357.33, y = 5555.58, z = 466.85, heading = 256.62  }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		-- Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+		{ 
+		  Type="Aircraft",
+		  Position = { x = 1357.33, y = 5555.58, z = 466.85, heading = 256.62 }, 
+		  Size     = {radius=1000.0},
+		  SpawnHeight =150.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="microlight",
+		 -- Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		
+		{
+		  Type="Squad",
+		  Position = { x = 603.54, y = 5671.18, z = 748.75, heading = 159.57 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=20.0,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},
+
+	{ 
+		  Type="Vehicle",
+		  Position = {x = 329.69, y = 5420.47, z = 661.67, heading = 336.16  }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="blazer",
+		-- Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+
+		{
+		  Type="Squad",
+		  Position = { x = 111.51, y = 5104.13, z = 510.09, heading = 333.88 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=20.0,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},
+
+		{
+		  Type="Squad",
+		  Position = {  x = -212.15, y = 4901.09, z = 318.11, heading = 266.48 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=20.0,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},
+		
+		{ 
+		  Type="Aircraft",
+		  Position = { x = 498.12, y = 5596.35, z = 795.51, heading = 207.49 }, 
+		  Size     = {radius=1000.0},
+		  SpawnHeight =150.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="buzzard",
+		 -- Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		
+
+		{
+		  Type="Squad",
+		  Position = {   x = -492.54, y = 4926.24, z = 147.05, heading = 408.07 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=2,
+		  SquadSpawnRadius=5.0,
+		  isBoss=true,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},		
+		
+
+		{
+		  Type="Paradrop",
+		  Position = {   x = -492.54, y = 4926.24, z = 147.05, heading = 408.07 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=5.0,
+		  --isBoss=true,
+		 -- modelHash="mp_m_boatstaff_01",
+		   SpawnAt = { x = -492.54, y = 4926.24, z = 147.05, heading = 408.07},
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},				
+		
+		
+		{ 
+		  Type="Aircraft",
+		  Position = {x = -501.22, y = 4933.34, z = 147.31,heading = 50.39 }, 
+		  Size     = {radius=500.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="buzzard",
+		 -- Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		
+	{ 
+		  Type="Vehicle",
+		  Position = {x = -499.29, y = 4922.24, z = 147.46, heading = 9.44  }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="blazer",
+		 --Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+	{ 
+		  Type="Vehicle",
+		  Position = {x = -503.49, y = 4921.68, z = 148.1, heading = 326.2  }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		 --Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},			
+		
+		
+		
+		{ 
+		  Type="Vehicle",
+		  Position = {  x = 1310.61, y = 5214.2, z = -79.13,heading = 88.94 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="blazer",
+		 Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		{ 
+		  Type="Vehicle",
+		  Position = {  x = 1310.61, y = 5214.2, z = -79.13,heading = 88.94 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		 Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		{ 
+		  Type="Squad",
+		  Position = {  x = 1301.03, y = 5229.62, z = -79.23, heading = 154.26,}, 
+		  Size     = {radius=200.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=5.0,
+		  --CheckGroundZ=true,
+		},
+		{ 
+		  Type="Squad",
+		  Position = {  x = 1104.4, y = 5521.81, z = -101.33,heading = 336.59 }, 
+		  Size     = {radius=200.0},
+		  Size     = {radius=200.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=5.0,
+		  --CheckGroundZ=true,
+		},		
+		
+		{ 
+		  Type="Vehicle",
+		  Position = {x = 1150.65, y = 5504.15, z = -100.13, heading = 116.35 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="scarab",
+		 Weapon=0xBD248B55,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		{ 
+		  Type="Vehicle",
+		  Position = { x = 713.23, y = 5866.99, z = -150.92, heading = 117.57 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		 Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+		{ 
+		  Type="Vehicle",
+		  Position = { x = 714.71, y = 5875.14, z = -150.79, heading = 125.06 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		 Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},					  
+	  
+	  
+     },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  }, 
+  
+  
+ Mission47 = {
+    
+	StartMessage = "Race across Mt Chiliad and into the underground base before the time is up",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Mt Chiliad Base Race, No Enemies",
+	MissionMessage = "Grab a vehicle, and get to all the checkpoints before the time is up",	
+	
+	KillReward = 0,
+	KillBossPedBonus = 0, --stacks with both above
+	FinishedObjectiveReward =20000,
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Race across Mt Chiliad and into the underground base before the time is up",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Mt Chiliad Base Race, No Enemies",
+	MissionMessageObj = "Grab a vehicle, and get to all the checkpoints before the time is up",	
+	--RandomMissionTypes ={"Objective","Assassinate"},
+	RandomMissionTypes ={"Checkpoint"},
+	StartMessageAss = "Race across Mt Chiliad and into the underground base before the time is up",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Mt Chiliad Base Race, No Enemies",
+	MissionMessageAss = "Grab a vehicle, and get to all the checkpoints before the time is up",	
+	RandomMissionDoLandBattle=true, --needed for pier npcs to spawn!
+	Type = "Checkpoint",	
+	MaxCheckpoints=2, --only applies to IsRandom races
+	CheckpointsDoLand=true,
+	CheckpointsStartPos={ x = 2526.39, y = 5154.27, z = 55.24},
+	RecordedCheckpoints={{blip=blip,coords={x = 2474.65, y = 5238.01, z = 68.19}},
+	{blip=blip,coords={x = 2329.55, y = 5348.81, z = 110.63}},
+	{blip=blip,coords={x = 2160.46, y = 5378.85, z = 150.1}},
+	{blip=blip,coords={x = 1850.25, y = 5407.32, z = 220.89}},
+	
+	--{blip=blip,coords={x = 2160.46, y = 5378.85, z = 165.1}},
+	
+	
+	{blip=blip,coords={x = 1493.41, y = 5532.87, z = 410.07}},
+	
+	
+	{blip=blip,coords={x = 1109.41, y = 5585.01, z = 554.53}},
+	
+	{blip=blip,coords={x = 883.34, y = 5651.25, z = 656.26}},
+	
+	{blip=blip,coords={x = 618.54, y = 5683.51, z = 735.0,}},
+	
+	{blip=blip,coords={x = 618.54, y = 5683.51, z = 735.0,}},
+	
+	{blip=blip,coords={x = 503.26, y = 5609.98, z = 782.34,}},
+	
+	{blip=blip,coords={x = 228.06, y = 5298.29, z = 608.55}},
+	
+	{blip=blip,coords={x = 99.13, y = 5089.51, z = 495.59}},
+	
+	{blip=blip,coords={ x = -167.35, y = 4905.18, z = 325.68}},
+	
+	{blip=blip,coords={ x = -402.81, y = 4925.61, z = 173.65}},
+	
+	{blip=blip,coords={ x = -595.74, y = 5073.06, z = 125.53}},
+	
+	{blip=blip,coords={x = -496.99, y = 4929.93, z = 135.8}},
+	
+	{blip=blip,coords={ x = -362.28, y = 4827.86, z = 138.2}},
+	
+	{blip=blip,coords={ x = 1291.18, y = 4882.77, z = -50.76}},
+	
+	
+	
+	{blip=blip,coords={ x = 1292.69, y = 5211.53, z = -83.71}},
+	
+	{blip=blip,coords={ x = 1139.4, y = 5489.49, z = -105.73}},
+	
+	{blip=blip,coords={ x = 696.55, y = 5866.2, z = -155.72}},
+	
+	{blip=blip,coords={ x = 589.13, y = 5948.34, z = -161.25}},	
+	
+	--[[
+	{blip=blip,coords={x = 2160.46, y = 5378.85, z = 165.1,}},
+	{blip=blip,coords={x = 2160.46, y = 5378.85, z = 165.1,}},
+	{blip=blip,coords={x = 2160.46, y = 5378.85, z = 165.1,}},
+	]]--
+	
+	},
+	CheckpointsDoWater=false,
+	CheckpointsDoWaterAndLand=false,
+	SpawnCheckpointsOnRoadsOnly=true,
+	CheckpointsAirBattle=false, --only spawn enemy aicraft, good for flying missions.
+	CheckPointClaimdReward=1000, --drivers and passengers get this
+	RaceWinReward=20000, --only driver gets this in the winning vehicle
+	CheckpointRaceJoinTime=3600, --not used
+	MissionShareMoney=false,
+	--RandomMissionTypes ={"Objective","HostageRescue"},
+	IsRandomEvent=false,
+	IsRandom = false,
+	IsRandomSpawnAnywhere=false,
+	IsBountyHunt=false,
+	RandomMissionMaxPedSpawns = 0,
+	RandomMissionMinPedSpawns = 0,
+	RandomMissionBossChance =  0,
+	RandomMissionMaxVehicleSpawns = 0,
+	RandomMissionMinVehicleSpawns = 0,
+	RandomMissionSpawnRadius = 100.0,
+	IsBountyHuntMinSquadSize=0,
+	IsBountyHuntMaxSquadSize=0,
+	IsBountySquadMinRadius=0,
+	IsBountySquadMinRadius=0,
+	RandomMissionBountyBossChance=0,
+	RandomMissionGuardAircraft=true,
+	MissionTriggerRadius = 20000.0,
+	MissionLengthMinutes = 10,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	SafeHousePedDoctors = {},
+	SafeHousePedLeaders = {},
+	SafeHouseProps = {"hei_prop_carrier_crate_01a"},
+	SafeHouseGiveImmediately = true,
+	SafeHouseDoInvincibleVehicles=true, --make the atvs invincible. 
+	AnnounceEvents=false, --have friendly notification of event triggered?
+	CheckpointsNoEvents=true, --Disable enemy events for checkpoint missions
+	SafeHouseAircraftCount=0,
+	SafeHouseVehicleCount = 24,
+	SafeHouseBoatCount = 0,
+	SafeHouseVehicles = 
+	{
+		"bf400",
+	},
+	TeleportToSafeHouseMinDistance = 10,
+	TeleportToSafeHouseMinVehicleDistance = 10,
+	SafeHouseVehiclesMaxClaim = 6,
+	SafeHouseTimeTillNextUse = 60000,
+	
+	
+	SMS_Subject="Mt Chiliad Base Race, No Enemies",
+	SMS_Message="Get to the mission vehicle safe house and grab a vehicle, then head to the marker that will appear",
+	SMS_Message2="Once you join the race, proceed through the checkpoints.",
+	SMS_Message3="You earn $ when you are first to a checkpoint. More $ if you finish the race first",	
+		
+	--SMS_ContactPics={"CHAR_STEVE",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="Are you up for this?",
+	SMS_FailedMessage="What is going on?",
+	SMS_PassedSubject="Great Job! Congratulations!",
+	SMS_PassedMessage="You made it!",
+	
+	
+--IsRandomSpawnAnywhereCoordRange = {xrange={-30,30},yrange={1970,2030}},	
+	--RandomMissionSpawnRadius = 6000.0, --keep a float for enemy ped wandering to work
+	--IsBountyHuntAssassinateAll = true,
+	
+	--RandomMissionTypes ={"Objective"},	
+	--Config.RandomMissionPositions = { 
+--{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+--}
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Mission Goal",
+      Position = {x = 714.71, y = 5875.14, z = -150.79},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 2529.36, y = 5107.71, z = 44.98}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 2529.36, y = 5107.71, z = 44.98},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 2526.39, y = 5154.27, z = 61.24}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	 
+	Events = {
+	
+	  
+	{ 
+		  Type="Vehicle",
+		  Position = {x = 2140.13, y = 5378.98, z = 165.24, heading = 263.94 }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="blazer",
+		 --Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+		{
+		  Type="Squad",
+		  Position = { x = 1769.82, y = 5438.04, z = 264.06, heading = 248.2}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=20.0,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},	
+
+	{ 
+		  Type="Vehicle",
+		  Position = {x = 1357.33, y = 5555.58, z = 466.85, heading = 256.62  }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		-- Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+		{ 
+		  Type="Aircraft",
+		  Position = { x = 1357.33, y = 5555.58, z = 466.85, heading = 256.62 }, 
+		  Size     = {radius=1000.0},
+		  SpawnHeight =150.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="microlight",
+		 -- Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		
+		{
+		  Type="Squad",
+		  Position = { x = 603.54, y = 5671.18, z = 748.75, heading = 159.57 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=20.0,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},
+
+	{ 
+		  Type="Vehicle",
+		  Position = {x = 329.69, y = 5420.47, z = 661.67, heading = 336.16  }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="blazer",
+		-- Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+
+		{
+		  Type="Squad",
+		  Position = { x = 111.51, y = 5104.13, z = 510.09, heading = 333.88 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=20.0,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},
+
+		{
+		  Type="Squad",
+		  Position = {  x = -212.15, y = 4901.09, z = 318.11, heading = 266.48 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=20.0,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},
+		
+		{ 
+		  Type="Aircraft",
+		  Position = { x = 498.12, y = 5596.35, z = 795.51, heading = 207.49 }, 
+		  Size     = {radius=1000.0},
+		  SpawnHeight =150.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="buzzard",
+		 -- Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		
+
+		{
+		  Type="Squad",
+		  Position = {   x = -492.54, y = 4926.24, z = 147.05, heading = 408.07 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=2,
+		  SquadSpawnRadius=5.0,
+		  isBoss=true,
+		 -- modelHash="mp_m_boatstaff_01",
+		  CheckGroundZ=true,	
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},		
+		
+
+		{
+		  Type="Paradrop",
+		  Position = {   x = -492.54, y = 4926.24, z = 147.05, heading = 408.07 }, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=5.0,
+		  --isBoss=true,
+		 -- modelHash="mp_m_boatstaff_01",
+		   SpawnAt = { x = -492.54, y = 4926.24, z = 147.05, heading = 408.07},
+		-- Message =  "Ocean Org reinforcements deployed. Its a trap!"	
+},				
+		
+		
+		{ 
+		  Type="Aircraft",
+		  Position = {x = -501.22, y = 4933.34, z = 147.31,heading = 50.39 }, 
+		  Size     = {radius=500.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="buzzard",
+		 -- Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		
+	{ 
+		  Type="Vehicle",
+		  Position = {x = -499.29, y = 4922.24, z = 147.46, heading = 9.44  }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="blazer",
+		 --Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+	{ 
+		  Type="Vehicle",
+		  Position = {x = -503.49, y = 4921.68, z = 148.1, heading = 326.2  }, 
+		  Size     = {radius=300.0},
+		 -- SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		 --Weapon= 0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},			
+		
+		
+		
+		{ 
+		  Type="Vehicle",
+		  Position = {  x = 1310.61, y = 5214.2, z = -79.13,heading = 88.94 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="blazer",
+		 Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		{ 
+		  Type="Vehicle",
+		  Position = {  x = 1310.61, y = 5214.2, z = -79.13,heading = 88.94 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		 Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		{ 
+		  Type="Squad",
+		  Position = {  x = 1301.03, y = 5229.62, z = -79.23, heading = 154.26,}, 
+		  Size     = {radius=200.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=5.0,
+		  --CheckGroundZ=true,
+		},
+		{ 
+		  Type="Squad",
+		  Position = {  x = 1104.4, y = 5521.81, z = -101.33,heading = 336.59 }, 
+		  Size     = {radius=200.0},
+		  Size     = {radius=200.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  NumberPeds=5,
+		  SquadSpawnRadius=5.0,
+		  --CheckGroundZ=true,
+		},		
+		
+		{ 
+		  Type="Vehicle",
+		  Position = {x = 1150.65, y = 5504.15, z = -100.13, heading = 116.35 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="scarab",
+		 Weapon=0xBD248B55,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+		{ 
+		  Type="Vehicle",
+		  Position = { x = 713.23, y = 5866.99, z = -150.92, heading = 117.57 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		 Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+		{ 
+		  Type="Vehicle",
+		  Position = { x = 714.71, y = 5875.14, z = -150.79, heading = 125.06 }, 
+		  Size     = {radius=200.0},
+		  SpawnHeight =50.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="bf400",
+		 Weapon=0x0781FE4A,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},					  
+	  
+	  
+     },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  }, 
+
+Mission48 = {
+    
+	StartMessage = "Fly through all the checkpoints before the time is up",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Starfox",
+	MissionMessage = "Fly through all the checkpoints before the time is up",	
+	
+	KillReward = 0,
+	KillBossPedBonus = 0, --stacks with both above
+	FinishedObjectiveReward =20000,
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Fly through all the checkpoints before the time is up",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Starfox",
+	MissionMessageObj = "Fly through all the checkpoints before the time is up",	
+	--RandomMissionTypes ={"Objective","Assassinate"},
+	RandomMissionTypes ={"Checkpoint"},
+	StartMessageAss = "Fly through all the checkpoints before the time is up",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Starfox",
+	MissionMessageAss = "Fly through all the checkpoints before the time is up",	
+	RandomMissionDoLandBattle=true, --needed for pier npcs to spawn!
+	Type = "Checkpoint",	
+	MaxCheckpoints=10, --NEEDS TO BE 2 OR MORE
+	CheckpointsDoLand=true,
+	CheckpointsStartPos={x=0.0,y=0.0,z=0.0},
+	RecordedCheckpoints={},
+	CheckpointsDoWater=false,
+	CheckpointsDoWaterAndLand=false,
+	SpawnCheckpointsOnRoadsOnly=false,
+	CheckpointsAirBattle=true, --only spawn enemy aicraft, good for flying missions.
+	CheckPointClaimdReward=1000, --drivers and passengers get this
+	RaceWinReward=20000, --only driver gets this in the winning vehicle
+	CheckpointRaceJoinTime=3600, --not used
+	MissionShareMoney=false,
+	--RandomMissionTypes ={"Objective","HostageRescue"},
+	IsRandomEvent=false,
+	IsRandom = true,
+	IsRandomSpawnAnywhere=true,
+	IsBountyHunt=true,
+	MissionLengthMinutes = 30,
+	RandomMissionMaxPedSpawns = 0,
+	RandomMissionMinPedSpawns = 0,
+	RandomMissionBossChance =  0,
+	RandomMissionMaxVehicleSpawns = 0,
+	RandomMissionMinVehicleSpawns = 0,
+	RandomMissionSpawnRadius = 100.0,
+	IsBountyHuntMinSquadSize=0,
+	IsBountyHuntMaxSquadSize=0,
+	IsBountySquadMinRadius=0,
+	IsBountySquadMinRadius=0,
+	RandomMissionBountyBossChance=0,
+	RandomMissionGuardAircraft=true,
+	SafeHouseAircraftCount=16,
+	SafeHouseVehicleCount = 0,
+	SafeHouseBoatCount = 0,
+	SafeHouseAircraft = 
+	{
+		"Hydra",
+	},
+	RandomMissionAircraft = {
+	"hydra",
+	"lazer",
+	"strikeforce",
+	"starling",
+	"rogue",
+	"nokota",
+	"molotok",
+	"pyro",
+	},
+	TeleportToSafeHouseMinDistance = 10,
+	TeleportToSafeHouseMinVehicleDistance = 10,
+	SafeHouseVehiclesMaxClaim = 4,
+	SafeHouseTimeTillNextUse = 60000,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-500,2500},yrange={3500,4700}},	--just sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-1000,3000},yrange={3000,5000}},	--land and sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, --just land 
+	
+	
+	SMS_Subject="Starfox",
+	SMS_Message="Get to the mission vehicle safe house and grab a plane, then head to the marker that will appear",
+	SMS_Message2="Once you join the race, proceed through the enemy checkpoints. Beware they are heavily defended",
+	SMS_Message3="You earn $ when you are first to a checkpoint. More $ if you finish the race first",	
+		
+	--SMS_ContactPics={"CHAR_STEVE",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="Are you up for this?",
+	SMS_FailedMessage="What is going on?",
+	SMS_PassedSubject="Great Job! Congratulations!",
+	SMS_PassedMessage="You made it!",
+	
+	
+--IsRandomSpawnAnywhereCoordRange = {xrange={-30,30},yrange={1970,2030}},	
+	--RandomMissionSpawnRadius = 6000.0, --keep a float for enemy ped wandering to work
+	--IsBountyHuntAssassinateAll = true,
+	
+	--RandomMissionTypes ={"Objective"},	
+	--Config.RandomMissionPositions = { 
+--{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+--}
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Mission Goal",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	 
+	Events = {
+		--**need a stub entry set for the random default event**
+		--add custom events for mission with id=1 onwards
+      {id = 1, 
+		Position = { x = 50000.0, y = 50000.0, z = 50000.0, heading = 0 },
+	  	  Size     = {radius=1000.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  --NumberPeds=1,
+		  isBoss=false,
+		  Target=false,
+		  SquadSpawnRadius=25.0,
+		  
+	  
+	  },
+     },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  },   
+  Mission49 = {
+    
+	StartMessage = "Drive through all the checkpoints before the time is up",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Need for Speed",
+	MissionMessage = "Drive through all the checkpoints before the time is up",	
+	
+	KillReward = 0,
+	KillBossPedBonus = 0, --stacks with both above
+	FinishedObjectiveReward =20000,
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Drive through all the checkpoints before the time is up",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Need for Speed",
+	MissionMessageObj = "Drive through all the checkpoints before the time is up",	
+	--RandomMissionTypes ={"Objective","Assassinate"},
+	RandomMissionTypes ={"Checkpoint"},
+	StartMessageAss = "Drive through all the checkpoints before the time is up",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Need for Speed",
+	MissionMessageAss = "Drive through all the checkpoints before the time is up",	
+	RandomMissionDoLandBattle=true, --needed for pier npcs to spawn!
+	Type = "Checkpoint",	
+	MaxCheckpoints=10, --NEEDS TO BE 2 OR MORE
+	CheckpointsDoLand=true,
+	CheckpointsStartPos={x=0.0,y=0.0,z=0.0},
+	RecordedCheckpoints={},
+	CheckpointsDoWater=false,
+	CheckpointsDoWaterAndLand=false,
+	SpawnCheckpointsOnRoadsOnly=true,
+	CheckpointsAirBattle=false, --only spawn enemy aicraft, good for flying missions.
+	CheckPointClaimdReward=1000, --drivers and passengers get this
+	RaceWinReward=20000, --only driver gets this in the winning vehicle
+	CheckpointRaceJoinTime=3600, --not used
+	MissionShareMoney=false,
+	--RandomMissionTypes ={"Objective","HostageRescue"},
+	IsRandomEvent=false,
+	IsRandom = true,
+	IsRandomSpawnAnywhere=true,
+	IsBountyHunt=true,
+	MissionLengthMinutes = 40,
+	RandomMissionMaxPedSpawns = 0,
+	RandomMissionMinPedSpawns = 0,
+	RandomMissionBossChance =  0,
+	RandomMissionMaxVehicleSpawns = 0,
+	RandomMissionMinVehicleSpawns = 0,
+	RandomMissionSpawnRadius = 100.0,
+	IsBountyHuntMinSquadSize=0,
+	IsBountyHuntMaxSquadSize=0,
+	IsBountySquadMinRadius=0,
+	IsBountySquadMinRadius=0,
+	RandomMissionBountyBossChance=0,
+	RandomMissionGuardAircraft=true,
+	SafeHouseAircraftCount=0,
+	SafeHouseVehicleCount = 24,
+	SafeHouseBoatCount = 0,
+	SafeHouseVehicles = 
+	{
+		"insurgent3",
+		"kuruma2",
+	},
+	TeleportToSafeHouseMinDistance = 10,
+	TeleportToSafeHouseMinVehicleDistance = 10,
+	SafeHouseVehiclesMaxClaim = 6,
+	SafeHouseTimeTillNextUse = 60000,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-500,2500},yrange={3500,4700}},	--just sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-1000,3000},yrange={3000,5000}},	--land and sea
+	IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, --just land 
+	
+	
+	SMS_Subject="Need for Speed",
+	SMS_Message="Get to the mission vehicle safe house and grab a plane, then head to the marker that will appear",
+	SMS_Message2="Once you join the race, proceed through the enemy checkpoints. Beware they are heavily defended",
+	SMS_Message3="You earn $ when you are first to a checkpoint. More $ if you finish the race first",	
+		
+	--SMS_ContactPics={"CHAR_STEVE",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="Are you up for this?",
+	SMS_FailedMessage="What is going on?",
+	SMS_PassedSubject="Great Job! Congratulations!",
+	SMS_PassedMessage="You made it!",
+	
+	
+--IsRandomSpawnAnywhereCoordRange = {xrange={-30,30},yrange={1970,2030}},	
+	--RandomMissionSpawnRadius = 6000.0, --keep a float for enemy ped wandering to work
+	--IsBountyHuntAssassinateAll = true,
+	
+	--RandomMissionTypes ={"Objective"},	
+	--Config.RandomMissionPositions = { 
+--{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+--}
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Mission Goal",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	 
+	Events = {
+		--**need a stub entry set for the random default event**
+		--add custom events for mission with id=1 onwards
+      {id = 1, 
+		Position = { x = 50000.0, y = 50000.0, z = 50000.0, heading = 0 },
+	  	  Size     = {radius=1000.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  --NumberPeds=1,
+		  isBoss=false,
+		  Target=false,
+		  SquadSpawnRadius=25.0,
+		  
+	  
+	  },
+     },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  },   
+   Mission50 = {
+    
+	StartMessage = "Drive your boat through all the checkpoints before the time is up",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Speedo",
+	MissionMessage = "Drive your boat through all the checkpoints before the time is up",	
+	
+	KillReward = 0,
+	KillBossPedBonus = 0, --stacks with both above
+	FinishedObjectiveReward =20000,
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+    
+	StartMessageObj = "Drive your boat through all the checkpoints before the time is up",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Speedo",
+	MissionMessageObj = "Drive your boat through all the checkpoints before the time is up",	
+	--RandomMissionTypes ={"Objective","Assassinate"},
+	RandomMissionTypes ={"Checkpoint"},
+	StartMessageAss = "Drive your boat through all the checkpoints before the time is up",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Speedo",
+	MissionMessageAss = "Drive your boat through all the checkpoints before the time is up",	
+	RandomMissionDoLandBattle=true, --needed for pier npcs to spawn!
+	Type = "Checkpoint",	
+	MaxCheckpoints=10, --NEEDS TO BE 2 OR MORE
+	CheckpointsDoLand=false,
+	CheckpointsStartPos={x=0.0,y=0.0,z=0.0},
+	RecordedCheckpoints={},
+	CheckpointsDoWater=true,
+	CheckpointsDoWaterAndLand=false,
+	SpawnCheckpointsOnRoadsOnly=false,
+	CheckpointsAirBattle=false, --only spawn enemy aicraft, good for flying missions.
+	CheckPointClaimdReward=1000, --drivers and passengers get this
+	RaceWinReward=20000, --only driver gets this in the winning vehicle
+	CheckpointRaceJoinTime=3600, --not used
+	MissionShareMoney=false,
+	--RandomMissionTypes ={"Objective","HostageRescue"},
+	IsRandomEvent=false,
+	IsRandom = true,
+	IsRandomSpawnAnywhere=true,
+	IsBountyHunt=true,
+	MissionLengthMinutes = 40,
+	RandomMissionMaxPedSpawns = 0,
+	RandomMissionMinPedSpawns = 0,
+	RandomMissionBossChance =  0,
+	RandomMissionMaxVehicleSpawns = 0,
+	RandomMissionMinVehicleSpawns = 0,
+	RandomMissionSpawnRadius = 100.0,
+	IsBountyHuntMinSquadSize=0,
+	IsBountyHuntMaxSquadSize=0,
+	IsBountySquadMinRadius=0,
+	IsBountySquadMinRadius=0,
+	RandomMissionBountyBossChance=0,
+	RandomMissionGuardAircraft=true,
+	SafeHouseAircraftCount=0,
+	SafeHouseVehicleCount = 0,
+	SafeHouseBoatCount = 24,
+	TeleportToSafeHouseMinDistance = 10,
+	TeleportToSafeHouseMinVehicleDistance = 10,
+	SafeHouseVehiclesMaxClaim = 6,
+	SafeHouseTimeTillNextUse = 60000,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	IsRandomSpawnAnywhereCoordRange = {xrange={-500,2500},yrange={3500,4700}},	--just sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-1000,3000},yrange={3000,5000}},	--land and sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, --just land 
+	RandomMissionAircraft = {
+	"buzzard2",
+	"maverick",
+	"seabreeze",
+	"microlight"
+	},
+	RandomMissionBoat = {
+	"dinghy4",
+	"seashark",
+	"toro2",
+	"jetmax",
+	"dinghy4",
+	"seashark",
+	"toro2",
+	"jetmax",
+	"dinghy4",
+	"seashark",
+	"toro2",
+	"jetmax",
+	"blazer5",
+	},
+	
+	SMS_Subject="Speedo",
+	SMS_Message="Get to the mission boat safe house and grab a boat, then head to the marker that will appear",
+	SMS_Message2="Once you join the race, proceed through the enemy checkpoints. Beware they are heavily defended",
+	SMS_Message3="You earn $ when you are first to a checkpoint. More $ if you finish the race first",	
+		
+	--SMS_ContactPics={"CHAR_STEVE",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="Are you up for this?",
+	SMS_FailedMessage="What is going on?",
+	SMS_PassedSubject="Great Job! Congratulations!",
+	SMS_PassedMessage="You made it!",
+	
+	
+--IsRandomSpawnAnywhereCoordRange = {xrange={-30,30},yrange={1970,2030}},	
+	--RandomMissionSpawnRadius = 6000.0, --keep a float for enemy ped wandering to work
+	--IsBountyHuntAssassinateAll = true,
+	
+	--RandomMissionTypes ={"Objective"},	
+	--Config.RandomMissionPositions = { 
+--{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+--}
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Mission Goal",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	 
+	Events = {
+		--**need a stub entry set for the random default event**
+		--add custom events for mission with id=1 onwards
+      {id = 1, 
+		Position = { x = 50000.0, y = 50000.0, z = 50000.0, heading = 0 },
+	  	  Size     = {radius=1000.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  --NumberPeds=1,
+		  isBoss=false,
+		  Target=false,
+		  SquadSpawnRadius=25.0,
+		  
+	  
+	  },
+     },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  },   
+   Mission51 = {
+    
+	StartMessage = "Get through all the checkpoints before the time is up",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Alamo Land and Sea",
+	MissionMessage = "By land and sea get through all the checkpoints before the time is up",	
+	
+	KillReward = 0,
+	KillBossPedBonus = 0, --stacks with both above
+	FinishedObjectiveReward =20000,
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Get through all the checkpoints before the time is up",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Alamo Land and Sea",
+	MissionMessageObj = "By land and sea get through all the checkpoints before the time is up",	
+	--RandomMissionTypes ={"Objective","Assassinate"},
+	RandomMissionTypes ={"Checkpoint"},
+	StartMessageAss = "Get through all the checkpoints before the time is up",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Alamo Land and Sea",
+	MissionMessagAss = "By land and sea get through all the checkpoints before the time is up",	
+	RandomMissionDoLandBattle=true, --needed for pier npcs to spawn!
+	Type = "Checkpoint",	
+	MaxCheckpoints=10, --NEEDS TO BE 2 OR MORE
+	CheckpointsDoLand=false,
+	CheckpointsStartPos={x=0.0,y=0.0,z=0.0},
+	RecordedCheckpoints={},
+	CheckpointsDoWater=false,
+	CheckpointsDoWaterAndLand=true,
+	SpawnCheckpointsOnRoadsOnly=false,
+	CheckpointsAirBattle=false, --only spawn enemy aicraft, good for flying missions.
+	CheckPointClaimdReward=1000, --drivers and passengers get this
+	RaceWinReward=20000, --only driver gets this in the winning vehicle
+	CheckpointRaceJoinTime=3600, --not used
+	MissionShareMoney=false,
+	--RandomMissionTypes ={"Objective","HostageRescue"},
+	IsRandomEvent=false,
+	IsRandom = true,
+	IsRandomSpawnAnywhere=true,
+	IsBountyHunt=true,
+	MissionLengthMinutes = 40,
+	RandomMissionMaxPedSpawns = 0,
+	RandomMissionMinPedSpawns = 0,
+	RandomMissionBossChance =  0,
+	RandomMissionMaxVehicleSpawns = 0,
+	RandomMissionMinVehicleSpawns = 0,
+	RandomMissionSpawnRadius = 100.0,
+	IsBountyHuntMinSquadSize=0,
+	IsBountyHuntMaxSquadSize=0,
+	IsBountySquadMinRadius=0,
+	IsBountySquadMinRadius=0,
+	RandomMissionBountyBossChance=0,
+	RandomMissionGuardAircraft=true,
+	SafeHouseAircraftCount=0,
+	SafeHouseVehicleCount = 24,
+	SafeHouseBoatCount = 24,
+	TeleportToSafeHouseMinDistance = 10,
+	TeleportToSafeHouseMinVehicleDistance = 10,
+	SafeHouseVehiclesMaxClaim = 9,
+	SafeHouseTimeTillNextUse = 60000,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-500,2500},yrange={3500,4700}},	--just sea
+	IsRandomSpawnAnywhereCoordRange = {xrange={-1000,3000},yrange={3000,5000}},	--land and sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, --just land 
+	
+	
+	SMS_Subject="Alamo Land and Sea",
+	SMS_Message="Use the vehicle and boat safehouses for vehicles. Marker is at the vehicle safehouse to join",
+	SMS_Message2="Once you join the race, proceed through the enemy checkpoints. Beware they are heavily defended",
+	SMS_Message3="You earn $ when you are first to a checkpoint. More $ if you finish the race first",	
+		
+	--SMS_ContactPics={"CHAR_STEVE",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="Are you up for this?",
+	SMS_FailedMessage="What is going on?",
+	SMS_PassedSubject="Great Job! Congratulations!",
+	SMS_PassedMessage="You made it!",
+	
+	
+--IsRandomSpawnAnywhereCoordRange = {xrange={-30,30},yrange={1970,2030}},	
+	--RandomMissionSpawnRadius = 6000.0, --keep a float for enemy ped wandering to work
+	--IsBountyHuntAssassinateAll = true,
+	
+	--RandomMissionTypes ={"Objective"},	
+	--Config.RandomMissionPositions = { 
+--{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+--}
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Mission Goal",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	 
+	Events = {
+		--**need a stub entry set for the random default event**
+		--add custom events for mission with id=1 onwards
+      {id = 1, 
+		Position = { x = 50000.0, y = 50000.0, z = 50000.0, heading = 0 },
+	  	  Size     = {radius=1000.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  --NumberPeds=1,
+		  isBoss=false,
+		  Target=false,
+		  SquadSpawnRadius=25.0,
+		  
+	  
+	  },
+     },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	}
+
+  
+
+  },   
 
 --[[
  Mission25 = {
