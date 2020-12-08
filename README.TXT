@@ -3,7 +3,7 @@ See first post at the link below for all the information about mission types and
 https://forum.cfx.re/t/release-fivem-crackdown-game-mode-and-mission-generator-creation-beta/275613
 
 Installation:
-Install like any other FiveM Server Resource.
+Install like any other FiveM Server Resource. Both mrp-missions-v3 and mrpStreetRaces need to be installed. 
 
 'mrp-missions_spawn' is purely optional, and has defined player skins to spawn as. 
 
