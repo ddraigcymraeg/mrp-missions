@@ -143,21 +143,26 @@ end)
 RegisterServerEvent("sv:generateCheckpointsAndEvents")
 AddEventHandler("sv:generateCheckpointsAndEvents", function(MissionName,recordedCheckpoints,Events,startCoords)
 	--print("chk3")
+	--if Events then 
+		--print(#Events)
+		--else
+		--print("no events found!")
+	--end 
 	TriggerClientEvent("mt:generateCheckpointsAndEvents",-1, MissionName,recordedCheckpoints,Events)
 	--trigger StreetRaces createrace event
 	
 	--print(#recordedCheckpoints)
 	--local startCoords = recordedCheckpoints[1].coords
 	--print(startCoords.x)
-	
-	TriggerEvent("mrpStreetRaces:createRace_sv",1, 300000, startCoords, recordedCheckpoints, 360000)
-	
-	Config.Missions[MissionName].TotalCheckpoints=#recordedCheckpoints
-	
-	Config.Missions[MissionName].CheckpointsStartPos=startCoords
-	
-	Config.Missions[MissionName].RecordedCheckpoints=recordedCheckpoints
-	
+	if Config.Missions[MissionName].Type=="Checkpoint" then 
+		TriggerEvent("mrpStreetRaces:createRace_sv",1, 300000, startCoords, recordedCheckpoints, 360000)
+		
+		Config.Missions[MissionName].TotalCheckpoints=#recordedCheckpoints
+		
+		Config.Missions[MissionName].CheckpointsStartPos=startCoords
+		
+		Config.Missions[MissionName].RecordedCheckpoints=recordedCheckpoints
+	end	
 	
 	--used for saving which player completed which checkpoint first
 	Config.Missions[MissionName].Checkpoints={}
@@ -751,6 +756,29 @@ AddEventHandler("sv:done", function(input,isstop,isfail,reasontext,blGoalReached
 				--print("cance race")
 				TriggerEvent("mrpStreetRaces:cancelRace_sv")
 			end	
+			
+		--remove any random events
+		local REvents = Config.Missions[input].Events
+		local rem_key = {}
+		
+		--print("REvents"..#REvents)
+		for index, irevent in pairs(REvents) do
+			--print(index)
+			  if irevent.revent or irevent.checkpoint then
+							-- Matches existing checkpoint, remove blip and checkpoint from table
+				--print("r"..index)
+				 --table.remove(REvents, index)
+				-- print("t"..index)
+				 table.insert(rem_key, index)
+	  
+			  end
+		 end
+		for i = #rem_key, 1, -1 do
+			value = rem_key[i]
+			table.remove(REvents, value)
+		end	 
+		 
+		Config.Missions[input].Events = REvents
 	
 			--used for mrpStreetRaces:
 			local MName = input
