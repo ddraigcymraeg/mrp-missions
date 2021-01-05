@@ -154,9 +154,10 @@ AddEventHandler("sv:generateCheckpointsAndEvents", function(MissionName,recorded
 	--print(#recordedCheckpoints)
 	--local startCoords = recordedCheckpoints[1].coords
 	--print(startCoords.x)
-	if Config.Missions[MissionName].Type=="Checkpoint" then 
+	if Config.Missions[MissionName].Type=="Checkpoint" and Config.Missions[MissionName].IsRandom then 
+	--print("made it sv ")
 		TriggerEvent("mrpStreetRaces:createRace_sv",1, 300000, startCoords, recordedCheckpoints, 360000)
-		
+		--print("made it sv2 ")
 		Config.Missions[MissionName].TotalCheckpoints=#recordedCheckpoints
 		
 		Config.Missions[MissionName].CheckpointsStartPos=startCoords
@@ -166,7 +167,7 @@ AddEventHandler("sv:generateCheckpointsAndEvents", function(MissionName,recorded
 	
 	--used for saving which player completed which checkpoint first
 	Config.Missions[MissionName].Checkpoints={}
-	
+	--print("chk4")
 	Config.Missions[MissionName].Events=Events
 
 end)
@@ -630,6 +631,7 @@ end)
 RegisterServerEvent("sv:UpdateEvents")
 AddEventHandler("sv:UpdateEvents", function(k,PlayerServerId)
  --print("event called"..k)
+ --print("length:"..#Config.Missions[MissionName].Events)
 	Config.Missions[MissionName].Events[k].done=true
    TriggerClientEvent('mt:UpdateEvents',-1,k,PlayerServerId)
   
