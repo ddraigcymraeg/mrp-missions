@@ -344,7 +344,7 @@ Config.AnnounceEvents=false --have friendly notification of event triggered?
 Config.ExtraRandomEventsType = 1
 
 ---how many extra event areas are there in the mission?
-Config.GenerateExtraRandomEventsNum = 3
+Config.GenerateExtraRandomEventsNum = 7
 
 --randomly spawned events will be in the range set for the mission:  i.e.: https://drive.google.com/file/d/0B-zvE86DVcv2MXhVSHZnc01QWm8/view
 	--IsRandomSpawnAnywhereCoordRange = {xrange={-500,2500},yrange={3500,4700}},	--just sea
