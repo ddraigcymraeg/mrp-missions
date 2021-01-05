@@ -561,7 +561,9 @@ RegisterCommand("mission", function(source, args, rawCommand)
 									
 						end
 					else
-							generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)
+					--print("hey")
+						generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)
+						
 						if Config.Missions[MissionName].Type=="Checkpoint" then 
 							TriggerServerEvent("mrpStreetRaces:createRace_sv",1, 300000, Config.Missions[MissionName].CheckpointsStartPos, Config.Missions[MissionName].RecordedCheckpoints, 360000)				
 						end					
@@ -3740,6 +3742,7 @@ function generateExtraRandomEvents(MissionName,SafeHouseLocationIndex)
 	end
 	if getMissionConfigProperty(MissionName, "GenerateExtraRandomEventsNum") > 0 then 
 	
+	
 		for i = 1,getMissionConfigProperty(MissionName, "GenerateExtraRandomEventsNum"),1 
 		do 
 			local rIsRandomSpawnAnywhereInfo
@@ -3757,14 +3760,16 @@ function generateExtraRandomEvents(MissionName,SafeHouseLocationIndex)
 			 Events = createRandomEvents(rIsRandomSpawnAnywhereInfo[1],Events,0,rIsRandomSpawnAnywhereInfo[2])
 			end	
 		end
- 
-	end
-	--print(#Events)
-	if(Config.Missions[MissionName].Type ~= "Checkpoint") then 
-		--print("made send")
 		Config.Missions[MissionName].Events = Events
-		TriggerServerEvent("sv:generateCheckpointsAndEvents",MissionName, 0,Config.Missions[MissionName].Events,{})
-	end 
+			--print(#Events)
+		if((Config.Missions[MissionName].Type ~= "Checkpoint") and Config.Missions[MissionName].IsRandom) or not Config.Missions[MissionName].IsRandom then 
+			--print("made send")
+			
+			TriggerServerEvent("sv:generateCheckpointsAndEvents",MissionName, {},Config.Missions[MissionName].Events,{})
+		end 
+	 
+	end
+
 
 end
 
@@ -3776,7 +3781,7 @@ function generateCheckpointsAndEvents(MissionName,SafeHouseLocationIndex,Mission
 	if Config.Missions[MissionName].Events then 
 		Events = Config.Missions[MissionName].Events
 	end
-	
+	--print(#Events)
 	local waypointCoords = getMissionConfigProperty(MissionName, "SafeHouseLocations")[SafeHouseLocationIndex].BlipSL.Position
 	
 	local retval, coords = GetClosestVehicleNode(waypointCoords.x, waypointCoords.y, waypointCoords.z, 1)
@@ -3874,6 +3879,7 @@ function generateCheckpointsAndEvents(MissionName,SafeHouseLocationIndex,Mission
 	
 	
 	Config.Missions[MissionName].Events = Events
+	--print(#Events)
 	--print("sv:generateCheckpointsAndEvents CALLED")
 	TriggerServerEvent("sv:generateCheckpointsAndEvents",MissionName, recordedCheckpoints,Config.Missions[MissionName].Events,waypointCoords)
 	 
@@ -4004,27 +4010,16 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		 Size     = {radius=radius},
 		 NumberPeds=NumberPeds,isBoss=isBoss, CheckGroundZ=true,
 		 SquadSpawnRadius=math.random(20,100),Message=nil,revent=true})	
-		 
-		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
-		--SetBlipColour(blip, 1)
-		--SetBlipAlpha(blip,80)
-		--BeginTextCommandSetBlipName("STRING")
-		--	AddTextComponentString("squad")		
-		--EndTextCommandSetBlipName(blip)	
+	
 	
 	elseif eventtype=="Vehicle" and not isWater then
-		local radius =math.random(200.0,1000.0)*1.0
+		local radius =math.random(200.0,300.0)*1.0
 		table.insert(Events, {Type="Vehicle", Position = {x=coords.x+math.random(-10,10),y=coords.y + math.random(-10,10), z=coords.z},
 		Size     = {radius=radius},
 		FacePlayer = true,Message=nil,revent=true}
 		)	
 	
-		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
-		--SetBlipColour(blip, 1)
-		--SetBlipAlpha(blip,80)
-		--BeginTextCommandSetBlipName("STRING")
-		--	AddTextComponentString("vehicle")		
-		--EndTextCommandSetBlipName(blip)	
+	
 
 	elseif eventtype=="Paradrop" and not isWater then
 		local radius = math.random(200.0,300.0)*1.0
@@ -4033,12 +4028,7 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		NumberPeds=math.random(5,10),
 		SpawnAt =  {x=coords.x,y=coords.y,z=coords.z},Message=nil,revent=true}
 		 )
-		-- local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
-		--SetBlipColour(blip, 1)
-		--SetBlipAlpha(blip,80)
-		--BeginTextCommandSetBlipName("STRING")
-		--	AddTextComponentString("Paradrop")		
-		--EndTextCommandSetBlipName(blip)	
+		 
 	
 	elseif eventtype=="Aircraft" then
 		local radius = math.random(1000.0,3000.0)*1.0
@@ -4049,12 +4039,7 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		FacePlayer = true,Message=nil,revent=true}
 		)
 		
-		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
-		--SetBlipColour(blip, 1)
-		--SetBlipAlpha(blip,80)
-		--BeginTextCommandSetBlipName("STRING")
-		--	AddTextComponentString("Aicraft")		
-		--EndTextCommandSetBlipName(blip)	
+		
 		
 	elseif eventtype=="Boat" and isWater then
 		local radius = math.random(200.0,500.0)*1.0
@@ -4063,12 +4048,7 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		FacePlayer = true,Message=nil,revent=true}
 		)
 		
-		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
-		--SetBlipColour(blip, 1)
-		--SetBlipAlpha(blip,80)
-		--BeginTextCommandSetBlipName("STRING")	
-		--AddTextComponentString("Boat")		
-		--EndTextCommandSetBlipName(blip)	
+	
 	end
 	
 	
@@ -14020,8 +14000,13 @@ function calcMissionStats()
 	--end
 				--print(type(Config.Missions[MissionName].Events))
 				if Config.Missions[MissionName].Events then 
-					--print("Events")
+				--print("num events:")
+					--print(#Config.Missions[MissionName].Events)
 					for k,v in pairs(Config.Missions[MissionName].Events) do
+					
+						if Config.Missions[MissionName].Events[k].revent then
+							--print("revent:"..k)
+						end
 						
 						--print("event.."..k)
 						--print("made it:".. Config.Missions[MissionName].Events[k].Position.x)
@@ -14046,7 +14031,7 @@ function calcMissionStats()
 						
 						--Checkpoint support
 						local eventOK=true
-						if(Config.Missions[MissionName].Type=="Checkpoint" and Config.Missions[MissionName].IsRandom==true and DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint") ~= Config.Missions[MissionName].Events[k].checkpoint) 
+						if(Config.Missions[MissionName].Type=="Checkpoint" and Config.Missions[MissionName].Events[k].checkpoint and Config.Missions[MissionName].IsRandom==true and DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint") ~= Config.Missions[MissionName].Events[k].checkpoint) 
 						or getMissionConfigProperty(MissionName, "CheckpointsNoEvents")
 						
 						then
@@ -14059,7 +14044,12 @@ function calcMissionStats()
 						--else
 							--print('oventnotok:'..k)
 							--print("decor:"..DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint"))
+						--support for random events with checkpoint races
+						elseif (Config.Missions[MissionName].Type=="Checkpoint" and Config.Missions[MissionName].IsRandom==true and Config.Missions[MissionName].Events[k].revent) then
+							--print("OK MADE IT REVENT")
+							 eventOK=true
 						end
+						
 						
 						--dont trigger event if 
 						local pvehicle = GetVehiclePedIsIn( GetPlayerPed(-1), false )
