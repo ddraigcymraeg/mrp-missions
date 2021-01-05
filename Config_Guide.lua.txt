@@ -468,6 +468,54 @@ Config.SpawnRewardPickups = {
 Config.SpawnRewardComponents = {"COMPONENT_AT_PI_FLSH WEAPON_COMBATPISTOL","COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL"} 
 
 
+-Useful for certain missions like certain Checkpoint Missions
+Config.SafeHouseDoInvincibleVehicles=false
+
+
+Config.AnnounceEvents=false --have friendly notification of event triggered?
+
+
+--ExtraRandomEventsType: flag 1 = land only, 2 = water and land, 3 = water only 
+Config.ExtraRandomEventsType = 1
+
+---how many extra event areas are there in the mission?
+Config.GenerateExtraRandomEventsNum = 3
+
+--randomly spawned events will be in the range set for the mission:  i.e.: https://drive.google.com/file/d/0B-zvE86DVcv2MXhVSHZnc01QWm8/view
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-500,2500},yrange={3500,4700}},	--just sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-1000,3000},yrange={3000,5000}},	--land and sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, --just land 
+
+--CHECKPOINT MISSION SETTINGS
+--See Mission45 -> Mission51 (Mission46 and Mission47 are standard (non-random) missions)
+--settings for IsRandom & IsRandomSpawnAnywhere checkpoint mission, and/or regular checkpoint missions.
+--for random missions have IsRandomSpawnAnywhere and IsRandom to be true. 
+--you can use IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, like for standard IsRandomSpawnAnywhere
+--missions to have a checkpoint and event spawn area https://drive.google.com/file/d/0B-zvE86DVcv2MXhVSHZnc01QWm8/view
+	
+	
+	--only used for IsRandom missions
+	Config.MaxCheckpoints=10 --NEEDS TO BE 2 OR MORE
+	
+	--only set manually for non-IsRandom mission:
+	Config.CheckpointsStartPos={x=0.0,y=0.0,z=0.0}
+	--only set manually for non-IsRandom mission:
+	Config.RecordedCheckpoints={}
+	--these are only for IsRandom Missions:
+	Config.CheckpointsDoLand=true --only spawn checkpoints on land, other 2 must be false
+	Config.CheckpointsDoWater=false --Spawn checkpoints only on water?  other 2 must be false
+	Config.CheckpointsDoWaterAndLand=false --Spawn checkpoints on both land and water? other 2 must be false
+	Config.SpawnCheckpointsOnRoadsOnly=true --if on land, only on roads?
+	--
+	
+	Config.CheckpointsAirBattle=false --only spawn enemy aircraft, good for aircraft battle races.
+	
+	
+	Config.CheckPointClaimdReward=1000 --drivers and passengers get this when they are in a vehicle that is first to a checkpoint
+	
+	Config.RaceWinReward=20000 --only driver gets this in the winning vehicle
+
+
 --**REGEN SETTINGS**--
 
 --Beyond regular GTA V 1/2 health regen:
