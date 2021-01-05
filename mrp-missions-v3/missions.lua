@@ -272,6 +272,8 @@ Config.SpawnMissionComponentsOnPlayer = false
 Config.SpawnRewardPickupsOnPlayer = true
 Config.SpawnRewardComponentsOnPlayer = true 
 
+
+
 Config.SpawnMissionPickups = {"WEAPON_COMBATPISTOL","weapon_heavysniper_mk2","weapon_marksmanrifle_mk2","weapon_heavysniper","weapon_combatmg_mk2","weapon_combatmg",
 "weapon_carbinerifle_mk2","weapon_assaultrifle_mk2","weapon_specialcarbine_mk2","weapon_bullpuprifle_mk2","weapon_advancedrifle","weapon_pumpshotgun_mk2","weapon_assaultshotgun",
 "weapon_smg_mk2","weapon_assaultsmg","weapon_pistol_mk2","weapon_snspistol_mk2","weapon_revolver_mk2","WEAPON_KNIFE","GADGET_NIGHTVISION","WEAPON_GRENADE","WEAPON_PROXMINE","WEAPON_STICKYBOMB","WEAPON_PIPEBOMB","WEAPON_FLARE",
@@ -336,6 +338,18 @@ Config.SafeHouseDoInvincibleVehicles=false
 
 
 Config.AnnounceEvents=false --have friendly notification of event triggered?
+
+
+--ExtraRandomEventsType: flag 1 = land only, 2 = water and land, 3 = water only 
+Config.ExtraRandomEventsType = 1
+
+---how many extra event areas are there in the mission?
+Config.GenerateExtraRandomEventsNum = 3
+
+--randomly spawned events will be in the range set for the mission:  i.e.: https://drive.google.com/file/d/0B-zvE86DVcv2MXhVSHZnc01QWm8/view
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-500,2500},yrange={3500,4700}},	--just sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-1000,3000},yrange={3000,5000}},	--land and sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, --just land 
 
 --CHECKPOINT MISSION SETTINGS
 --See Mission45 -> Mission51 (Mission46 and Mission47 are standard (non-random) missions)
@@ -1282,6 +1296,10 @@ Config.Missions = {
 	MissionMessage = "Go to the construction site and secure it from the mercenaries",
 	MissionSpaceTime = 10000,
 	MissionTriggerRadius = 1000.0,
+	--NextMission="Mission27",
+	--NextMissionIfFailed="Mission1",
+	TeleportToSafeHouseOnMissionStart = true,
+	
 	Type = "Objective",
 	SMS_Subject="Construction Site",
 	SMS_Message="Mercenaries for hire have taken over a construction site for ransom. We need help to secure it",
@@ -6232,6 +6250,8 @@ StartMessage = "Drive the asset and their vehicle~n~ to the destination~n~~r~Hur
 	MissionTitleAss = "The Gauntlet v2",
 	MissionMessageAss = "Drive the asset and their vehicle~n~ to the destination",		
 	Type = "Assassinate",	
+	NextMission="Mission2",
+	NextMissionIfFailed="Mission27",
 	IsRandom = true,
 	RandomMissionTypes ={"Assassinate"},
 	IsDefend = true,
@@ -6252,7 +6272,16 @@ StartMessage = "Drive the asset and their vehicle~n~ to the destination~n~~r~Hur
 	SafeHousePedLeaders = {},
 	SafeHouseProps = {"hei_prop_carrier_crate_01a"},
 	SafeHouseGiveImmediately = true,
-	
+	IsDefendTargetRandomVehicles = {	
+		"kuruma2",
+		--"insurgent3"
+		"insurgent3",
+		"scarab",
+		"menacer",
+		"limo2",
+		"apc",
+		"barrage",
+		},
 	--RandomMissionDoLandBattle=false, 
 	TeleportToSafeHouseMinDistance = 30,
 	--RemoveWeaponsAndUpgradesAtMissionStart = true,
@@ -6263,7 +6292,7 @@ StartMessage = "Drive the asset and their vehicle~n~ to the destination~n~~r~Hur
 
 	--SafeHouseCrackDownModeHealthAmount=200,
 	--IsDefendTargetDrivetoBlip=true,
-	--TeleportToSafeHouseOnMissionStart = false,
+	TeleportToSafeHouseOnMissionStart = true,
 	RandomMissionSpawnRadius = 500.0, --keep a float for enemy ped wandering to work
 	RandomMissionMaxPedSpawns = 15,
 	RandomMissionMinPedSpawns = 5,
@@ -6284,9 +6313,9 @@ StartMessage = "Drive the asset and their vehicle~n~ to the destination~n~~r~Hur
 	
 	
 	SMS_Subject="Transport Mission",
-	SMS_Message="We need help to ensure that an asset and their vehicle make it to the destination",
-	SMS_Message2="They will need a driver and escorts. Are you up for this?",
-	--SMS_Message3="Anyone up for this?",	
+	SMS_Message="The mercenaries want to capture an asset, to steal what they know, and will stop at nothing",
+	SMS_Message2="We need help to ensure that an asset and their vehicle make it to the destination",
+	SMS_Message3="They will need a driver and escorts. Anyone up for this mission?",	
 		
 	--SMS_ContactPics={"CHAR_STEVE",
 	--},
