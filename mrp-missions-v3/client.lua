@@ -554,10 +554,14 @@ RegisterCommand("mission", function(source, args, rawCommand)
 						--print("chk1")
 						--print(rSafeHouseLocationIndex)
 						if(rMissionType=="Checkpoint") then 
-							generateCheckpointsAndEvents(MissionName,rSafeHouseLocationIndex,rIsRandomSpawnAnywhereInfo)						
+							generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)
+							generateCheckpointsAndEvents(MissionName,rSafeHouseLocationIndex,rIsRandomSpawnAnywhereInfo)		
+						else
+							generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)
+									
 						end
 					else
-					
+							generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)
 						if Config.Missions[MissionName].Type=="Checkpoint" then 
 							TriggerServerEvent("mrpStreetRaces:createRace_sv",1, 300000, Config.Missions[MissionName].CheckpointsStartPos, Config.Missions[MissionName].RecordedCheckpoints, 360000)				
 						end					
@@ -1143,6 +1147,7 @@ AddEventHandler("mt:startnextmission", function(nextmission)
 								rSafeHouseLocationIndex = findBestSafeHouseLocation(rIsRandomSpawnAnywhereInfo[1])
 							else
 								rSafeHouseLocationIndex = findBestSafeHouseLocation(getMissionConfigProperty(MissionName, "RandomMissionPositions")[rMissionLocationIndex])
+								
 							end 
 						
 						end		
@@ -1161,12 +1166,18 @@ AddEventHandler("mt:startnextmission", function(nextmission)
 					if(Config.Missions[nextmission].IsRandom) then 
 						TriggerEvent("SpawnRandomPed", nextmission,rMissionType, math.random(getMissionConfigProperty(MissionName, "RandomMissionMinPedSpawns"), getMissionConfigProperty(MissionName, "RandomMissionMaxPedSpawns")), math.random(getMissionConfigProperty(MissionName, "RandomMissionMinVehicleSpawns"),getMissionConfigProperty(MissionName, "RandomMissionMaxVehicleSpawns")),rMissionLocationIndex,rIsRandomSpawnAnywhereInfo)
 						
-						if(rMissionType=="Checkpoint") then 
-							generateCheckpointsAndEvents(MissionName,rSafeHouseLocationIndex,rIsRandomSpawnAnywhereInfo)						
+						if(rMissionType=="Checkpoint") then
+						
+							generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)						
+							generateCheckpointsAndEvents(MissionName,rSafeHouseLocationIndex,rIsRandomSpawnAnywhereInfo)	
+							
+						else	
+						
+							generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)	
 						end						
 						
 					else
-					
+						generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)	
 						if Config.Missions[MissionName].Type=="Checkpoint" then 
 							TriggerServerEvent("mrpStreetRaces:createRace_sv",1, 300000, Config.Missions[MissionName].CheckpointsStartPos, Config.Missions[MissionName].RecordedCheckpoints, 360000)				
 						end							
@@ -1234,10 +1245,12 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 				rMissionDestinationIndex = MissionDestinationIndex				
 			end
 			
-			--Events generated on the server for Checkpoint mission.
-			if(Config.Missions[MissionName].Type == "Checkpoint") then 
+			--Events generated on the server for Checkpoint mission. NOT ANYMORE
+			--if(Config.Missions[MissionName].Type == "Checkpoint") then 
+				--print("events;")
+				--print(#Events)
 				Config.Missions[MissionName].Events=Events
-			end
+			--end
 			--check if we need to update spawn locations if an IndoorsMission=true mission
 			checkSpawnLocations(MissionName, Peds, Vehicles,Props,Events)
 			--update IsRandomDoEvent
@@ -1346,12 +1359,18 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 				--print(rSafeHouseLocationIndex)
 				--SHOULD BE FINE
 				if(rMissionType=="Checkpoint") then 
-					generateCheckpointsAndEvents(MissionName,rSafeHouseLocationIndex,rIsRandomSpawnAnywhereInfo)						
+					generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)
+					generateCheckpointsAndEvents(MissionName,rSafeHouseLocationIndex,rIsRandomSpawnAnywhereInfo)
+				else 
+					generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)
 				end							
 				
 				
 				
 			else
+				--print("chk1b")
+				generateExtraRandomEvents(MissionName,rSafeHouseLocationIndex)
+									
 				if Config.Missions[MissionName].Type=="Checkpoint" then 
 					TriggerServerEvent("mrpStreetRaces:createRace_sv",1, 300000, Config.Missions[MissionName].CheckpointsStartPos, Config.Missions[MissionName].RecordedCheckpoints, 360000)				
 				end				
@@ -2872,6 +2891,30 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,ch
 	
 	end
 	
+	--remove any random events
+	local REvents = Config.Missions[input].Events
+	local rem_key = {}
+	
+	--print("REvents"..#REvents)
+	for index, irevent in pairs(REvents) do
+		--print(index)
+          if irevent.revent or irevent.checkpoint then
+                        -- Matches existing checkpoint, remove blip and checkpoint from table
+			--print("r"..index)
+             --table.remove(REvents, index)
+			-- print("t"..index)
+			 table.insert(rem_key, index)
+  
+          end
+     end
+	for i = #rem_key, 1, -1 do
+		value = rem_key[i]
+		table.remove(REvents, value)
+	end	 
+	 
+	Config.Missions[input].Events = REvents
+	 
+	
 	for ped in EnumeratePeds() do
 		
 		--need to remove dead prop NPCs first.
@@ -3686,10 +3729,53 @@ local ground
 
 end
 
+--EventTypes: flag 1 = land only, 2 = water and land, 3 = water only 
+function generateExtraRandomEvents(MissionName,SafeHouseLocationIndex)
+ 
+ 	local Events = {}
+	local EventTypes = getMissionConfigProperty(MissionName, "ExtraRandomEventsType")
+	
+	if Config.Missions[MissionName].Events then 
+		Events = Config.Missions[MissionName].Events
+	end
+	if getMissionConfigProperty(MissionName, "GenerateExtraRandomEventsNum") > 0 then 
+	
+		for i = 1,getMissionConfigProperty(MissionName, "GenerateExtraRandomEventsNum"),1 
+		do 
+			local rIsRandomSpawnAnywhereInfo
+			if EventTypes ==  1 then
+				rIsRandomSpawnAnywhereInfo = doLandBattle(MissionName)
+			elseif EventTypes ==  2 then
+				rIsRandomSpawnAnywhereInfo = getRandomAnywhereLocation(MissionName)
+			elseif EventTypes ==  3 then
+				rIsRandomSpawnAnywhereInfo = doBoatBattle(MissionName)
+			end
+			
+			--create events around each checkpoint
+			for j=1,math.random(1,3),1
+			do
+			 Events = createRandomEvents(rIsRandomSpawnAnywhereInfo[1],Events,0,rIsRandomSpawnAnywhereInfo[2])
+			end	
+		end
+ 
+	end
+	--print(#Events)
+	if(Config.Missions[MissionName].Type ~= "Checkpoint") then 
+		--print("made send")
+		Config.Missions[MissionName].Events = Events
+		TriggerServerEvent("sv:generateCheckpointsAndEvents",MissionName, 0,Config.Missions[MissionName].Events,{})
+	end 
+
+end
+
 function generateCheckpointsAndEvents(MissionName,SafeHouseLocationIndex,MissionInfo)
 
     local recordedCheckpoints = {}
 	local Events = {}
+	
+	if Config.Missions[MissionName].Events then 
+		Events = Config.Missions[MissionName].Events
+	end
 	
 	local waypointCoords = getMissionConfigProperty(MissionName, "SafeHouseLocations")[SafeHouseLocationIndex].BlipSL.Position
 	
@@ -3878,6 +3964,111 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		--SetBlipColour(blip, 1)
 		--SetBlipAlpha(blip,80)		
 		
+	end
+	
+	
+
+
+	return Events
+end
+
+function createRandomEvents(coords,Events,checkpoint,isWater)
+local eventtypes = {"Squad","Vehicle","Paradrop","Aircraft"}
+local eventtype= eventtypes[math.random(#eventtypes)]
+
+	if isWater then
+		eventtypes = {"Boat","Boat","Boat","Boat","Aircraft"}
+		eventtype= eventtypes[math.random(#eventtypes)]
+	end
+	
+	if getMissionConfigProperty(MissionName, "CheckpointsAirBattle") then 
+		
+		eventtype = "Aircraft"
+	
+	end
+	
+	
+
+	--print("evt"..eventtype)
+	--print("checkpoint"..checkpoint)
+	--print("iswater:"..tostring(isWater))
+	if eventtype=="Squad" and not isWater then
+		local isBoss = false
+		local NumberPeds = math.random(5,10)
+		if math.random(4) > 3 then
+			isBoss = true
+			NumberPeds = math.random(2,5)
+		end
+		local radius =math.random(200.0,300.0)*1.0
+		table.insert(Events, {Type="Squad", Position = {x=coords.x,y=coords.y,z=coords.z},
+		 Size     = {radius=radius},
+		 NumberPeds=NumberPeds,isBoss=isBoss, CheckGroundZ=true,
+		 SquadSpawnRadius=math.random(20,100),Message=nil,revent=true})	
+		 
+		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)
+		--BeginTextCommandSetBlipName("STRING")
+		--	AddTextComponentString("squad")		
+		--EndTextCommandSetBlipName(blip)	
+	
+	elseif eventtype=="Vehicle" and not isWater then
+		local radius =math.random(200.0,1000.0)*1.0
+		table.insert(Events, {Type="Vehicle", Position = {x=coords.x+math.random(-10,10),y=coords.y + math.random(-10,10), z=coords.z},
+		Size     = {radius=radius},
+		FacePlayer = true,Message=nil,revent=true}
+		)	
+	
+		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)
+		--BeginTextCommandSetBlipName("STRING")
+		--	AddTextComponentString("vehicle")		
+		--EndTextCommandSetBlipName(blip)	
+
+	elseif eventtype=="Paradrop" and not isWater then
+		local radius = math.random(200.0,300.0)*1.0
+		table.insert(Events, {Type="Paradrop", Position = {x=coords.x,y=coords.y,z=coords.z},
+		 Size     = {radius=radius},
+		NumberPeds=math.random(5,10),
+		SpawnAt =  {x=coords.x,y=coords.y,z=coords.z},Message=nil,revent=true}
+		 )
+		-- local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)
+		--BeginTextCommandSetBlipName("STRING")
+		--	AddTextComponentString("Paradrop")		
+		--EndTextCommandSetBlipName(blip)	
+	
+	elseif eventtype=="Aircraft" then
+		local radius = math.random(1000.0,3000.0)*1.0
+		table.insert(Events, {Type="Aircraft", Position = {x=coords.x+math.random(-50,50),y=coords.y+math.random(-50,50),z=coords.z},
+		SpawnAt =  {x=coords.x,y=coords.y,z=coords.z},
+		Size     = {radius=radius},
+		SpawnHeight =math.random(200.0,400.0),
+		FacePlayer = true,Message=nil,revent=true}
+		)
+		
+		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)
+		--BeginTextCommandSetBlipName("STRING")
+		--	AddTextComponentString("Aicraft")		
+		--EndTextCommandSetBlipName(blip)	
+		
+	elseif eventtype=="Boat" and isWater then
+		local radius = math.random(200.0,500.0)*1.0
+		table.insert(Events, {Type="Boat", Position = {x=coords.x+math.random(-10,10),y=coords.y+math.random(-10,10),z=coords.z + 5.0},
+		Size     = {radius=radius},
+		FacePlayer = true,Message=nil,revent=true}
+		)
+		
+		--local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
+		--SetBlipColour(blip, 1)
+		--SetBlipAlpha(blip,80)
+		--BeginTextCommandSetBlipName("STRING")	
+		--AddTextComponentString("Boat")		
+		--EndTextCommandSetBlipName(blip)	
 	end
 	
 	
