@@ -3979,7 +3979,7 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 end
 
 function createRandomEvents(coords,Events,checkpoint,isWater)
-local eventtypes = {"Squad","Vehicle","Paradrop","Aircraft"}
+local eventtypes = {"Squad","Squad","Vehicle","Vehicle","Paradrop","Aircraft"}
 local eventtype= eventtypes[math.random(#eventtypes)]
 
 	if isWater then
@@ -18757,8 +18757,11 @@ AddEventHandler("doBoat",function(k)
 			
 	end	
 	if Config.Missions[MissionName].IsRandom then
-		spawnz = GetWaterHeight(spawnx,spawny,spawnz) + 5
-		print("doboat spawnz="..spawnz)
+	local isWater
+		isWater,spawnz = GetWaterHeight(spawnx,spawny,0.0) -- + 5
+		--print("doboat isWater="..tostring(isWater))
+		--print("doboat spawnz="..spawnz)
+		spawnz = spawnz + 1.0
 	end
 	
 	if Active == 1 and MissionName ~="N/A" then
