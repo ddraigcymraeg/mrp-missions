@@ -760,7 +760,7 @@ AddEventHandler("sv:done", function(input,isstop,isfail,reasontext,blGoalReached
 			end	
 			
 		--remove any random events
-		local REvents = Config.Missions[input].Events
+		local REvents = Config.Missions[MissionName].Events
 		local rem_key = {}
 		
 		--print("REvents"..#REvents)
@@ -780,7 +780,7 @@ AddEventHandler("sv:done", function(input,isstop,isfail,reasontext,blGoalReached
 			table.remove(REvents, value)
 		end	 
 		 
-		Config.Missions[input].Events = REvents
+		Config.Missions[MissionName].Events = REvents
 	
 			--used for mrpStreetRaces:
 			local MName = input
