@@ -1232,7 +1232,6 @@ Config.RandomMissionGuardAircraftSpawns = {
 "bombushka",
 "volatol",
 "buzzard2",
-"blimp"
 }
 
 --Config.RandomMissionGuardAircraftSpawns = {"strikeforce"}
@@ -1298,7 +1297,7 @@ Config.Missions = {
 	MissionTriggerRadius = 1000.0,
 	--NextMission="Mission27",
 	--NextMissionIfFailed="Mission1",
-	TeleportToSafeHouseOnMissionStart = true,
+	--TeleportToSafeHouseOnMissionStart = true,
 	
 	Type = "Objective",
 	SMS_Subject="Construction Site",
@@ -6292,7 +6291,7 @@ StartMessage = "Drive the asset and their vehicle~n~ to the destination~n~~r~Hur
 
 	--SafeHouseCrackDownModeHealthAmount=200,
 	--IsDefendTargetDrivetoBlip=true,
-	TeleportToSafeHouseOnMissionStart = true,
+	--TeleportToSafeHouseOnMissionStart = true,
 	RandomMissionSpawnRadius = 500.0, --keep a float for enemy ped wandering to work
 	RandomMissionMaxPedSpawns = 15,
 	RandomMissionMinPedSpawns = 5,
