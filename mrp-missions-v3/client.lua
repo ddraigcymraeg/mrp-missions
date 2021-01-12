@@ -15042,7 +15042,11 @@ function MissionCheck()
 					TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission					
 				end
 				
-			elseif Config.Missions[MissionName].Type == "ObjectiveRescue" and totalRescuedObjects == 0 and totalRescuedHostages == 0 and hostagePedsKilledByPlayer == 0 and totalDeadHostages == 0 then
+			elseif Config.Missions[MissionName].Type == "ObjectiveRescue" and totalRescuedObjects == 0 and totalRescuedHostages == 0 
+			
+			--and hostagePedsKilledByPlayer == 0 and totalDeadHostages == 0 
+			
+			then
 				local totalobjects = 0
 				local rescuedobjects = 0
 				for i, v in pairs(Config.Missions[MissionName].Props) do
@@ -15065,7 +15069,35 @@ function MissionCheck()
 					aliveCheck()
 					local oldmission = MissionName
 					TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission					
-				end								
+				end
+				
+				--should be OK to be here, rathee than above objects logic?
+				
+				if (getMissionConfigProperty(MissionName, "HostageRescue")) and (totalDeadHostages > 0 or hostagePedsKilledByPlayer > 0) then --and Config.Missions[MissionName].Type == "Assassinate" then
+					--print("MISSIONCHECK DONE2")
+					isfail = true
+					PLY = PlayerId()
+					PLYN = GetPlayerName(PLY)
+					local reasontext = "A hostage has died"
+					message = "^1[MISSIONS]: ^1 A hostage has died"
+					message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 mission has failed!"
+				   -- TriggerServerEvent("sv:two", message)
+					
+					TriggerEvent('chatMessage', message)
+					TriggerEvent('chatMessage', message2)				
+					
+					--TriggerServerEvent("sv:two", message)
+					--TriggerServerEvent("sv:two", message2)
+					Active = 0
+					--TriggerServerEvent("sv:done", MissionName)
+					--TriggerEvent("DONE", MissionName)
+					aliveCheck()
+					local oldmission = MissionName
+					--MissionName = "N/A"
+					TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,reasontext) --GHK Start New Mission						
+				end  
+
+				
 				
 			elseif (getMissionConfigProperty(MissionName, "HostageRescue") or Config.Missions[MissionName].Type == "HostageRescue") and hostagePedsKilledByPlayer > 0 then --and Config.Missions[MissionName].Type == "Assassinate" then
 				--print("MISSIONCHECK DONE2")
