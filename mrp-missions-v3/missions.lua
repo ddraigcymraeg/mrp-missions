@@ -7111,6 +7111,7 @@ RandomMissionDestinations = {
 	SafeHouseAircraftCount = 4,
 	SafeHouseBoatCount = 3,
 	SafeHouseSniperExplosiveRoundsGiven=0,
+	HostageRescue=true,
 	MissionTriggerRadius = 1000.0,
 	SafeHouseVehicles = {
 	"kuruma2",
