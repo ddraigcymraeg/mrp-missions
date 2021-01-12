@@ -13717,7 +13717,7 @@ Mission48 = {
 	
 	
 	SMS_Subject="Need for Speed",
-	SMS_Message="Get to the mission vehicle safe house and grab a plane, then head to the marker that will appear",
+	SMS_Message="Get to the mission vehicle safe house and grab a vehicle, then head to the marker that will appear",
 	SMS_Message2="Once you join the race, proceed through the enemy checkpoints. Beware they are heavily defended",
 	SMS_Message3="You earn $ when you are first to a checkpoint. More $ if you finish the race first",	
 		
