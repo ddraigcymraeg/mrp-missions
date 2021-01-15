@@ -2759,6 +2759,7 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,ch
 			claimedwin = true
 		end
 		
+		
 		--[[ OLDER CODE:
 		if checkpointdata then 
 			for i = 1,#checkpointdata do
@@ -2822,6 +2823,9 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,ch
 		
 	end
 	
+	if(Config.Missions[input].Type=="Checkpoint") then 
+		TriggerEvent('mrpStreetRaces:RemoveMissionBlip_cl')		
+	end
 	--[[
 	if (isfail) then 
 		results = calcMissionStats()
