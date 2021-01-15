@@ -16,6 +16,9 @@ local raceStatus = {
     checkpoint = 0
 }
 
+--ghk mission start blip
+local blipM
+
 
 --weather/time 
 --[[
@@ -126,6 +129,7 @@ RegisterCommand("race", function(source, args)
     end
 end)
 
+
 -- Client event for when a race is created
 RegisterNetEvent("mrpStreetRaces:createRace_cl")
 AddEventHandler("mrpStreetRaces:createRace_cl", function(index, amount, startDelay, startCoords, checkpoints)
@@ -149,6 +153,18 @@ AddEventHandler("mrpStreetRaces:createRace_cl", function(index, amount, startDel
 	--local blip = AddBlipForCoord(startCoords.x, startCoords.y, startCoords.z)
 	--SetBlipColour(blip, 1)
 	--SetBlipAsShortRange(blip, true)
+	
+			blipM = AddBlipForCoord(startCoords.x, startCoords.y, startCoords.z)
+			SetBlipSprite (blipM, 78) --'M'
+			SetBlipDisplay(blipM, 4)
+			SetBlipScale  (blipM, 1.2)
+			SetBlipColour (blipM,69)
+			SetBlipAsShortRange(blipM, false)
+			local btitle = "Mission Start"
+			BeginTextCommandSetBlipName("STRING")
+			AddTextComponentString(btitle)
+			EndTextCommandSetBlipName(blipM)	
+			
 	
 end)
 
@@ -232,6 +248,14 @@ AddEventHandler("mrpStreetRaces:removeRace_cl", function(index)
     
     -- Remove race from table
     table.remove(races, index)
+end)
+
+-- Client event for when a race is removed
+RegisterNetEvent("mrpStreetRaces:RemoveMissionBlip_cl")
+AddEventHandler("mrpStreetRaces:RemoveMissionBlip_cl", function(index)
+    	if DoesBlipExist(blipM) then
+			RemoveBlip(blipM)
+		end
 end)
 
 
@@ -493,6 +517,10 @@ end)
 -- Helper function to clean up race blips, checkpoints and status
 function cleanupRace()
     -- Cleanup active race
+	--remove mission blip
+		if DoesBlipExist(blipM) then
+			RemoveBlip(blipM)
+		end
     if raceStatus.index ~= 0 then
         -- Cleanup map blips and checkpoints
         local race = races[raceStatus.index]
