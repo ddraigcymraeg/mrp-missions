@@ -291,7 +291,10 @@ Citizen.CreateThread(function()
 					
 					
 					
-                    if GetDistanceBetweenCoords(position.x, position.y, position.z, checkpoint.coords.x, checkpoint.coords.y, 0, false) < config_cl.checkpointProximity then
+                    if GetDistanceBetweenCoords(position.x, position.y, position.z, checkpoint.coords.x, checkpoint.coords.y, 0, false) < config_cl.checkpointProximity 
+					
+					and position.z < 1000.0 --for planes not to go too high
+					then
                         -- Passed the checkpoint, delete map blip and checkpoint
                         RemoveBlip(checkpoint.blip)
                         if config_cl.checkpointRadius > 0 then
