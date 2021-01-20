@@ -4298,6 +4298,13 @@ function doVehicleMods(vehiclename,PedVehicle,input)
 			
 		end
 		
+		if(getMissionConfigProperty(input, "SetVehicleTyresCanBurst")) then 
+			SetVehicleModKit(PedVehicle, 0)
+			SetVehicleTyresCanBurst(PedVehicle, false)
+		end
+		
+		
+		
 		if (vehiclename=="pounder2") then
 			SetVehicleModKit(PedVehicle, 0)
 			local customWheels = GetVehicleModVariation(PedVehicle, 23)
@@ -4344,7 +4351,7 @@ function doVehicleMods(vehiclename,PedVehicle,input)
 			ToggleVehicleMod(PedVehicle, 22, true) --xenon headlights 
 			--ToggleVehicleMod(PedVehicle, 18, true) --turbo
 			
-			SetVehicleTyresCanBurst(PedVehicle, false)
+			--SetVehicleTyresCanBurst(PedVehicle, false)
 			
 			return {driverfiringpattern = false,turretfiringpattern = 0x914E786F} 
 			
@@ -4368,7 +4375,7 @@ function doVehicleMods(vehiclename,PedVehicle,input)
 			
 			ToggleVehicleMod(PedVehicle, 18, true) --turbo		
 			
-			SetVehicleTyresCanBurst(PedVehicle, false)
+			--SetVehicleTyresCanBurst(PedVehicle, false)
 
 			return {driverfiringpattern = 0xC6EE6B4C,turretfiringpattern = 0xC6EE6B4C}		
 			
@@ -5357,7 +5364,7 @@ if not doBoatMission then
 			--rYoffset = randomLocation.y + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)		
 	
 		
-		if not getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") and not randomLocation.force then --force is on, means we are OK to not check. 
+		if not getMissionConfigProperty(input, "IsRandomSpawnAnywhere") and not randomLocation.force then --force is on, means we are OK to not check. 
 
 				--print("FORCE OFF")
 				--if spawnAircraft == 0 then --Also dont check for aircraft, they spawn + 200 above
@@ -9003,6 +9010,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 		--SetEntityCanBeDamagedByRelationshipGroup(Config.Missions[input].Vehicles[i].id, false, GetHashKey("HATES_PLAYER"))
 		--SetEntityCanBeDamagedByRelationshipGroup(Config.Missions[input].Vehicles[i].id, false, GetHashKey("TRUENEUTRAL"))	
 		if  not getMissionConfigProperty(input,"IsDefendTarget") or (getMissionConfigProperty(input,"IsDefendTarget") and getMissionConfigProperty(input,"IsDefendTargetOnlyPlayersDamagePeds") ) then			
+			
 			SetEntityOnlyDamagedByPlayer(Config.Missions[input].Vehicles[i].id, true)
 		end
 
@@ -9042,6 +9050,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 			--SetEntityCanBeDamagedByRelationshipGroup(Config.Missions[input].Vehicles[i].id2, false, GetHashKey("HATES_PLAYER"))
 			--SetEntityCanBeDamagedByRelationshipGroup(Config.Missions[input].Vehicles[i].id2, false, GetHashKey("TRUENEUTRAL"))	
 			if  not getMissionConfigProperty(input,"IsDefendTarget") or (getMissionConfigProperty(input,"IsDefendTarget") and getMissionConfigProperty(input,"IsDefendTargetOnlyPlayersDamagePeds") ) then				
+				
 				SetEntityOnlyDamagedByPlayer(Config.Missions[input].Vehicles[i].id2, true)
 			end	
 			
