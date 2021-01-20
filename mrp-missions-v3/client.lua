@@ -10380,6 +10380,7 @@ AddEventHandler("mt:setgroundingdecor",function(decorid,decorval)
 				if DecorGetInt(ped, decorval) > 0 then
 					if DecorGetInt(ped, decorval) == decorid then
 						DecorSetInt(ped,"mrpvehdidGround",0)
+						FreezeEntityPosition(ped,false)
 						--print("set mrppedid:"..DecorGetInt(ped, decorval))
 						break
 					end
@@ -10392,6 +10393,7 @@ AddEventHandler("mt:setgroundingdecor",function(decorid,decorval)
 				if DecorGetInt(ped, decorval) > 0 then
 					if DecorGetInt(ped, decorval) == decorid then
 						DecorSetInt(ped,"mrpvehdidGround",0)
+						FreezeEntityPosition(ped,false)
 						--print("set mrpvehdid:"..DecorGetInt(ped, decorval))
 						break
 					end
@@ -12965,8 +12967,15 @@ function calcMissionStats()
 	
 	
 		for ped in EnumerateVehicles() do
+		
+		
+		
 		if DecorGetInt(ped, "mrpvehdid") > 0 and DecorGetInt(ped, "mrpvehdidGround") > 0  then 
 			local ecoords = GetEntityCoords(ped,true)
+			
+			if ecoords.z == 0.0 then
+				--print("vehped at 0.0.."..DecorGetInt(ped, "mrpvehdid"))
+			end
 			
 			if GetDistanceBetweenCoords(pcoords,ecoords,false) <= 600 then
 				
@@ -12977,6 +12986,11 @@ function calcMissionStats()
 				if ground then 
 					if IsThisModelAPlane(GetEntityModel(ped)) or IsThisModelAHeli(GetEntityModel(ped)) then 
 						posZ = posZ + ecoords.z
+						SetHeliBladesFullSpeed(ped) -- works for planes I guess
+						SetVehicleEngineOn(ped, true, true, false)
+						SetVehicleForwardSpeed(ped, 90.0)
+						SetVehicleLandingGear(ped, 3) --make sure landing gear is retracted						
+						
 					end
 					FreezeEntityPosition(ped,false)
 					SetEntityCoords(ped,ecoords.x+.0, ecoords.y+.0,posZ)
@@ -13000,6 +13014,8 @@ function calcMissionStats()
 				
 			
 			end
+			
+			
 			--[[
 			if  DecorGetInt(ped, "mrppedsafehouse") == 1 and not PlayingAnimL and PedLeaderModel  then
 			
@@ -13046,11 +13062,15 @@ function calcMissionStats()
 			
 			if (DecorGetInt(ped, "mrppedid") > 0 or DecorGetInt(ped, "mrpvpedid") > 0)  then
 			
+	
 			
 			
 				if DecorGetInt(ped, "mrppedid") > 0 and DecorGetInt(ped, "mrpvehdidGround") > 0  then 
 					local ecoords = GetEntityCoords(ped,true)
 					--print("set ")
+				if ecoords.z == 0.0 then
+					--print("mrppedid at 0.0.."..DecorGetInt(ped, "mrppedid"))
+				end
 					if GetDistanceBetweenCoords(pcoords,ecoords,false) <= 300 then
 				
 				
