@@ -340,6 +340,10 @@ Config.SafeHouseDoInvincibleVehicles=false
 Config.AnnounceEvents=false --have friendly notification of event triggered?
 
 
+--can mission vehicle tires burst? Applies to enemy vehicles as well.
+Config.SetVehicleTyresCanBurst=false
+
+
 --ExtraRandomEventsType: flag 1 = land only, 2 = water and land, 3 = water only 
 Config.ExtraRandomEventsType = 1
 
