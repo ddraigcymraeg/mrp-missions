@@ -823,13 +823,15 @@ end)
 
 --used to set that an indoor spawn location has been used
 RegisterNetEvent("mt:UpdateEvents")
-AddEventHandler("mt:UpdateEvents", function(k,PlayerServerId)
+AddEventHandler("mt:UpdateEvents", function(k,PlayerServerId,MissionName)
 	--print("mt:UpdateEvents called")
+	--print("made it:".. k)
 	--doParaDrop=false
 	if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
-		if getMissionConfigProperty(MissionName, "AnnounceEvents") then 
-			 Config.Missions[MissionName].Events[k].done = PlayerServerId
-			 if Config.Missions[MissionName].Events[k].Type=="Paradrop" then 
+		
+		Config.Missions[MissionName].Events[k].done = PlayerServerId
+		if getMissionConfigProperty(MissionName, "AnnounceEvents") then 	
+			if Config.Missions[MissionName].Events[k].Type=="Paradrop" then 
 				if not Config.Missions[MissionName].Events[k].Message then 
 					Notify("~r~An enemy paradrop has deployed!")
 				else 
@@ -13661,6 +13663,9 @@ function calcMissionStats()
 					local oldblip = GetBlipFromEntity(ped)
 					--RemoveBlip(oldblip)
 					--if oldblip == 0 then 
+					--print('does blip exist')
+					--print(tostring(DoesBlipExist(oldblip)))
+					--print(tostring(DecorGetInt(ped, "mrppedid")))
 					if not DoesBlipExist(oldblip) and DecorGetInt(ped, "mrppedfriend") ~= -1 then  
 						
 						local Size     = 0.9
@@ -14101,7 +14106,7 @@ function calcMissionStats()
 									TriggerServerEvent("sv:UpdateEvents",k,GetPlayerServerId(PlayerId()))
 									Config.Missions[MissionName].Events[k].done=GetPlayerServerId(PlayerId())
 							elseif Config.Missions[MissionName].Events[k].Type =="Vehicle" then
-									--print("aircraft event called"..k)
+									--print("vehicle event called"..k)
 									TriggerEvent("doVehicle",k)		
 									TriggerServerEvent("sv:UpdateEvents",k,GetPlayerServerId(PlayerId()))
 									Config.Missions[MissionName].Events[k].done=GetPlayerServerId(PlayerId())	
