@@ -13692,10 +13692,23 @@ function calcMissionStats()
 					local oldblip = GetBlipFromEntity(ped)
 					--RemoveBlip(oldblip)
 					--if oldblip == 0 then 
-					--print('does blip exist')
-					--print(tostring(DoesBlipExist(oldblip)))
-					--print(tostring(DecorGetInt(ped, "mrppedid")))
-					if not DoesBlipExist(oldblip) and DecorGetInt(ped, "mrppedfriend") ~= -1 then  
+					--if not DoesBlipExist(oldblip) then
+						--print('does blip exist')
+						--print('blip?:'..tostring(DoesBlipExist(oldblip)))
+						--print('ped:'..tostring(DecorGetInt(ped, "mrppedid")))
+						--print('vped'..tostring(DecorGetInt(ped, "mrpvpedid")))
+					--end
+					
+					
+					
+					if not DoesBlipExist(oldblip) and DecorGetInt(ped, "mrppedfriend") ~= -1 then 
+
+
+						if DecorGetInt(ped, "mrppedtarget") > 0 and GetBlipColour(oldblip) ~= 7 then
+							--print('fixed target')
+							SetBlipColour(oldblip, 7) --purple
+							
+						end
 						
 						local Size     = 0.9
 						local pedblip = AddBlipForEntity(ped)
