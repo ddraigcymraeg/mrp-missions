@@ -3948,6 +3948,8 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		NumberPeds=math.random(10,25),checkpoint=checkpoint,
 		SpawnAt =  {x=coords.x,y=coords.y,z=coords.z},Message=nil}
 		 )
+		 
+		 --print("paraz:"..coords.z)
 		-- local blip = AddBlipForRadius(coords.x, coords.y, coords.z,radius)
 		--SetBlipColour(blip, 1)
 		--SetBlipAlpha(blip,80)
@@ -18345,6 +18347,17 @@ function doParadropPeds(isNPCDead,ped,k,playerPed,pcoords)
 				
 						local height = GetEntityHeightAboveGround(ped)
 						local paraState = GetPedParachuteState(ped) 
+						--print('height'..height)
+						--if height < -1.0 then 
+							--print('para less than ground')
+							--local coords = GetEntityCoords(ped)
+							--local ground,zGround = GetGroundZFor_3dCoord(coords.x, coords.y, 999.0)
+							--if ground then
+							--print('paraplaced on ground')
+							--	SetEntityCoords(ped, coords.x, coords.y, zGround + 3.0)
+							--end
+						--end
+						
 						if paraState == -1 then 
 							--SetEntityRecordsCollisions(ped,true)
 						end	
@@ -18958,16 +18971,34 @@ AddEventHandler("doParadrop",function(dropCoords,k)
 		local spawnx = dropCoords.x
 		local spawny = dropCoords.y
 		local spawnz = dropCoords.z
-			
+		
+		--print("spawnz:"..tostring(dropCoords.z))
+		
 
-		if Config.Missions[MissionName].Events[k].SpawnAt then 
-			spawnx = Config.Missions[MissionName].Events[k].SpawnAt.x
-			spawny = Config.Missions[MissionName].Events[k].SpawnAt.y
-			spawnz = Config.Missions[MissionName].Events[k].SpawnAt.z
-		end	
+			if Config.Missions[MissionName].Events[k].SpawnAt then 
+				spawnx = Config.Missions[MissionName].Events[k].SpawnAt.x
+				spawny = Config.Missions[MissionName].Events[k].SpawnAt.y
+				spawnz = Config.Missions[MissionName].Events[k].SpawnAt.z
+			end	
 	
 		
+		--print("spawnz:"..tostring(spawnz))
 		
+		if spawnz == 0.0 then
+			local ground,zGround = GetGroundZFor_3dCoord(spawnx, spawny, 999.0)
+			if (not ground) or zGround == 0.0  then 
+					--print('paradrop too low. ground not found')
+					if GetEntityHeightAboveGround(GetPlayerPed(-1)) < 10 then 
+						local coords = GetEntityCoords(GetPlayerPed(-1))
+						spawnz = coords.z +  150
+						--print('paradrop too low. ground not found adding 150 to playerpos')
+					end
+			else 
+					--print('paradrop too low. ground found adding 150')
+					spawnz = zGround + 150
+			end
+			
+		end 
         local planeSpawnDistance = (planeSpawnDistance and tonumber(planeSpawnDistance) + 0.0) or 400.0 -- this defines how far away the plane is spawned
         local theta = (rHeading / 180.0) * 3.14
         local rPlaneSpawn = vector3(spawnx, spawny, spawnz) - vector3(math.cos(theta) * planeSpawnDistance, math.sin(theta) * planeSpawnDistance, -150.0)
@@ -19030,9 +19061,9 @@ AddEventHandler("doParadrop",function(dropCoords,k)
 			doingDrop=false
            -- do return end -- <--still allow the paradrop to happen even if the plane is not there or the pilot.
         end
-		if getMissionConfigProperty(MissionName, "AnnounceEvents") then  
-		 Notify("~r~Enemy paradrop on its way!")
-		end
+		--if getMissionConfigProperty(MissionName, "AnnounceEvents") then  
+		 --Notify("~r~Enemy paradrop on its way!")
+		--end
 		if not doingDrop then 
 			TaskVehicleDriveToCoord(pilot, aircraft, 0.0, 0.0, 500.0, 60.0, 0, GetHashKey(aircraftmodel), 262144, -1.0, -1.0) -- disposing of the plane like Rockstar does, send it to 0; 0 coords with -1.0 stop range, so the plane won't be able to achieve its task
 		end
@@ -19072,7 +19103,16 @@ AddEventHandler("doParadrop",function(dropCoords,k)
 				--theta = (rHeading / 180.0) * 3.14		
 				local lptarget = ptarget
 				local rPedSpawn = vector3(spawnx, spawny, spawnz) - vector3(math.cos(theta) * 25, math.sin(theta) * 25, -150.0)
+				
+				print('rPedSpawn.z'..rPedSpawn.z)
+				local ground,zGround = GetGroundZFor_3dCoord(rPedSpawn.y, rPedSpawn.y, 999.0)				
+				if ground then 
+					print('zGround: '..zGround)
+				else
+					print('zGround: 0')
+				end
 				local rPHeading = roundToNthDecimal(math.random() + math.random(0,359),2)
+				
 				local exactWeapon = false
 				
 				local pweapon = getMissionConfigProperty(MissionName, "RandomParadropWeapons")[math.random(1, #getMissionConfigProperty(MissionName, "RandomParadropWeapons"))]
