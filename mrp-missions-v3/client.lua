@@ -18343,7 +18343,9 @@ function doParadropPeds(isNPCDead,ped,k,playerPed,pcoords)
 									
 				
 					--parachute code v2 
-					if DecorGetInt(ped, "mrppedid") > 0 and  DecorGetInt(ped, "mrppedskydivertarget") ==  GetPlayerServerId(PlayerId()) then
+					if DecorGetInt(ped, "mrppedid") > 0 and  DecorGetInt(ped, "mrppedskydivertarget") ==  GetPlayerServerId(PlayerId()) 
+					and ped and playerPed and pcoords and k
+					then
 				
 						local height = GetEntityHeightAboveGround(ped)
 						local paraState = GetPedParachuteState(ped) 
