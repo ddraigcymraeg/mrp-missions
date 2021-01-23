@@ -4315,7 +4315,12 @@ function doVehicleMods(vehiclename,PedVehicle,input)
 		
 		if(getMissionConfigProperty(input, "SetVehicleTyresCanBurst")) then 
 			SetVehicleModKit(PedVehicle, 0)
-			SetVehicleTyresCanBurst(PedVehicle, false)
+			SetVehicleTyresCanBurst(PedVehicle, true)
+		
+		else
+			SetVehicleModKit(PedVehicle, 0)
+			SetVehicleTyresCanBurst(PedVehicle, false)		
+		
 		end
 		
 		
