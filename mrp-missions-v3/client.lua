@@ -1729,6 +1729,16 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 				HelpMessage("Select allies with different weapons by pressing ~INPUT_WEAPON_WHEEL_NEXT~ and ~INPUT_LOOK_BEHIND~",false,5000)			
 				
 				end
+				
+				Wait(5000)
+				HelpMessage("Press ~INPUT_PICKUP~ and ~INPUT_COVER~ when in a vehicle to swap seats with your backup",false,0)
+				
+				Wait(5000)
+				HelpMessage("This can be useful for vehicles like the barrage when you want to swap a turret seat, etc..",false,0)
+				
+				--Wait(5000)
+				--HelpMessage("To see this tutorial again, press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~",false,5000)						
+				
 			
 				
 			end			
@@ -1739,7 +1749,10 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 			HelpMessage("Press ~INPUT_WEAPON_WHEEL_PREV~ and ~INPUT_PICKUP~ to enter the target's vehicle, if a seat is free",false,0)
 			
 			Wait(5000)
-			HelpMessage("To see this tutorial again, press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~",false,5000)		
+			HelpMessage("To see this tutorial again, press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~",false,5000)	
+
+
+				
 			
 		--end
 
@@ -12977,6 +12990,7 @@ function calcMissionStats()
 	
 	
 	
+	
 		for ped in EnumerateVehicles() do
 		
 		
@@ -13884,7 +13898,7 @@ function calcMissionStats()
 	--if getMissionConfigProperty(MissionName, "Type") == "ObjectiveRescue" then
 		
 		for obj in EnumerateObjects() do
-
+						
 					playerPed = GetPlayerPed(-1)
 					
 					if getMissionConfigProperty(MissionName, "Type") == "Objective" and getMissionConfigProperty(MissionName, "IsRandom") and  (DecorGetInt(obj, "mrppropobj") > 0  )  then
@@ -13897,17 +13911,27 @@ function calcMissionStats()
 						
 						--print(math.abs(testz - ObjectivePos.z))
 						--if ObjectivePos.z < 0.0 then 
+					
 					local ObjectivePos = GetEntityCoords(obj)
 					local p1 = GetEntityCoords(playerPed, true)
 					if (DecorGetInt(obj, "mrppropobj") == 1 )  then
-						
+						--print("found object")
 						local p1 = GetEntityCoords(playerPed, true)
-						if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,ObjectivePos.x,ObjectivePos.y,ObjectivePos.z,true) <= 300 then
+						if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,ObjectivePos.x,ObjectivePos.y,ObjectivePos.z,false) <= 250 then
 							
-							local ground,posZ = GetGroundZFor_3dCoord(ObjectivePos.x,ObjectivePos.y,ObjectivePos.z + 999.0,1)
+							local ground,posZ = GetGroundZFor_3dCoord(ObjectivePos.x,ObjectivePos.y,ObjectivePos.z + 999.0)
 							if ground then 
+								--print('found ground and posz:'..posZ)
 								DecorSetInt(obj,"mrppropobj",2)
-								SetEntityCoords(ObjectivePos.x,ObjectivePos.y,posZ)
+								--DecorSetFloat(obj,"mrppropobjz",posZ)
+								--print("obj xyz:")
+								--print(ObjectivePos.x)
+								--print(ObjectivePos.y)
+								--print(ObjectivePos.z)
+								if ObjectivePos and ObjectivePos.x and ObjectivePos.y and posZ then
+								--	print('SET OBECTIVE: '..posZ)
+									SetEntityCoords(obj,ObjectivePos.x,ObjectivePos.y,posZ)
+								end
 								PlaceObjectOnGroundProperly(obj)
 								---print('object placed')
 							end
@@ -13920,8 +13944,27 @@ function calcMissionStats()
 					end 
 					
 					--HACK only show for host within 100m, like non-hosts
-					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,ObjectivePos.x,ObjectivePos.y,ObjectivePos.z,true) <= 100 then					
-					
+					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,ObjectivePos.x,ObjectivePos.y,ObjectivePos.z,false) <= 100 then					
+						--[[
+						local ocoords = GetEntityCoords(obj,true)
+						print("obj z is:"..ocoords.z)
+						print("decor z is:"..DecorGetFloat(obj,"mrppropobjz"))
+						if ocoords.z < DecorGetFloat(obj,"mrppropobjz") then
+							print ('setting to :'.. tostring(DecorGetFloat(obj,"mrppropobjz")))
+							SetEntityCoords(obj,ObjectivePos.x,ObjectivePos.y,DecorGetFloat(obj,"mrppropobjz"))
+							PlaceObjectOnGroundProperly(obj)
+							--DecorSetFloat(obj,"mrppropobjz")
+						elseif DecorGetFloat(obj,"mrppropobjz") <=0.0 then 
+							local ground,posZ = GetGroundZFor_3dCoord(ObjectivePos.x,ObjectivePos.y,ObjectivePos.z + 999.0)
+							if ground then 
+								SetEntityCoords(ObjectivePos.x,ObjectivePos.y,posZ)
+								print ('now setting to :'.. tostring(posZ))
+							end
+						
+						
+						end 
+						
+						]]--
 						local oldblip = GetBlipFromEntity(obj)
 						if not DoesBlipExist(oldblip) then 
 							local Size     = 0.9
@@ -16635,7 +16678,8 @@ Citizen.CreateThread(function()
 					Wait(3500)
 				end
 			end
-		end		
+		end	
+
 			
 		
         if Active == 1 and MissionName ~="N/A" and IsControlPressed(0, 43) and not IsPlayerFreeAiming(PlayerId()) then
@@ -19106,13 +19150,13 @@ AddEventHandler("doParadrop",function(dropCoords,k)
 				local lptarget = ptarget
 				local rPedSpawn = vector3(spawnx, spawny, spawnz) - vector3(math.cos(theta) * 25, math.sin(theta) * 25, -150.0)
 				
-				print('rPedSpawn.z'..rPedSpawn.z)
+				--print('rPedSpawn.z'..rPedSpawn.z)
 				local ground,zGround = GetGroundZFor_3dCoord(rPedSpawn.y, rPedSpawn.y, 999.0)				
-				if ground then 
-					print('zGround: '..zGround)
-				else
-					print('zGround: 0')
-				end
+				--if ground then 
+					--print('zGround: '..zGround)
+				--else
+				--	print('zGround: 0')
+				--end
 				local rPHeading = roundToNthDecimal(math.random() + math.random(0,359),2)
 				
 				local exactWeapon = false
@@ -19441,6 +19485,20 @@ Citizen.CreateThread(function()
 while true do
 
 	Citizen.Wait(0)
+	
+	
+		--swap seat with backup LB + RB 
+		 if Active == 1 and MissionName ~="N/A" and IsControlPressed(0, 44) and  IsControlPressed(0, 38) then
+			
+			if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
+				
+				
+				TriggerEvent("SwapSeatWithBackup")
+			
+				Wait(3500)
+				
+			end
+		end				
 	
 	
 		--Left stick down + RB: drop/remove MissionDrop marker
@@ -20029,6 +20087,65 @@ AddEventHandler("RemoveBackup", function(nowait)
 			DecorRemove(GlobalBackup, "mrppedsafehouse")
 			DeleteEntity(GlobalBackup)
 			GlobalBackup=nil		
+
+end)
+
+
+--if in vehicle and want to switch seats with backup
+AddEventHandler("SwapSeatWithBackup",function()
+
+
+		if GlobalBackup and not IsEntityDead(GlobalBackup) then
+		
+			local playerPed = GetPlayerPed(-1)
+			local pveh = GetVehiclePedIsIn(playerPed,false)
+			local bveh = GetVehiclePedIsIn(GlobalBackup,false)
+			local pseat = -2
+			local bseat = -2
+			if pveh == bveh and pveh ~= 0 then
+				maxseatid = GetVehicleMaxNumberOfPassengers(pveh) - 1
+				for v = -1,maxseatid,1 
+					do
+					
+					if GlobalBackup == GetPedInVehicleSeat(pveh,v) then
+						bseat = v
+					end
+					if playerPed == GetPedInVehicleSeat(pveh,v) then
+						pseat = v
+					end				
+					if pseat > -2 and bseat > -2 then
+						break
+					end
+				end
+				--swap:
+				--if pseat ~= -1 then 
+					--SetPedIntoVehicle(playerPed,pveh,bseat)
+					--SetPedIntoVehicle(GlobalBackup,pveh,pseat)
+					--TaskLeaveVehicle(GlobalBackup, pveh, 16)
+					SetEntityCoords(GlobalBackup,0.0,0.0,1000.0)
+					
+					--TaskLeaveVehicle(GlobalBackup, pveh, 16)
+					
+					--print("bHEY"..bseat)
+					--print("pHEY"..pseat)
+					--print("leave vehicle")
+					--Wait(500)
+					SetPedIntoVehicle(playerPed,pveh,bseat)
+					SetPedIntoVehicle(GlobalBackup,pveh,pseat)
+					Notify("~h~~g~You swapped seats with your backup") 
+				--else 
+					--Notify("~h~~r~Cannot swap seats. Your backup can only be a passenger, not a driver") 
+				--end
+			else 
+				if pveh == 0 then
+					Notify("~h~~r~To swap a seat with your backup you need to be in a vehicle")
+				else 
+					Notify("~h~~r~To swap a seat with your backup you need to be in the same vehicle")
+				end
+			end
+		else 
+			Notify("~h~~r~No backup to swap a seat with")
+		end
 
 end)
 
