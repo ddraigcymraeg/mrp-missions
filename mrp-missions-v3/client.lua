@@ -6788,8 +6788,8 @@ end
 										
 										local tveh = CreateVehicle(GetHashKey(vehname), Config.Missions[input].Blip.Position.x-20.0, Config.Missions[input].Blip.Position.y-20.0,Config.Missions[input].Blip.Position.z,  0.0, 1, 0)	
 										DecorSetInt(tveh,"mrpvehdid",99997755)
-										
-												
+										SetEntityVisible(tveh,false,0)
+										SetEntityCollision(tveh,false,true)		
 				
 										FreezeEntityPosition(tveh,true)
 			
@@ -7618,6 +7618,12 @@ AddEventHandler('SpawnPed', function(input)
 		SetEntityAsMissionEntity(Config.Missions[input].Vehicles[i].id,true,true)
 		DecorSetInt(Config.Missions[input].Vehicles[i].id,"mrpvehdid",i)
 		
+		if Config.Missions[input].Vehicles[i].notvisible then 
+			--print("heh made it")
+			SetEntityVisible(Config.Missions[input].Vehicles[i].id,false,0)
+			SetEntityCollision(Config.Missions[input].Vehicles[i].id,false,true)
+		end
+		
 		--Stop AI from blowing themselves up!
 		--SetEntityCanBeDamagedByRelationshipGroup(Config.Missions[input].Vehicles[i].id, false, GetHashKey("HATES_PLAYER"))
 		--SetEntityCanBeDamagedByRelationshipGroup(Config.Missions[input].Vehicles[i].id, false, GetHashKey("TRUENEUTRAL"))		
@@ -7978,6 +7984,7 @@ AddEventHandler('SpawnPed', function(input)
 							--are the ids of the Ped of vehicle that needs to be targetted. 
 							--So the vehicle doing the targetting should be a larger "i" 
 							--than the vehicle being targetted.
+							
 							local dotargetped
 							if Config.Missions[input].VehicleGotoMissionTargetPed then 
 								local j = Config.Missions[input].VehicleGotoMissionTargetPed
@@ -9022,6 +9029,13 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 		SetModelAsNoLongerNeeded(GetHashKey(Config.Missions[input].Vehicles[i].Vehicle))
 		SetEntityAsMissionEntity(Config.Missions[input].Vehicles[i].id,true,true)
 		DecorSetInt(Config.Missions[input].Vehicles[i].id,"mrpvehdid",i)
+		
+		
+		if Config.Missions[input].Vehicles[i].notvisible then 
+			--print("heh made it")
+			SetEntityVisible(Config.Missions[input].Vehicles[i].id,false,0)
+			SetEntityCollision(Config.Missions[input].Vehicles[i].id,false,true)
+		end		
 		
 		--local vcoords = GetEntityCoords(Config.Missions[input].Vehicles[i].id)
 		--print("vcoordsz"..i..":"..vcoords.z)
@@ -11300,6 +11314,9 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 										local tveh = CreateVehicle(GetHashKey(vehname), Config.Missions[input].Blip.Position.x+20.0, Config.Missions[input].Blip.Position.y+20.0,Config.Missions[input].Blip.Position.z,  0.0, 1, 0)	
 										DecorSetInt(tveh,"mrpvehdid",99887766)
 										
+										SetEntityVisible(tveh,false,0)
+										SetEntityCollision(tveh,false,true)
+										
 										FreezeEntityPosition(tveh,true)
 										
 										if IsThisModelAPlane(GetEntityModel(TargetPedVehicle)) then
@@ -11711,8 +11728,9 @@ function SpawnProps(input)
 										
 										local tveh = CreateVehicle(GetHashKey(vehname), Config.Missions[input].IsDefendTargetEntity[1].movetocoord.x, Config.Missions[input].IsDefendTargetEntity[1].movetocoord.y,Config.Missions[input].IsDefendTargetEntity[1].movetocoord.z,  0.0, 1, 0)
 										
+										SetEntityVisible(tveh,false,0)
 										FreezeEntityPosition(tveh,true)
-										
+										SetEntityCollision(tveh,false,true)
 										
 										
 										
@@ -11742,6 +11760,8 @@ function SpawnProps(input)
 										
 										local tveh = CreateVehicle(GetHashKey(vehname), Config.Missions[input].IsDefendTargetEntity[1].movetocoord.x, Config.Missions[input].IsDefendTargetEntity[1].movetocoord.y,Config.Missions[input].IsDefendTargetEntity[1].movetocoord.z,  0.0, 1, 0)
 										
+										SetEntityVisible(tveh,false,0)
+										SetEntityCollision(tveh,false,true)
 										FreezeEntityPosition(tveh,true)
 										
 										DecorSetInt(tveh,"mrpvehdid",99887766)
@@ -11896,7 +11916,8 @@ function SpawnProps(input)
 				end										
 										
 				local tveh = CreateVehicle(GetHashKey(vehname), VehicleGotoMissionTargetCoords.x, VehicleGotoMissionTargetCoords.y,VehicleGotoMissionTargetCoords.z,  0.0, 1, 0)
-						
+				SetEntityVisible(tveh,false,0)	
+				SetEntityCollision(tveh,false,true)		
 				FreezeEntityPosition(tveh,true)						
 				DecorSetInt(tveh,"mrpvehdid",99887755)	
 				
