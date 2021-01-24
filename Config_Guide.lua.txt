@@ -1379,6 +1379,8 @@ Config.RandomMissionIsBountyOverrideVehPeds = {"hc_hacker","hc_gunman","u_m_m_ba
 --	'id2' needs to be 1, 2, 3 with no gaps as well. 'Weapon' defines driver weapon, modelhash the Ped driver model. 
 --	NOTE: LEAVE OUT THE id2 ATTRIBUTE TO SPAWN A PLAYER VEHICLE with no NPC. With safe houses on, this will become a safe house vehicle. 
 --Vehicles have attributes as well:
+--      'notvisible=true' this makes the vehicle invisible, and turns off collision. I only use this for 'trailersmall' vehicle I place on the map as a target 
+	for enemy A.I. to use, since the A.I. seems to work better with a vehicle target.
 --	'outside=true' Use for when 'IndoorsMission=-true' is set, to make the Vehicle spawn at mission start, not dynamically
 --	'nomods=true', Do not call 'doVehicleMods' for the vehicle in client.lua, to buff the vehicle up (only certain vehicles doVehicleMods will work on anyways)
 --	'noFill=true', All vehicles added to a mission will have all seats auto-filled. This disables that, so only ExtraPeds (see below) can be used (Or use Config.VehicleTurretSeatIds)
