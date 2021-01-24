@@ -9,6 +9,12 @@ Install like any other FiveM Server Resource. Both mrp-missions-v3 and mrpStreet
 
 To build your own missions, check out the Config_Guide.lua.txt, and see notes below.
 
+NOTE: If there is a problem with a checkpoint mission, BOTH mrp-missions-v3 and mrpStreetRaces may need to be restarted.
+
+NOTE: AI mission backups can be summoned 1 per player at a $ cost (see below). This is turned on on missions.lua with DoMissionBackup=true. 
+Unfortunately to get the AI to work in all missions, the enemy AI can damage themselves. The solution I tried looks like it should work, but does not. 
+To make the AI tougher and more persistent set DoMissionBackup=false to remove the AI backup. 
+
 
 CONTROLS (which can be turned on/off depending on mission config settings, and based on DEFAULT GTA5 binds): 
 
