@@ -1734,7 +1734,7 @@ Config.Missions = {
 	  {id = 4, id2 = 4, Vehicle = "khanjali", modelHash = "s_m_y_ammucity_01",  x = -2103.88, y = 1494.37, z = 282.54, heading = 240.44, target=true,driving=true},
 	  {id = 5, id2 = 5, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01",  x = -2034.77, y = 1497.24, z = 276.13, heading = 147.64, target=true,driving=true},
 	  
-	  {id = 6, id2 = 6, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01",  x = -2084.59, y = 1465.03, z = 275.15, heading = 147.64, target=true,driving=true},
+	  {id = 6, id2 = 6, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01",  x = -2084.59, y = 1465.03, z = 275.15, heading = 147.64, target=true,driving=true,notvisible=true},
 	  
 	  {id = 7, id2 = 7, Vehicle = "bombushka", modelHash = "s_m_y_ammucity_01",  x = -1971.82, y = 1460.12, z = 268.38 + 50, heading = 252.11,driving=true,pilot=true, target=true,isAircraft=true,VehicleGotoMissionTarget=true,SetBlockingOfNonTemporaryEvents=true,},
 	 -- {id = 7, id2 = 7, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",  x = -2096.12, y = 1483.89, z = 279.16 + 50, heading = 97.67,driving=true,pilot=true, target=true,isAircraft=true},
@@ -2420,7 +2420,7 @@ Events = {
 	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
 	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
 	  {id = 1, id2 = 1, Weapon = 0x687652CE, Vehicle = "barrage", modelHash = "G_M_M_ChiCold_01", x = 295.32, y = 4350.68, z = 49.71, heading = 366.66},
-	  {id = 2, id2 = 2, Weapon = 0x687652CE, Vehicle = "trailersmall", modelHash = "G_M_M_ChiCold_01", x = 308.16, y = 4368.13, z = 51.69, heading = 374.67},
+	  {id = 2, id2 = 2, Weapon = 0x687652CE, Vehicle = "trailersmall", modelHash = "G_M_M_ChiCold_01", x = 308.16, y = 4368.13, z = 51.69, heading = 374.67,notvisible=true},
 	  {id = 3, id2 = 3, Weapon = 0x687652CE, Vehicle = "tula", modelHash = "G_M_M_ChiCold_01", x = 308.16, y = 4368.13, z = 151.69, heading = 374.67,VehicleGotoMissionTarget=true,SetBlockingOfNonTemporaryEvents=true,pilot=true,isAircraft=true, },		  
 	  
 	
@@ -2565,7 +2565,7 @@ Events = {
 	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
 	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
 	  {id = 1, id2 = 1, Vehicle = "valkyrie", modelHash = "S_M_M_ChemSec_01",  x = -1166.42, y = 4641.5, z = 155.11, heading = 210.07,driving=true,pilot=true,isAircraft=true},
-	  {id = 2, id2 = 2, Weapon = 0x687652CE, Vehicle = "trailersmall", modelHash = "S_M_M_ChemSec_01", x = -1161.43, y = 4555.78, z = 140.76, heading = 206.26,Freeze=true},
+	  {id = 2, id2 = 2, Weapon = 0x687652CE, Vehicle = "trailersmall", modelHash = "S_M_M_ChemSec_01", x = -1161.43, y = 4555.78, z = 140.76, heading = 206.26,Freeze=true,notvisible=true},
 	  {id = 3, id2 = 3, Vehicle = "valkyrie", modelHash = "S_M_M_ChemSec_01",  x = -1166.42, y = 4641.5, z = 165.11, heading = 210.07,driving=true,pilot=true,isAircraft=true,VehicleGotoMissionTarget=true,SetBlockingOfNonTemporaryEvents=true,},
 	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
     }
@@ -3791,7 +3791,7 @@ Events = {
 	
 	{id = 8, id2 = 8, Weapon= 0x2BE6766B, Vehicle = "apc", modelHash = "s_m_y_ammucity_01",  x = 1323.05, y = 6485.61, z = 19.99, heading = 256.07, target=true,conqueror=true},
 	
-	{id = 9, id2 = 9, Weapon= 0x2BE6766B, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01", x = -51.33, y = -909.57, z = 29.5, heading = 295.67,Freeze=true,},
+	{id = 9, id2 = 9, Weapon= 0x2BE6766B, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01", x = -51.33, y = -909.57, z = 29.5, heading = 295.67,Freeze=true,notvisible=true},
 	
 	
 	{id = 10, id2 = 10, Weapon= 0x2BE6766B, Vehicle = "bombushka", modelHash = "s_m_y_ammucity_01",   x = -2931.88, y = 176.18, z = 163.44, heading = 244.69,driving=true,isAircraft=true,target=true,VehicleGotoMissionTarget=true,SetBlockingOfNonTemporaryEvents=true,},
