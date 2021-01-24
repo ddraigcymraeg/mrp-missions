@@ -37,6 +37,9 @@ For IsDefendTarget missions, where the target is a vehicle, and the player is wi
 DPAD LEFT AND LB PRESSED ('E' key and 'SCROLLWHEEL UP' key) will have the player enter (teleport to) the drivers seat if empty,
 else any turret seat if empty, else any passanger seat if empty. This can make some escort/transport missions more fun.
 
+When in a vehicle, and an AI Backup is the vehicle with the player, pressing LB + RB or Q + E keys (default) will swap the seat you are in with you backup's seat. This can
+be helpful for switching to a turret, or letting AI drive etc...
+
 If EnableOptIn or EnableSafeHouseOptIn is turned on:
 Players press ‘Q’ and ‘]’ keys or RB + DPAD UP together to join an active mission. (with EnableSafeHouseOptIn player has to be 
 at the safehouse marker.)
@@ -59,7 +62,9 @@ For ESX money support, in client.lua and server.lua set UseESX=true
 
 MISSION INFORMATION AND MAKING YOUR OWN MISSIONS:
 
-'missions.lua' has 44 example missions of various types. 
+
+
+'missions.lua' has 52 example missions of various types. 
 
 I added all 12 of the Shadow State Mission Pack missions to Missions.lua. If you have problems with any of these 12 missions not working, 
 see below, and the readme in the shadowstate-missionpack.zip. YOU WILL NEED AN IPL LOADER AND TELEPORTAION RESOURCE TO GET TO AREAS FOR THESE MISSIONS TO WORK, which is provided in the zip above.
@@ -311,6 +316,8 @@ when CheckpointsDoWater=true, only boats or amphibious enemys are spawned. A mis
 
 Mission51 is the same as Mission50, except CheckpointsDoWaterAndLand=true and IsRandomSpawnAnywhereCoordRange is set to be around the Alamo Sea to include land. 
 So checkpoints are spawned in land and sea. Players will need to use the mission boat safehouse and mission land safehouse (or steal vehicles) to finish the race.
+
+Mission52 is another ObjectRescue mission this time every ebemy spawned is through events.
 
 
 	
