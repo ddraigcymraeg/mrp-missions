@@ -2770,7 +2770,7 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,ch
 		local claimedcheckpoints = DecorGetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed") --0
 		local claimedwin = false
 		
-		if checkpointdata and checkpointdata[#checkpointdata] and checkpointdata[#checkpointdata].PlayerServerId ==GetPlayerServerId(PlayerId()) then 
+		if (Config.Missions[input].Type=="Checkpoint") and checkpointdata and checkpointdata[#checkpointdata] and checkpointdata[#checkpointdata].PlayerServerId ==GetPlayerServerId(PlayerId()) then 
 			claimedwin = true
 		end
 		
@@ -20482,7 +20482,7 @@ function Scaleform.Request(Name)
 			return
 		end 
 	end
-	print("Loaded")
+	--print("Loaded")
 	local data = {name = Name, handle = ScaleformHandle}
 	return setmetatable(data, scaleform)
 end
@@ -20497,7 +20497,7 @@ function Scaleform.RequestHud(id)
 			return
 		end
 	end
-	print("Loaded")
+	--print("Loaded")
 	local data = {Name = id, handle = ScaleformHandle}
 	return setmetatable(data, scaleform)
 end
