@@ -5277,7 +5277,7 @@ AddEventHandler('SpawnRandomPed', function(input,MissionType, NumPeds,NumVehicle
 	
 	local rXoffset, rYoffset,rZoffset, rHeading, _ --spawn within 40 metres of the randomlocation
 	
-	if getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") then
+	if getMissionConfigProperty(input, "IsRandomSpawnAnywhere") then
 		--local randomplace = {x=0.0,y=0.0,z=0.0}
 		
 		--randomplace.x = IsRandomSpawnAnywhereInfo[1].x
@@ -5445,7 +5445,7 @@ if not doBoatMission then
 				until( raytestsuccess == true or tries > 250 )
 			
 			
-		elseif not getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") and randomLocation.force then 
+		elseif not getMissionConfigProperty(input, "IsRandomSpawnAnywhere") and randomLocation.force then 
 				IsRandomMissionForceSpawning=true
 				rXoffset = randomLocation.x + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
 			
@@ -5466,7 +5466,7 @@ if not doBoatMission then
 				--print("FORCE ON")
 				rZoffset = randomLocation.z
 				
-		elseif getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") then 
+		elseif getMissionConfigProperty(input, "IsRandomSpawnAnywhere") then 
 				local tries = 0
 				local RandomMissionDoLandBattle = getMissionConfigProperty(input, "RandomMissionDoLandBattle")
 				repeat
@@ -6025,7 +6025,7 @@ end
 			--print("SPAWNPEDRANDOMVEH")
 		
 			local IsBountyHuntDoBoatsFoundWater = false
-			if not getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") and not randomLocation.force then --force is on, means we are OK to not check. 
+			if not getMissionConfigProperty(input, "IsRandomSpawnAnywhere") and not randomLocation.force then --force is on, means we are OK to not check. 
 				--print("FORCE OFF")
 				--if spawnAircraft == 0 then --Also dont check for aircraft, they spawn + 200 above
 				
@@ -6182,7 +6182,7 @@ end
 				until( raytestsuccess == true or tries > 250 )
 			
 			
-			elseif not getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") and randomLocation.force then
+			elseif not getMissionConfigProperty(input, "IsRandomSpawnAnywhere") and randomLocation.force then
 				IsRandomMissionForceSpawning=true
 				rXoffset = randomLocation.x + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
 			
@@ -6216,7 +6216,7 @@ end
 					end						
 						
 				end
-			elseif  getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere") then --force is on, means we are OK to not check. 
+			elseif  getMissionConfigProperty(input, "IsRandomSpawnAnywhere") then --force is on, means we are OK to not check. 
 				--print("FORCE OFF")
 				--if spawnAircraft == 0 then --Also dont check for aircraft, they spawn + 200 above
 				
@@ -11019,7 +11019,7 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 				Wait(1)
 			end
 			
-			if(getMissionConfigProperty(MissionName, "IsRandomSpawnAnywhere")) then 
+			if(getMissionConfigProperty(input, "IsRandomSpawnAnywhere")) then 
 				local zGround = checkAndGetGroundZ(randomLocation.x, randomLocation.y, randomLocation.z + 800.0,true)
 				if zGround > 0.0 then --flag for checkspawn
 					randomLocation.z = zGround		
