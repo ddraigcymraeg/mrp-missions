@@ -11,9 +11,11 @@ To build your own missions, check out the Config_Guide.lua.txt, and see notes be
 
 NOTE: If there is a problem with a checkpoint mission, BOTH mrp-missions-v3 and mrpStreetRaces may need to be restarted.
 
-NOTE: AI mission backups can be summoned 1 per player at a $ cost (see below). This is turned on on missions.lua with DoMissionBackup=true. 
-Unfortunately to get the AI to work in all missions, the enemy AI can damage themselves. The solution I tried looks like it should work, but does not. 
-To make the AI tougher and more persistent set DoMissionBackup=false to remove the AI backup. 
+NOTE: MORE CHALLENGING AI: AI mission backups can be summoned 1 per player at a $ cost (see below). This is turned on on missions.lua with DoMissionBackup=true. 
+Unfortunately to get the enemy AI to work with friendly AI, the enemy AI can damage themselves. The solution I tried looks like it should work, but does not. 
+To make the AI tougher much more fun and challening set DoMissionBackup=false to remove the AI backup. 
+
+NOTE: $ GIVEN FOR MISSIONS: MissionShareMoney = true by default, where players share the mission $ rewards . This was added because the peer that spawned a ped or vehicle will get a kill reward even when the peds kill themselves via crashing or whatever, not making it fair to other players. Causes of death provided by the natives will not cover all cases either, sometimes the ped seems to vanish, which is scored as a kill for the host. Setting this to false will bring up the old $ scoring, where players score for themselves. For both, $ losses come from player deaths, or buying vehicles/weapons/upgrades or killing hostages/protect targets etc…
 
 
 CONTROLS (which can be turned on/off depending on mission config settings, and based on DEFAULT GTA5 binds): 
