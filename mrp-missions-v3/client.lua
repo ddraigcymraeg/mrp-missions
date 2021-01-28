@@ -7797,7 +7797,8 @@ AddEventHandler('SpawnPed', function(input)
 			SetRelationshipBetweenGroups(0, GetHashKey("TRUENEUTRAL"), GetHashKey("MEDIC"))
 			SetRelationshipBetweenGroups(0, GetHashKey("TRUENEUTRAL"), GetHashKey("PRISONER"))	
 			SetRelationshipBetweenGroups(0, GetHashKey("TRUENEUTRAL"), GetHashKey("DOMESTIC_ANIMAL"))			
-			SetRelationshipBetweenGroups(5, GetHashKey("TRUENEUTRAL"), GetHashKey("ISDEFENDTARGET"))	
+			SetRelationshipBetweenGroups(5, GetHashKey("TRUENEUTRAL"), GetHashKey("ISDEFENDTARGET"))
+			SetRelationshipBetweenGroups(0, GetHashKey("TRUENEUTRAL"), GetHashKey("TRUENEUTRAL"))			
 			--print('VEH PED IS CONQUEROR')
 		
 		end
@@ -9817,6 +9818,7 @@ function PutPedsIntoTurrets(PedVehicle,vehicleHash,modelHash,weaponHash,MissionT
 				SetRelationshipBetweenGroups(5, GetHashKey("HATES_PLAYER"), GetHashKey("ISDEFENDTARGET"))
 				SetRelationshipBetweenGroups(0, GetHashKey("TRUENEUTRAL"), GetHashKey("HATES_PLAYER"))	
 				SetRelationshipBetweenGroups(0, GetHashKey("HATES_PLAYER"), GetHashKey("TRUENEUTRAL"))
+				SetRelationshipBetweenGroups(0, GetHashKey("TRUENEUTRAL"), GetHashKey("TRUENEUTRAL"))
 				
 				if MissionType == "Assassination" then 
 						--50% chance to flee
@@ -10015,6 +10017,7 @@ function PutPedsIntoTurrets(PedVehicle,vehicleHash,modelHash,weaponHash,MissionT
 				SetRelationshipBetweenGroups(5, GetHashKey("HATES_PLAYER"), GetHashKey("ISDEFENDTARGET"))
 				SetRelationshipBetweenGroups(0, GetHashKey("TRUENEUTRAL"), GetHashKey("HATES_PLAYER"))	
 				SetRelationshipBetweenGroups(0, GetHashKey("HATES_PLAYER"), GetHashKey("TRUENEUTRAL"))
+				SetRelationshipBetweenGroups(0, GetHashKey("TRUENEUTRAL"), GetHashKey("TRUENEUTRAL"))
 				
 				if MissionType == "Assassination" then 
 						--50% chance to flee
