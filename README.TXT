@@ -38,7 +38,8 @@ Players can press  (RIGHT STICK DOWN & DPAD RIGHT) of their gamepad or equivalen
 regular which gets same equipment as player for mission, as well as by default: RPG, Homing Launcher and Minigun.
 Players can press  (RIGHT STICK DOWN & DPAD DOWN) of their gamepad or equivalent keys to dismiss an ally. 
 
-There is a working RC Bandito remote detonation vehicle as well to use on missions. Use LB on the gamepad, or E key to detonate it.
+There is a working RC Bandito remote detonation vehicle as well to use on missions. Use LB on the gamepad, or E key to detonate it. Holding the button/key or repeatedly pressing 
+the buttons/keys will repeatedly causes explosions until the rcbandito blows up.
 
 Players can spawn/deploy rcbandito remote detonate vehicles on the fly using RB+DPAD-RIGHT or A + D keys. This will use one of their safe house vehicles for the mission though, will cost same $ amount 
 as a safehouse vehicle, and players will need to wait until the safehouse is open to be able to deploy.
