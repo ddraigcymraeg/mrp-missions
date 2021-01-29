@@ -394,6 +394,7 @@ Config.UseSafeHouseBanditoDrop = true
 Config.SafeHouseCost = 500
 Config.SafeHouseCostVehicle = 500
 Config.SafeHouseCostCrate = 500
+Config.SafeHouseCostBandito = 1500
 Config.SafeHouseSniperExplosiveRoundsGiven = 8 --default in game is 40. Alter this for some balance
 Config.SafeHouseVehiclesMaxClaim = 3 --how many vehicles a player can claim per mission
 Config.SafeHouseTimeTillNextUse = 120000 --2 minutes default 
