@@ -29,6 +29,7 @@ local MilliSecondsLeft = -1
 local MissionStartTime = 0
 local MissionEndTime = 0
 local MissionNoTimeout = false
+local sharedmoney = 0
 
 
 MissionIsDefendTargetGoalDestIndex = nil
@@ -1707,7 +1708,7 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 				Wait(5000)
 				HelpMessage("Deploy an explosive drone car with ~INPUT_WEAPON_WHEEL_NEXT~ and ~INPUT_COVER~.",false,5000)
 				Wait(5000)
-				HelpMessage("Press ~INPUT_PICKUP~ to explode the drone car once activated. Cost to deploy: $"..getMissionConfigProperty(input, "SafeHouseCostCrate"),false,5000)
+				HelpMessage("Press ~INPUT_PICKUP~ to explode the drone car multiple times once activated. Cost to deploy: $"..getMissionConfigProperty(input, "SafeHouseCostBandito"),false,5000)
 				Wait(5000)
 				HelpMessage("The safe house needs to be open to deploy, and it will count towards a safe house vehicle",false,5000)		
 				
@@ -2738,7 +2739,8 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,ch
 		PlayingAnimD=false
 		PedLeaderModel=nil
 		PedDoctorModel=nil
-		GlobalBackup=nil		
+		GlobalBackup=nil
+		sharedmoney = 0		
 		
 	if(not isstop) then --allow bonuses for isfail as well
 		if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
@@ -3132,6 +3134,7 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,ch
 		if not getMissionConfigProperty(MissionName, "MissionShareMoney") then 
 			ClearPrints()
 			SetTextColour(99, 209, 62, 255)
+			
 			SetTextEntry_2("STRING")
 			if (not isfail) then 
 				AddTextComponentString(getMissionConfigProperty(input, "FinishMessage")..reasonmessage.."~n~You Earned ~g~$"..playerMissionMoney)
@@ -3152,12 +3155,14 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,ch
 			BLDIDTIMEOUT = false
 			MISSIONSHOWRESULT = true
 			MISSIONSHAREMONEYAMOUNT	= " "
+			
 			--USE SCALEFORM NOW:
 			DrawSubtitleTimed(10000, 1)	--time = 10000
 		else 
 			ClearPrints()
 			SetTextColour(99, 209, 62, 255)
 			SetTextEntry_2("STRING")
+			
 			if (not isfail) then 
 				AddTextComponentString(getMissionConfigProperty(input, "FinishMessage")..reasonmessage)
 				
@@ -13289,6 +13294,8 @@ function calcMissionStats()
 					  ]]--
 					-- 
 					 
+					 --print("getpedkiller:"..tostring(GetPedKiller(ped)==playerPed))
+					 
 					if (DecorGetInt(ped, "mrppedtarget") > 0) then	
 						totalDeadTargets = totalDeadTargets + 1
 
@@ -14316,7 +14323,7 @@ function calcMissionStats()
 end
 
 
-function calcSafeHouseCost(billPlayer,isVehicle,isCrate,MissionName)
+function calcSafeHouseCost(billPlayer,isVehicle,isCrate,MissionName,IsBandito)
 		
 		local currentmoney = 0
 		local safehousecost = 0
@@ -14341,7 +14348,16 @@ function calcSafeHouseCost(billPlayer,isVehicle,isCrate,MissionName)
 			else 
 				safehousecost = Config.SafeHouseCostCrate
 				
-			end			
+			end	
+
+		elseif IsBandito then
+			if Config.Missions[MissionName].SafeHouseCostBandito then
+				 safehousecost = Config.Missions[MissionName].SafeHouseCostBandito
+				
+			else 
+				safehousecost = Config.SafeHouseCostBandito
+				
+			end						
 		
 		
 		else
@@ -14688,7 +14704,7 @@ AddEventHandler("mt:rewardPassengers",function(playerserverid)
 end)
 
 --players share money?
---local sharedmoney = 0
+
 RegisterNetEvent("mt:sharemoney")
 AddEventHandler("mt:sharemoney",function(playermissionmoney)
 	
@@ -14723,8 +14739,9 @@ AddEventHandler("mt:sharemoney",function(playermissionmoney)
 			mrpplayermoneyG = DecorGetInt(GetPlayerPed(-1),"mrpplayermoney")
 			
 			Notify("~h~~w~Shared mission money. You earned:~g~ $"..playermissionmoney)	
-
-			MISSIONSHAREMONEYAMOUNT	= "~n~~w~Shared mission money. You earned:~g~ $"..playermissionmoney	
+			
+			sharedmoney = playermissionmoney + sharedmoney
+			MISSIONSHAREMONEYAMOUNT	= "~n~~w~Shared mission money. You earned:~g~ $"..tostring(sharedmoney)
 					
 			--ESX Support, else use Native Money
 			if UseESX then 
@@ -18208,6 +18225,91 @@ Citizen.CreateThread(function()
 
 end)
 
+local banditoexplodecalled = false
+AddEventHandler("BanditoExplode", function(PedVeh,PlayerPed)
+
+if not banditoexplodecalled then 
+	--print("called")
+	banditoexplodecalled=true
+	SetEntityInvincible(PedVeh,false)
+	--NetworkExplodeVehicle(PedVeh,true,true,true) 
+	local pos =  GetEntityCoords(PedVeh, true)
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 60, 1000.0, true, false,0.0)
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 59, 1000.0, true, false,0.0)
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 31, 1000.0, true, false,0.0)
+	--SetVehicleBodyHealth(PedVeh,5)
+	--SetVehicleEngineHealth(PedVeh,1000.0)
+	--SetVehicleFixed(PedVeh)
+	--SetVehicleDeformationFixed(PedVeh)
+	--SetVehicleUndriveable(PedVeh, false)
+	Wait(2000)
+	pos = GetEntityCoords(PedVeh, true)
+	--print("called2")
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 60, 1000.0, true, false,0.0)
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 59, 1000.0, true, false,0.0)
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 31, 1000.0, true, false,0.0)
+	--SetVehicleBodyHealth(PedVeh,2)
+	Wait(2000)
+	local pos = GetEntityCoords(PedVeh, true)
+	--print("called3")
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 60, 1000.0, true, false,0.0)
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 59, 1000.0, true, false,0.0)
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 31, 1000.0, true, false,0.0)
+	--SetVehicleBodyHealth(PedVeh,1)
+	Wait(2000)
+	local pos = GetEntityCoords(PedVeh, true)
+	--print("called4")
+	playerrcbanditoexit=true
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 60, 1000.0, true, false,0.0)
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 59, 1000.0, true, false,0.0)
+	AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 31, 1000.0, true, false,0.0)
+	SetEntityInvincible(PedVeh,false)
+	NetworkExplodeVehicle(PedVeh,true,true,true) 
+
+	--Wait(5000)	
+	
+end
+
+
+banditoexplodecalled = false
+--Wait(10000)
+--print("called explode")
+--NetworkExplodeVehicle(PedVeh,true,true,true) 
+--Wait(1000)
+--NetworkExplodeVehicle(PedVeh,true,true,true)
+--Wait(2000)
+--NetworkExplodeVehicle(PedVeh,true,true,true)
+--Wait(3000)
+--NetworkExplodeVehicle(PedVeh,true,true,true) 
+
+
+end)
+
+
+
+AddEventHandler("BanditoExplode2", function(PedVeh,PlayerPed)
+
+	if not banditoexplodecalled then 
+		--print("called")
+		banditoexplodecalled=true
+		
+		--SetEntityInvincible(PedVeh,false)
+		Wait(5000)
+		playerrcbanditoexit=true
+		local pos =  GetEntityCoords(PedVeh, true)
+		AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 60, 1000.0, true, false,0.0)
+		AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 59, 1000.0, true, false,0.0)
+		AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 31, 1000.0, true, false,0.0)	
+		SetEntityInvincible(PedVeh,false)
+		NetworkExplodeVehicle(PedVeh,true,true,true) 
+		--print("called2")
+		banditoexplodecalled=false
+		--Wait(5000)	
+		
+	end  
+end)
+
+
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
@@ -18229,22 +18331,32 @@ Citizen.CreateThread(function()
 					local pos = GetEntityCoords(PedVeh, true)
 					
 					playerrcbanditoexit=true
+					SetEntityInvincible(PedVeh,true)
+					
 					AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 60, 1000.0, true, false,0.0)
 					AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 59, 1000.0, true, false,0.0)
 					AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 31, 1000.0, true, false,0.0)
-					NetworkExplodeVehicle(PedVeh,true,true,true) 
+					SetVehicleBodyHealth(PedVeh,1)
+					--SetEntityInvincible(PedVeh,true)
+					--NetworkExplodeVehicle(PedVeh,true,true,true) 
 					Notify("~b~Remote bomb detonated")
+					if not banditoexplodecalled then 
+						--print('hey1')
+						TriggerEvent("BanditoExplode2",PedVeh,PlayerPed)
+					end
 				end
 				
 				if(PedVeh and not IsVehicleDriveable(PedVeh) and playerrcbandito ~= nil) then	
 					--SetEntityInvincible(PlayerPed, true)
 					local pos = GetEntityCoords(PedVeh, true)
 					if (not playerrcbanditoexit) then
+						 banditoexplodecalled = false
 						Notify("~b~Remote control vehicle destroyed. Remote bomb detonated")
 						SetEntityCoords(PlayerPed,playerorigpos.x,playerorigpos.y,playerorigpos.z)
 						SetEntityHeading(PlayerPed,playerorigheading)
 						playerrcbanditoexit=false
-					end 
+					end
+					--print("hey")
 					AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 60, 1000.0, true, false,0.0)
 					AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 59, 1000.0, true, false,0.0)
 					AddOwnedExplosion(PlayerPed,pos.x, pos.y, pos.z, 31, 1000.0, true, false,0.0)
@@ -19668,7 +19780,7 @@ while true do
 								DecorSetInt(GetPlayerPed(-1),"mrpvehsafehousemax",mrpvehsafehousemax)
 								mrpvehsafehousemaxG = mrpvehsafehousemax
 								playerSafeHouse = GetGameTimer()
-								local messageOwner = "You claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(true,true,false,MissionName)
+								local messageOwner = "You claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(true,true,false,MissionName,true)
 								TriggerEvent("mt:missiontext2", messageOwner,10000)									
 							else 
 									local messageOwner = "Please try again to deploy a rc remote detonate bomb"
@@ -20609,7 +20721,10 @@ Citizen.CreateThread(function()
 						end
 						
 					end
-					MISSIONSHOWMESSAGE = MISSIONSHOWMESSAGE .. MISSIONSHAREMONEYAMOUNT	
+					--MISSIONSHOWMESSAGE = MISSIONSHOWMESSAGE .. MISSIONSHAREMONEYAMOUNT	
+					--MISSIONSHAREMONEYAMOUNT=nil
+					Wait(1000)
+					MISSIONSHOWMESSAGE = MISSIONSHOWMESSAGE .. MISSIONSHAREMONEYAMOUNT
 					MISSIONSHAREMONEYAMOUNT=nil
 				end
 				
