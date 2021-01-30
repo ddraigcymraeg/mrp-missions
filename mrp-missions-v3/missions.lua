@@ -23,6 +23,9 @@ Config.ObjectRescueReward = 3000
 
 Config.GoalReachedReward = 2000
 
+Config.RepairVehicleFee=500
+Config.UseSafeHouseRepair=true
+
 
 Config.BackupPeds={ 's_m_y_blackops_01', 's_m_y_blackops_02', 's_m_y_blackops_03',  's_m_y_swat_01' }
 
@@ -341,7 +344,7 @@ Config.AnnounceEvents=false --have friendly notification of event triggered?
 
 
 --can mission vehicle tires burst? Applies to enemy vehicles as well.
-Config.SetVehicleTyresCanBurst=false
+Config.SetVehicleTyresCanBurst=true
 
 
 --ExtraRandomEventsType: flag 1 = land only, 2 = water and land, 3 = water only 
