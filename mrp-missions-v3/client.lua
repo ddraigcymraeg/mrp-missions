@@ -165,6 +165,7 @@ local GlobalKillTargetPed = false
 
 local isHostageRescueCount = 0
 local isObjectiveRescueCount = 0
+local isTargetCount = 0
 
 local DoingMissionTeleport = false
 
@@ -1742,7 +1743,15 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 				
 			
 				
-			end			
+			end	
+
+			if(getMissionConfigProperty(input, "UseSafeHouseRepair")) then 
+				Wait(5000)
+				HelpMessage("Press ~INPUT_CHARACTER_WHEEL~ and ~INPUT_COVER~ to repair a vehicle you are in or near. Cost $"..getMissionConfigProperty(input, "RepairVehicleFee"),false,5000)	
+				Wait(5000)
+				HelpMessage("The safe house needs to be open to repair a vehicle",false,5000)					
+
+			end
 			
 			Wait(5000)
 			HelpMessage("Some Escort/Transport/Rescue/Defend missions can allow you to enter the target vehicle, if in range",false,0)
@@ -2517,7 +2526,7 @@ AddEventHandler('missionBlips', function(input,rMissionLocationIndex,rMissionTyp
 			end
 			if(getMissionConfigProperty(MissionName, "UseSafeHouseBanditoDrop")) then 
 				Notify("~b~You can also deploy and use a number of rc detonate bombs, like drones")
-				Notify("~b~Press gamepad RB & DPAD RIGHT together or A & D together to deploy. Cost~c~: $"..getMissionConfigProperty(MissionName, "SafeHouseCostCrate"))
+				Notify("~b~Press gamepad RB & DPAD RIGHT together or A & D together to deploy. Cost~c~: $"..getMissionConfigProperty(MissionName, "SafeHouseCostBandito"))
 			end
 		end 
 		--Notify("~h~~b~Check your map for mission data.~n~Hold DPAD DOWN or '[' key to view mission information.")
@@ -8805,7 +8814,8 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 				DecorSetInt(Config.Missions[input].Peds[i].id,"mrppedboss",1)
 				doBossBuff(Config.Missions[input].Peds[i].id,Config.Missions[input].Peds[i].modelHash,input,Config.Missions[input].Peds[i].Weapon)
 			
-			if Config.Missions[input].Type=="BossRush" then 
+			if Config.Missions[input].Type=="BossRush" then
+				--print('made it')			
 				DecorSetInt(Config.Missions[input].Peds[i].id,"mrppedtarget",445566)
 			end
 				
@@ -8882,7 +8892,8 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 			--SetBlipColour(ped, 27)
 			--BeginTextCommandSetBlipName("STRING")
 			--AddTextComponentString("Target ($"..getTargetKillReward(input)..")")
-			--EndTextCommandSetBlipName(ped)						
+			--EndTextCommandSetBlipName(ped)		
+			--print("made it 2")
 			DecorSetInt(Config.Missions[input].Peds[i].id,"mrppedtarget",i)
 		else
 		--	BeginTextCommandSetBlipName("STRING")
@@ -14954,6 +14965,10 @@ function MissionCheck()
 		
 		isDefendGoalReached = results[15]
 		
+		
+		isTargetCount = totalTargets - totalDeadTargets
+		
+		--print("totalTargets"..Config.Missions[MissionName].Type)
 		--print("totalRescuedHostages:"..totalRescuedHostages)
 		--print("mcheck...isDefendTargetRescued:"..isDefendTargetRescued)
 		
@@ -16774,7 +16789,51 @@ Citizen.CreateThread(function()
 						AddTextComponentString("Objectives Remaining : ~o~"..isObjectiveRescueCount)
 					--end
 					DrawText(0.705, 0.875)
-				end 						
+				end 
+
+				
+				if (Config.Missions[MissionName].Type == "Assassinate" or Config.Missions[MissionName].Type == "BossRush")
+				and isTargetCount > 0 and not Config.Missions[MissionName].IsDefend  then
+					SetTextFont(0)
+					SetTextProportional(1)
+					SetTextScale(0.0, 0.3)
+					SetTextColour(255, 255, 255, 255)
+					SetTextDropshadow(0, 0, 0, 0, 255)
+					SetTextEdge(1, 0, 0, 0, 255)
+					SetTextDropShadow()
+					SetTextOutline()
+					SetTextEntry("STRING")
+					--if MilliSecondsLeft <= 0 then
+						--now what?
+						--server will respond to time out the mission
+						--AddTextComponentString("~r~Mission Over")
+					--else
+						AddTextComponentString("Enemy Targets Remaining : ~p~"..isTargetCount)
+					--end
+					DrawText(0.705, 0.875)
+				end 
+
+
+				if Config.Missions[MissionName].IsDefend 
+				and isTargetCount > 0 then
+					SetTextFont(0)
+					SetTextProportional(1)
+					SetTextScale(0.0, 0.3)
+					SetTextColour(255, 255, 255, 255)
+					SetTextDropshadow(0, 0, 0, 0, 255)
+					SetTextEdge(1, 0, 0, 0, 255)
+					SetTextDropShadow()
+					SetTextOutline()
+					SetTextEntry("STRING")
+					--if MilliSecondsLeft <= 0 then
+						--now what?
+						--server will respond to time out the mission
+						--AddTextComponentString("~r~Mission Over")
+					--else
+						AddTextComponentString("Enemies Remaining : ~p~"..isTargetCount)
+					--end
+					DrawText(0.705, 0.875)
+				end 							
 				
 				
 				if (not MissionNoTimeout) and MilliSecondsLeft >= 0 then
@@ -17544,6 +17603,69 @@ function doTeleportToSafeHouse(isOnSpawn)
 
 
 end
+
+
+
+RegisterNetEvent("doRepairVehicle")
+AddEventHandler("doRepairVehicle",function(MissionName,vehicle)
+	
+	
+	Notify("~h~~g~Fixing Vehicle...")
+	TriggerEvent("mt:missiontext2","~h~~g~Fixing Vehicle..", 2000)
+	
+	Wait(2000)
+	PlaySoundFrontend(-1, "Apt_Style_Purchase", "DLC_APT_Apartment_SoundSet", 0); 
+	if IsThisModelAHeli(GetEntityModel(vehicle)) then 
+		--print('heli')
+		Citizen.InvokeNative(0xFE205F38AAA58E5B,vehicle,1000.0)
+		--SetHeliTailRotorHealth(vehicle,1000.0)
+		
+		--SetHeliMainRotorHealth(vehicle,1000.0)
+		--SetHeliEngineHealth(1000.0)
+		--SetHeliTailBoomHealth(1000.0)
+		
+	end
+	
+	
+	
+	SetVehicleFixed(vehicle)
+	SetVehicleBodyHealth(vehicle,1000.0)
+	SetVehicleEngineHealth(vehicle,1000.0)
+	SetVehicleBodyHealth(vehicle,1000.0)
+	SetVehiclePetrolTankHealth(vehicle,1000.0)
+	SetVehicleDeformationFixed(vehicle)
+	SetVehicleUndriveable(vehicle, false)
+	--SetVehicleEngineOn(vehicle, true, true)	
+	
+	
+	Notify("~h~~g~Vehicle Repaired. Cost: $"..getMissionConfigProperty(MissionName, "RepairVehicleFee"))
+	TriggerEvent("mt:missiontext2","Vehicle Repaired. Cost: $"..getMissionConfigProperty(MissionName, "RepairVehicleFee"), 4000)
+	
+	
+	if  getMissionConfigProperty(input, "RepairVehicleFee") > 0 then
+		local currentmoney = 0
+		local rejuvcost =  getMissionConfigProperty(MissionName, "RepairVehicleFee")
+		local totalmoney = 0		
+					
+		local _,currentmoney = StatGetInt('MP0_WALLET_BALANCE',-1)
+		playerMissionMoney =  0 - rejuvcost
+		totalmoney =  currentmoney - rejuvcost		
+						
+		if UseESX then 
+			TriggerServerEvent("paytheplayer", totalmoney)
+			TriggerServerEvent("UpdateUserMoney", totalmoney)
+		else
+							--DecorSetInt(GetPlayerPed(-1),"mrpplayermoney",totalmoney)
+			DecorSetInt(GetPlayerPed(-1),"mrpplayermoney",DecorGetInt(GetPlayerPed(-1),"mrpplayermoney") + playerMissionMoney)			
+			mrpplayermoneyG = DecorGetInt(GetPlayerPed(-1),"mrpplayermoney")			
+			StatSetInt('MP0_WALLET_BALANCE',totalmoney, true)
+		end	
+	
+	end
+	
+
+end)
+
 
 --does a toggle on/off everytime it is called
 RegisterNetEvent("doMissionDrop")
@@ -19639,7 +19761,84 @@ while true do
 				Wait(3500)
 				
 			end
-		end				
+		end	
+
+
+		--Left stick down + RB: drop/remove MissionDrop marker
+		if (IsControlPressed(0, 19) and IsControlPressed(0, 44)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 and true then
+			
+			if  Active == 1 and MissionName ~="N/A" then
+				if (getMissionConfigProperty(MissionName, "UseSafeHouseBanditoDrop") and (GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse")) > playerSafeHouse) then			
+					local vehtofix = GetVehiclePedIsIn(GetPlayerPed(-1), false)
+					local closestvehdist = 15000.0
+					local outsidevehicle = false
+					
+					if vehtofix ==0 then
+						outsidevehicle = true
+						local pcoords = GetEntityCoords(GetPlayerPed(-1),true)
+						local closestvehicle = 0
+						for veh in EnumerateVehicles() do
+							
+							local vcoords = GetEntityCoords(veh,true)
+							local vdist = GetDistanceBetweenCoords(vcoords, pcoords, true) 
+							if(vdist < closestvehdist) then
+								closestvehdist = vdist
+								vehtofix = veh
+							end
+						
+						
+						
+						
+						
+						
+							--[[
+							if DecorGetInt(veh, "mrpvehdid") > 0 then
+								
+								--not using these vehicle blips anymore
+								local blip = GetBlipFromEntity(veh)
+								RemoveBlip(blip)
+								
+								DecorRemove(veh, "mrpvehsafehouseowner")
+								DecorRemove(veh, "mrpvehsafehouse")
+								--we cant delete vehicles that the player is in
+								--since they could be in the air or far out to sea
+								if (veh ~= GetVehiclePedIsIn(GetPlayerPed(-1), false)) and not IsEntityAtEntity( veh, GetPlayerPed(-1), 1.0, 1.0, 2.0, 0, 1, 0) then
+									DeleteEntity(veh)
+								
+									DecorRemove(veh, "mrpvehdid")
+									DecorRemove(veh, "mrpvehdidGround")
+								--else
+									
+								end 
+								
+								--print("del veh")
+							end
+							--]]
+						end	
+					
+						
+					end
+					
+					
+					
+					if (vehtofix and closestvehdist < 5)  or ( vehtofix and not outsidevehicle) then
+						TriggerEvent("doRepairVehicle",MissionName,vehtofix)
+						playerSafeHouse = GetGameTimer() --reset safehouse timer
+					else 
+						Notify("~h~~b~No vehicle found to fix")
+						TriggerEvent("mt:missiontext2","~h~No vehicle found to fix", 4000)
+					end
+					Wait(3500)
+				
+				else
+					Notify("~h~~b~Safehouse needs to be open to fix a vehicle")
+					TriggerEvent("mt:missiontext2","~h~~b~Safehouse needs to be open to fix a vehicle", 4000)
+				end
+				
+				
+				
+			end
+		end		
 	
 	
 		--Left stick down + RB: drop/remove MissionDrop marker
@@ -19745,6 +19944,11 @@ while true do
 						--TriggerEvent("mt:missiontext2", message, 10000)				
 					
 					--end
+				
+				else
+					Notify("~h~~b~Safehouse needs to be open to call in another supply drop")
+					TriggerEvent("mt:missiontext2","~h~~b~Safehouse needs to be open to call in a supply drop", 4000)
+				
 				end
 			else 
 				message  = "You may request a supplies drop after a mission has started" 		
@@ -19780,19 +19984,26 @@ while true do
 								DecorSetInt(GetPlayerPed(-1),"mrpvehsafehousemax",mrpvehsafehousemax)
 								mrpvehsafehousemaxG = mrpvehsafehousemax
 								playerSafeHouse = GetGameTimer()
-								local messageOwner = "You claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(true,true,false,MissionName,true)
+								local messageOwner = "You claimed yourself a mission vehicle!~n~Cost is: $"..calcSafeHouseCost(true,false,false,MissionName,true)
 								TriggerEvent("mt:missiontext2", messageOwner,10000)									
 							else 
 									local messageOwner = "Please try again to deploy a rc remote detonate bomb"
 									TriggerEvent("mt:missiontext2", messageOwner,10000)						
 							end
 						
+							Wait(3500)	
 						end
 					
 					else
 						local messageOwner = "Your available mission vehicles have maxed out!~n~Use a non mission vehicle. Or ride with another"
 						TriggerEvent("mt:missiontext2", messageOwner,10000)
 					end
+				else
+				
+					Notify("~h~~b~Safehouse needs to be open to call in another Bandito drop")
+					TriggerEvent("mt:missiontext2","~h~~b~Safehouse needs to be open to call in a Bandito drop", 4000)				
+				
+				
 				end
 				
 			else 
