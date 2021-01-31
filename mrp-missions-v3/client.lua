@@ -17605,6 +17605,52 @@ function doTeleportToSafeHouse(isOnSpawn)
 end
 
 
+RegisterNetEvent("mt:doRepairVehicle")
+AddEventHandler("mt:doRepairVehicle",function(timerepaired)
+	
+	
+	local vehicle = NetToVeh(vNetID)
+	--[[
+	for veh in EnumerateVehicles() do
+	
+		if DecorGetInt(veh,"repvehicle") == timerepaired then
+			print("timerepaired:"..timerepaired)
+			vehicle = veh
+			break
+		end
+	
+	
+	end
+	]]--
+	--print("found vehicle")
+	--print(vehicle)
+	
+	PlaySoundFrontend(-1, "Apt_Style_Purchase", "DLC_APT_Apartment_SoundSet", 0); 
+	Notify("~h~~g~Vehicle Repaired")
+	if IsThisModelAHeli(GetEntityModel(vehicle)) then 
+		--print('heli')
+		Citizen.InvokeNative(0xFE205F38AAA58E5B,vehicle,1000.0)
+		--SetHeliTailRotorHealth(vehicle,1000.0)
+		
+		--SetHeliMainRotorHealth(vehicle,1000.0)
+		--SetHeliEngineHealth(1000.0)
+		--SetHeliTailBoomHealth(1000.0)
+		
+	end
+	
+	
+	
+	SetVehicleFixed(vehicle)
+	SetVehicleBodyHealth(vehicle,1000.0)
+	SetVehicleEngineHealth(vehicle,1000.0)
+	SetVehicleBodyHealth(vehicle,1000.0)
+	SetVehiclePetrolTankHealth(vehicle,1000.0)
+	SetVehicleDeformationFixed(vehicle)
+	SetVehicleUndriveable(vehicle, false)
+	--SetVehicleEngineOn(vehicle, true, true)	
+	
+	--print('vehicle fixed')
+end)
 
 RegisterNetEvent("doRepairVehicle")
 AddEventHandler("doRepairVehicle",function(MissionName,vehicle)
@@ -17612,8 +17658,15 @@ AddEventHandler("doRepairVehicle",function(MissionName,vehicle)
 	
 	Notify("~h~~g~Fixing Vehicle...")
 	TriggerEvent("mt:missiontext2","~h~~g~Fixing Vehicle..", 2000)
+	--print("GetGameTimer()"..GetGameTimer())
+	--local timerepaired = GetGameTimer()
+	--DecorSetInt(vehicle,"repvehicle",timerepaired)
 	
 	Wait(2000)
+	
+	vNetID = VehToNet(vehicle)
+	SetNetworkIdExistsOnAllMachines(vNetID, true)
+	TriggerServerEvent("sv:repairvehicle")
 	PlaySoundFrontend(-1, "Apt_Style_Purchase", "DLC_APT_Apartment_SoundSet", 0); 
 	if IsThisModelAHeli(GetEntityModel(vehicle)) then 
 		--print('heli')
@@ -17642,7 +17695,7 @@ AddEventHandler("doRepairVehicle",function(MissionName,vehicle)
 	TriggerEvent("mt:missiontext2","Vehicle Repaired. Cost: $"..getMissionConfigProperty(MissionName, "RepairVehicleFee"), 4000)
 	
 	
-	if  getMissionConfigProperty(input, "RepairVehicleFee") > 0 then
+	if  getMissionConfigProperty(MissionName, "RepairVehicleFee") > 0 then
 		local currentmoney = 0
 		local rejuvcost =  getMissionConfigProperty(MissionName, "RepairVehicleFee")
 		local totalmoney = 0		
