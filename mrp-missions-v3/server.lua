@@ -89,6 +89,13 @@ AddEventHandler("sharemoney",function(playermissionmoney)
 	
 end)
 
+RegisterServerEvent("sv:repairvehicle")
+AddEventHandler("sv:repairvehicle",function()
+	
+	TriggerClientEvent("mt:doRepairVehicle",-1)
+	
+end)
+
 --looks for setting within a mission, else looks at global setting
 function getMissionConfigProperty(MissionName, PropName) 
 	--print('MissionName'..MissionName)
@@ -401,7 +408,7 @@ function getNextMission(MissionName,InitRandom)
 		--override if MissionName mission has a NextMission attribute:
 		--to allow joined missions
 		if getMissionConfigProperty(MissionName, "NextMission") then
-		
+			
 			if getMissionConfigProperty(MissionName, "ProgressToNextMissionIfFail") then 
 				nextmission = getMissionConfigProperty(MissionName, "NextMission")
 			elseif not blFailedMission then 
@@ -610,9 +617,11 @@ end)
 RegisterServerEvent("sv:getClientWhoIsHostAndStartNextMission")
 AddEventHandler("sv:getClientWhoIsHostAndStartNextMission", function(isHost,newMission)
   
+  --print("made it")
   local nextmission = getNextMission(MissionName)
   if newMission then 
     --TEST 
+	--print("newMission" ..newMission)
 	nextmission = newMission
   end
   
@@ -633,7 +642,7 @@ AddEventHandler("sv:UpdateEvents", function(k,PlayerServerId)
  --print("event called"..k)
  --print("length:"..#Config.Missions[MissionName].Events)
 	Config.Missions[MissionName].Events[k].done=true
-   TriggerClientEvent('mt:UpdateEvents',-1,k,PlayerServerId)
+   TriggerClientEvent('mt:UpdateEvents',-1,k,PlayerServerId,MissionName)
   
 	
 end)
