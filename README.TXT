@@ -9,7 +9,9 @@ Install like any other FiveM Server Resource. Both mrp-missions-v3 and mrpStreet
 
 To build your own missions, check out the Config_Guide.lua.txt, and see notes below.
 
-NOTE: If there is a problem with a checkpoint mission, BOTH mrp-missions-v3 and mrpStreetRaces may need to be restarted.
+NOTE: If there is a problem with a checkpoint mission, BOTH mrp-missions-v3 and mrpStreetRaces may need to be restarted. 
+
+NOTE: Sometimes there can synch issues when a server is started and  2 or more clients connect simultaneously, when the mission system is autostarted when server is up. 
 
 NOTE: MORE CHALLENGING AI: AI mission backups can be summoned 1 per player at a $ cost (see below). This is turned on on missions.lua with DoMissionBackup=true. 
 Unfortunately to get the enemy AI to work with friendly AI, the enemy AI can damage themselves. The solution I tried looks like it should work, but does not. 
