@@ -1406,6 +1406,7 @@ Config.RandomMissionIsBountyOverrideVehPeds = {"hc_hacker","hc_gunman","u_m_m_ba
 'Destroyed' explodes the vehicle on spawn
 'useDefaultHeading' used for aircraft only, when set to true, the default heading set for it is guaranteed to be used, since spawned planes have their headings tweaked for them
 not to crash. 
+'vehicleinvincible' when set to true, makes the vehicle invicible.
 --'Events',This is basically a trigger than spawns something when a player is within a certain distance away. 
 --      Used in *both* Regular and IsRandom Mission. 5 Event types: Paradrop, Squad, Vehicle and Aircraft and Boat
 --      For IsRandom missions, used with IsRandomEvent=true as well. This setting will generate a single Event of Type either Paradrop, Squad, Vehicle. within 200m to 1500m from the mission Blip
