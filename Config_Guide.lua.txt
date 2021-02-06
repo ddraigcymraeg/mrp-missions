@@ -1402,6 +1402,10 @@ Config.RandomMissionIsBountyOverrideVehPeds = {"hc_hacker","hc_gunman","u_m_m_ba
 --	'IsDefendTargetEntity' Used in IsDefend=true->IsDefendTarget=true regular missions, to define the target friendly NPC. Can be Ped only type NPC, like in Peds, or a Ped driver in Vehicle, 
 --	like in 'Vehicles' with an 'id2' attribute. See Mission14 below as an example. has attributes like movetocoord, driving, as well to define the npc behavior. Also SpawnAt attribute 
 —- 	to define coords to spawn at if not the Blip coords. 
+'OpenDoorNum' used for opening the ramps for planes like the Titan or cargoplane see https://docs.fivem.net/natives/?_0x7C65DAC73C35C862 for numbers to allocate.
+'Destroyed' explodes the vehicle on spawn
+'useDefaultHeading' used for aircraft only, when set to true, the default heading set for it is guaranteed to be used, since spawned planes have their headings tweaked for them
+not to crash. 
 --'Events',This is basically a trigger than spawns something when a player is within a certain distance away. 
 --      Used in *both* Regular and IsRandom Mission. 5 Event types: Paradrop, Squad, Vehicle and Aircraft and Boat
 --      For IsRandom missions, used with IsRandomEvent=true as well. This setting will generate a single Event of Type either Paradrop, Squad, Vehicle. within 200m to 1500m from the mission Blip
