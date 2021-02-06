@@ -7957,7 +7957,13 @@ AddEventHandler('SpawnPed', function(input)
 						makeEntityFaceEntity(Config.Missions[input].Vehicles[i].id,GetPlayerPed(-1))
 					end
 					
-				end							
+				end
+
+				--keep airplane in its default configured heading
+				if Config.Missions[input].Vehicles[i].useDefaultHeading then
+				
+					SetEntityHeading(Config.Missions[input].Vehicles[i].id,Config.Missions[input].Vehicles[i].heading)
+				end
 				--make sure landing gear is retracted, since all planes should be spawned in the air with an NPC
 				SetVehicleLandingGear(Config.Missions[input].Vehicles[i].id, 3) 
 				
@@ -7974,8 +7980,30 @@ AddEventHandler('SpawnPed', function(input)
 				SetVehicleEngineOn(Config.Missions[input].Vehicles[i].id, true, true, false)			
 			end
 			
-			if (Config.Missions[input].Vehicles[i].Freeze) then 
+		
+			--just used for opening up cargo bay on titan and cargoplane
+			if (Config.Missions[input].Vehicles[i].OpenDoorNum) then 
+			
+				SetVehicleDoorOpen(Config.Missions[input].Vehicles[i].id,Config.Missions[input].Vehicles[i].OpenDoorNum, false, false)			
+							
 				
+			end			
+			
+			
+			if (Config.Missions[input].Vehicles[i].Destroyed) then
+				print("destroyed")
+				NetworkExplodeVehicle(Config.Missions[input].Vehicles[i].id,true,true,true)
+			end
+			if (Config.Missions[input].Vehicles[i].Freeze) then 
+				--SetVehicleRampUpwardsLaunchMotion(Config.Missions[input].Vehicles[i].id,true)
+				--Wait(10000)
+				--OpenBombBayDoors(Config.Missions[input].Vehicles[i].id)
+				
+				--for i = 1,GetNumberOfVehicleDoors(Config.Missions[input].Vehicles[i].id) do
+				--print("door..."..i)
+					--SetVehicleDoorOpen(Config.Missions[input].Vehicles[i].id,i,true,true)
+				--end		
+			
 				FreezeEntityPosition(Config.Missions[input].Vehicles[i].id,true)
 			end
 			if Config.Missions[input].Vehicles[i].id2 then
@@ -10690,7 +10718,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 		local PedDoctor
 
 		
-		
+		--print("made it")
 		--if we have already spawned props at the mission launch. 
 		if MissionSpawnedSafeHouseProps then
 			
@@ -16966,27 +16994,27 @@ Citizen.CreateThread(function()
 				
 							
 			end
-		
-            for k,v in pairs(Config.Missions[MissionName].Marker) do
-                if Active == 1 and MissionName ~="N/A" then
-                    ply = PlayerId()
-                    coords = GetEntityCoords(GetPlayerPed(ply))
-					--***workaround for when ground z is not found in random anywhere missions
-					if (Config.Missions[MissionName].Marker.Position.z <= 0.0) then 
-						if(GetDistanceBetweenCoords(coords.x,coords.y,0.0, Config.Missions[MissionName].Marker.Position.x, Config.Missions[MissionName].Marker.Position.y, 0.0, true) > Config.Missions[MissionName].Marker.Size.x / 2)  then
-							securing = false
-						end					
-					
-					else 
-						if(GetDistanceBetweenCoords(coords.x,coords.y,coords.z, Config.Missions[MissionName].Marker.Position.x, Config.Missions[MissionName].Marker.Position.y, Config.Missions[MissionName].Marker.Position.z, true) > Config.Missions[MissionName].Marker.Size.x / 2)  then
-							securing = false
+			if Config.Missions[MissionName].Marker then
+				for k,v in pairs(Config.Missions[MissionName].Marker) do
+					if Active == 1 and MissionName ~="N/A" then
+						ply = PlayerId()
+						coords = GetEntityCoords(GetPlayerPed(ply))
+						--***workaround for when ground z is not found in random anywhere missions
+						if (Config.Missions[MissionName].Marker.Position.z <= 0.0) then 
+							if(GetDistanceBetweenCoords(coords.x,coords.y,0.0, Config.Missions[MissionName].Marker.Position.x, Config.Missions[MissionName].Marker.Position.y, 0.0, true) > Config.Missions[MissionName].Marker.Size.x / 2)  then
+								securing = false
+							end					
+						
+						else 
+							if(GetDistanceBetweenCoords(coords.x,coords.y,coords.z, Config.Missions[MissionName].Marker.Position.x, Config.Missions[MissionName].Marker.Position.y, Config.Missions[MissionName].Marker.Position.z, true) > Config.Missions[MissionName].Marker.Size.x / 2)  then
+								securing = false
+							end
 						end
+						
+						
 					end
-					
-					
-                end
-            end
-			
+				end
+			end
 			
 			
 			
