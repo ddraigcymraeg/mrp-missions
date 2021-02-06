@@ -7839,6 +7839,7 @@ AddEventHandler('SpawnPed', function(input)
 			if Config.Missions[input].Vehicles[i].invincible then
 				SetEntityInvincible(Config.Missions[input].Vehicles[i].id2, true)
 			end
+				
 			
 			if Config.Missions[input].Vehicles[i].dead then
 				--ApplyDamageToPed(Config.Missions[input].Peds[i].id,90,true)
@@ -7983,15 +7984,20 @@ AddEventHandler('SpawnPed', function(input)
 		
 			--just used for opening up cargo bay on titan and cargoplane
 			if (Config.Missions[input].Vehicles[i].OpenDoorNum) then 
-			
+				--print("made it")
 				SetVehicleDoorOpen(Config.Missions[input].Vehicles[i].id,Config.Missions[input].Vehicles[i].OpenDoorNum, false, false)			
 							
 				
 			end			
 			
 			
+			if Config.Missions[input].Vehicles[i].vehicleinvincible then
+			--print('vehicle invincible')
+				SetEntityInvincible(Config.Missions[input].Vehicles[i].id, true)
+			end					
+			
 			if (Config.Missions[input].Vehicles[i].Destroyed) then
-				print("destroyed")
+				--print("destroyed")
 				NetworkExplodeVehicle(Config.Missions[input].Vehicles[i].id,true,true,true)
 			end
 			if (Config.Missions[input].Vehicles[i].Freeze) then 
@@ -8376,6 +8382,12 @@ AddEventHandler('SpawnPed', function(input)
 			--print("MADE IT SPAWN PED VEH")
 			--no NPC driver, so must be a vehicle for the player, add a safehouse var to it. 
 			
+		--just used for opening up cargo bay on titan and cargoplane
+			if (Config.Missions[input].Vehicles[i].OpenDoorNum) then 
+				--print("made it")
+				SetVehicleDoorOpen(Config.Missions[input].Vehicles[i].id,Config.Missions[input].Vehicles[i].OpenDoorNum, false, false)			
+			end					
+			
 			DecorSetInt(Config.Missions[input].Vehicles[i].id,"mrpvehsafehouse",i)
 			--also make it not invulnerable to NPCs
 			SetEntityOnlyDamagedByPlayer(Config.Missions[input].Vehicles[i].id, false)
@@ -8388,6 +8400,8 @@ AddEventHandler('SpawnPed', function(input)
 										
 		end
     end
+	
+	
 	--SPAWN SAFE HOUSE PEDS TOO
 	if getMissionConfigProperty(input, "UseSafeHouse") then
 		SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo) 
@@ -9407,8 +9421,11 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 					
 					if AircraftEvent then 
 						TargetPed = TargetIsDefendtargetPed(Config.Missions[input].Vehicles[i].id2)
+						--RegisterTarget(Config.Missions[input].Vehicles[i].id2,GetPlayerPed(-1))
+						--print("target registered")
 						ptable = GetPlayers()
 						for _, k in ipairs(ptable) do
+						--print("target registered")
 							RegisterTarget(Config.Missions[input].Vehicles[i].id2,GetPlayerPed(k))
 						end						
 					end
@@ -9576,7 +9593,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 
 					--print("TASK DRIVE WANDER:"..movespeed)
 						if (aircraft and not (Config.Missions[input].Vehicles[i].conqueror or Config.Missions[input].Vehicles[i].SetBlockingOfNonTemporaryEvents)) then 
-							TaskCombatHatedTargetsAroundPed(Config.Missions[input].Vehicles[i].id2,12000.0)
+							TaskCombatHatedTargetsAroundPed(Config.Missions[input].Vehicles[i].id2,10000.0)
 						else 					
 							TaskVehicleDriveWander(Config.Missions[input].Vehicles[i].id2, GetVehiclePedIsIn(Config.Missions[input].Vehicles[i].id2, false), movespeed, 0)
 						end
@@ -9589,7 +9606,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 					]]--
 					elseif AircraftEvent then 
 						--print("heli mission")
-						TaskCombatHatedTargetsAroundPed(Config.Missions[input].Vehicles[i].id2,1000.0)
+						TaskCombatHatedTargetsAroundPed(Config.Missions[input].Vehicles[i].id2,10000.0)
 						--TaskVehicleDriveWander(Config.Missions[input].Vehicles[i].id2, GetVehiclePedIsIn(Config.Missions[input].Vehicles[i].id2, false), movespeed, 0)
 					end
 				
