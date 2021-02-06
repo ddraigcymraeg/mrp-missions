@@ -15040,11 +15040,11 @@ Mission53 = {
 	MissionMessage = "Get the missing cargo all over Vinewood Hills from the downed cargo plane before the mercs steal it",	
 	Type = "ObjectiveRescue",	
 	ObjectiveRescueShortRangeBlip = true,
-	MissionTriggerRadius = 50000.0,
+	--MissionTriggerRadius = 50000.0,
 	VehicleGotoMissionTargetVehicle=2,
 	
 	SMS_Subject="Maximum Crisis",
-	SMS_Message="Mercs shotdown one of our cargo jets right over Vinewood Hills. The plane's location is marked.",
+	SMS_Message="Mercs shot down one of our cargo jets right over Vinewood Hills. The plane's location is marked.",
 	SMS_Message2="The plane was flying east to west and dumped all its cargo from east of Vinewood Hills to the west",
 	SMS_Message3="Paradrop into the location and search Vinewood Hills for the 8 missing crates and secure them",	
 		
@@ -15075,7 +15075,7 @@ Mission53 = {
 	--KillReward = 150,
 
     Blip = {
-      Title = "Mission: Shotdown Cargo Jet location",
+      Title = "Mission: Downed Cargo Jet location",
       Position = { x = -1606.44, y = 361.29, z = 79.85, heading = 245.88},
       Icon     = 58,
       Display  = 4,
@@ -15393,7 +15393,8 @@ Mission53 = {
 	
 
 	---how many extra event areas are there in the mission?
-		GenerateExtraRandomEventsNum = 0,
+	GenerateExtraRandomEventsNum = 0,
+	IsRandomSpawnAnywhereCoordRange = {xrange={-3000,2000},yrange={-1000,2000}},
 	
 	VehicleGotoMissionTargetVehicle=3,
     Vehicles = {
@@ -15402,8 +15403,8 @@ Mission53 = {
 	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
 	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
 	  --{id = 1, id2 = 1, Vehicle = "valkyrie", modelHash = "S_M_M_ChemSec_01",  x = -1166.42, y = 4641.5, z = 155.11, heading = 210.07,driving=true,pilot=true,isAircraft=true},
-	  {id = 1, id2 = 1, Weapon = 0x687652CE, Vehicle = "cargoplane", modelHash = "S_M_M_ChemSec_01", x = -802.75, y = 1835.3, z = 1166.08, heading = 324.69 ,Freeze=true,OpenDoorNum=2,driving=true,isAircraft=true,friendly=true,noFill=true,useDefaultHeading=true,},
-	   {id = 2, id2 = 2, Weapon = 0x687652CE, Vehicle = "cargoplane", modelHash = "S_M_M_ChemSec_01",  x = -1610.65, y = 358.72, z = 79.27, heading = 148.82 ,OpenDoorNum=2,driving=true,isAircraft=true,friendly=true,noFill=true,useDefaultHeading=true,},
+	  {id = 1, id2 = 1, Weapon = 0x687652CE, Vehicle = "cargoplane", modelHash = "S_M_M_ChemSec_01", x = -802.75, y = 1835.3, z = 1166.08, heading = 324.69 ,Freeze=true,OpenDoorNum=2,driving=true,isAircraft=true,friendly=true,noFill=true,useDefaultHeading=true,vehicleinvincible=true},
+	   {id = 2, Vehicle = "cargoplane",  x = -1610.65, y = 358.72, z = 79.27, heading = 148.82 ,OpenDoorNum=2,driving=true,isAircraft=true,friendly=true,noFill=true,useDefaultHeading=true,},
 	   
 	   {id = 3, id2 = 3, Weapon= 0x2BE6766B, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01", x = -1606.44, y = 361.29, z = 79.85, heading = 245.88,Freeze=true,notvisible=true},
 	   {id = 4, id2 = 4, Weapon= 0x2BE6766B, Vehicle = "valkyrie", modelHash = "s_m_y_ammucity_01",   x = 0.0, y = -4000.58, z = 142.35, heading = 184.52, driving=true,isAircraft=true,VehicleGotoMissionTarget=true,VehicleGotoMissionTargetVehicle=3,SetBlockingOfNonTemporaryEvents=true,},
