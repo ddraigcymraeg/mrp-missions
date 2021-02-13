@@ -8668,7 +8668,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 		end
 		
 		
-		if DoBlockingOfNonTemporaryEvents then
+		if DoBlockingOfNonTemporaryEvents or Config.Missions[input].Peds[i].SetBlockingOfNonTemporaryEvents then
 			
 			SetBlockingOfNonTemporaryEvents(Config.Missions[input].Peds[i].id, true) 
 		end		
@@ -9158,8 +9158,9 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 			DecorSetInt(Config.Missions[input].Vehicles[i].id2,"mrpvpeddriverid",i)
 			
 			
-			if DoBlockingOfNonTemporaryEvents then 
+			if DoBlockingOfNonTemporaryEvents or Config.Missions[input].Vehicles[i].SetBlockingOfNonTemporaryEvents then 
 				--print(tostring(Config.Missions[input].Vehicles[i].id2))
+				--print("non blocking")
 				SetBlockingOfNonTemporaryEvents(Config.Missions[input].Vehicles[i].id2, true) 
 			end						
 			
@@ -9497,8 +9498,9 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 								dotargetped = true
 							elseif Config.Missions[input].VehicleGotoMissionTargetVehicle then 
 								local j = Config.Missions[input].VehicleGotoMissionTargetVehicle
+								--print("j:"..j)
 								TargetMissionVehicle = Config.Missions[input].Vehicles[j].id
-								--print("made it2")
+								--print("made it2"..tostring(TargetMissionVehicle))
 								dotargetped = false
 							end
 							
@@ -9532,7 +9534,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 								SetVehicleEngineOn(Config.Missions[input].Vehicles[i].id, true, true, false)
 								
 								if not dotargetped then 
-									
+									--print("made it")
 									TaskHeliMission(Config.Missions[input].Vehicles[i].id2,Config.Missions[input].Vehicles[i].id,TargetMissionVehicle,0,0.0,0.0,0.0,9,movespeed,0.0,1.0, -1, -1, -1, 0)
 								
 								else 
@@ -17105,12 +17107,12 @@ Citizen.CreateThread(function()
 		
 		for ped in EnumeratePeds() do
 			if not((DecorGetInt(ped, "mrppedid") > 0 or DecorGetInt(ped, "mrpvpedid") > 0)) 
-			and Config.HostileAmbientPeds and Config.HostileAmbientPeds > 0
-			and Active == 1 and MissionName ~="N/A"  
-			
+			--and Config.HostileAmbientPeds and Config.HostileAmbientPeds > 0
+			and Active == 1 and MissionName ~="N/A" 
+			and  getMissionConfigProperty(MissionName, "HostileAmbientPeds") and getMissionConfigProperty(MissionName, "HostileAmbientPeds") > 0 
 			then
 			
-				--print("do hostile zone")
+				print("do hostile zone")
 				doHostileZone(ped)
 			end
 		end
