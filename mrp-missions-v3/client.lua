@@ -10949,8 +10949,9 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				--goodspawn = getGoodSpawnSpot(randomLocation)
 				--tries  = tries  + 1
 				--until( goodspawn == true or tries > 100)
-				
+				--print(randomPropModelHash)
 				local vehiclehash = GetHashKey(randomPropModelHash)
+				--print(vehiclehash)
 				RequestModel(vehiclehash)
 				while not HasModelLoaded(vehiclehash) do
 					Wait(1)
@@ -13813,103 +13814,109 @@ function calcMissionStats()
 					
 					if not DoesBlipExist(oldblip) and DecorGetInt(ped, "mrppedfriend") ~= -1 then 
 
-
+						--needed to add to fix?
 						if DecorGetInt(ped, "mrppedtarget") > 0 and GetBlipColour(oldblip) ~= 7 then
 							--print('fixed target')
 							SetBlipColour(oldblip, 7) --purple
 							
 						end
 						
-						local Size     = 0.9
-						local pedblip = AddBlipForEntity(ped)
-						SetBlipScale  (pedblip, Size)
-						SetBlipAsShortRange(pedblip, false)
+						---get what type of ped, vehicle enemy ped, regular enemy ped, or friendly ped
+						local brange = getblipshortrange(ped)
+						local ecoords = GetEntityCoords(ped,true)
+						if brange > -1 and GetDistanceBetweenCoords(pcoords,ecoords,false) <= brange then
 						
-						
-						if DecorGetInt(ped, "mrppedtarget") > 0 then
-						--if DecorGetInt(ped, "mrppedtarget") > 0 then
-							--print('ENEMY PEDT')
-							--SetBlipSprite(pedblip, 433)
-							SetBlipColour(pedblip, 7) --purple
-							BeginTextCommandSetBlipName("STRING")
-							if DecorGetInt(ped, "mrppedboss") > 0 then 
-								rtotal = getTargetKillReward(MissionName) + getMissionConfigProperty(MissionName, "KillBossPedBonus")
-								AddTextComponentString("Enemy Target ($"..rtotal..")")							
-							else
-								AddTextComponentString("Enemy Target ($"..getTargetKillReward(MissionName)..")")
-							end
+							local Size     = 0.9
+							local pedblip = AddBlipForEntity(ped)
+							SetBlipScale  (pedblip, Size)
+							SetBlipAsShortRange(pedblip, false)
 							
 							
+							if DecorGetInt(ped, "mrppedtarget") > 0 then
+							--if DecorGetInt(ped, "mrppedtarget") > 0 then
+								--print('ENEMY PEDT')
+								--SetBlipSprite(pedblip, 433)
+								SetBlipColour(pedblip, 7) --purple
+								BeginTextCommandSetBlipName("STRING")
+								if DecorGetInt(ped, "mrppedboss") > 0 then 
+									rtotal = getTargetKillReward(MissionName) + getMissionConfigProperty(MissionName, "KillBossPedBonus")
+									AddTextComponentString("Enemy Target ($"..rtotal..")")							
+								else
+									AddTextComponentString("Enemy Target ($"..getTargetKillReward(MissionName)..")")
+								end
+								
+								
+								
+								EndTextCommandSetBlipName(pedblip)	
+								
+								--if(Config.DrawText3D and getTargetKillReward(MissionName) ~= 0 )then
+									--local o1 = GetEntityCoords(ped, true)
+								--	DrawText3D({x = o1.x, y =o1.y, z = o1.z}, "~r~Enemy Target ($"..getTargetKillReward(MissionName)..")", 0.6)							
+								--end
+											
+							elseif DecorGetInt(ped, "mrppedfriend") > 0 then
+								--SetBlipSprite(pedblip, 280)
+								--print('ENEMY PEDF')
+								SetBlipColour(pedblip, 2)	
+								BeginTextCommandSetBlipName("STRING")
+								--AddTextComponentString("Friend ($-"..getHostageKillPenalty(MissionName)..")")
+								AddTextComponentString("Friendly Rescue: ($"..getMissionConfigProperty(MissionName, "HostageRescueReward").."), Kill:($-"..getHostageKillPenalty(MissionName)..")")
+								EndTextCommandSetBlipName(pedblip)	
 							
-							EndTextCommandSetBlipName(pedblip)	
-							
-							--if(Config.DrawText3D and getTargetKillReward(MissionName) ~= 0 )then
-								--local o1 = GetEntityCoords(ped, true)
-							--	DrawText3D({x = o1.x, y =o1.y, z = o1.z}, "~r~Enemy Target ($"..getTargetKillReward(MissionName)..")", 0.6)							
-							--end
 										
-						elseif DecorGetInt(ped, "mrppedfriend") > 0 then
-							--SetBlipSprite(pedblip, 280)
-							--print('ENEMY PEDF')
-							SetBlipColour(pedblip, 2)	
-							BeginTextCommandSetBlipName("STRING")
-							--AddTextComponentString("Friend ($-"..getHostageKillPenalty(MissionName)..")")
-							AddTextComponentString("Friendly Rescue: ($"..getMissionConfigProperty(MissionName, "HostageRescueReward").."), Kill:($-"..getHostageKillPenalty(MissionName)..")")
-							EndTextCommandSetBlipName(pedblip)	
-						
+							elseif DecorGetInt(ped, "mrppedsafehouse") > 0 then
+								--SetBlipSprite(pedblip, 280)
+								--print('ENEMY PEDF')
+								SetBlipColour(pedblip, 3)	
+								BeginTextCommandSetBlipName("STRING")
+								AddTextComponentString("Mission Safe House Support")
+								EndTextCommandSetBlipName(pedblip)	
+							
+							elseif DecorGetInt(ped, "mrppeddefendtarget") > 0 then
+								--SetBlipSprite(pedblip, 280)
+								--print('ENEMY PEDF')
+								
+								local atext = "Rescue Target: ($"..getMissionConfigProperty(MissionName, "IsDefendTargetRescueReward").."),"
+								if getMissionConfigProperty(MissionName, "IsDefendTargetRewardBlip") then 
 									
-						elseif DecorGetInt(ped, "mrppedsafehouse") > 0 then
-							--SetBlipSprite(pedblip, 280)
-							--print('ENEMY PEDF')
-							SetBlipColour(pedblip, 3)	
-							BeginTextCommandSetBlipName("STRING")
-							AddTextComponentString("Mission Safe House Support")
-							EndTextCommandSetBlipName(pedblip)	
-						
-						elseif DecorGetInt(ped, "mrppeddefendtarget") > 0 then
-							--SetBlipSprite(pedblip, 280)
-							--print('ENEMY PEDF')
-							
-							local atext = "Rescue Target: ($"..getMissionConfigProperty(MissionName, "IsDefendTargetRescueReward").."),"
-							if getMissionConfigProperty(MissionName, "IsDefendTargetRewardBlip") then 
+									atext = "Help Asset to Destination: ($"..getMissionConfigProperty(MissionName, "GoalReachedReward").."),"
 								
-								atext = "Help Asset to Destination: ($"..getMissionConfigProperty(MissionName, "GoalReachedReward").."),"
-							
-							elseif  getMissionConfigProperty(MissionName, "IsDefendTargetRescue") then 
-								atext = "Rescue Asset: ($"..getMissionConfigProperty(MissionName, "IsDefendTargetRescueReward").."),"
-							
-							end
-							
-							SetBlipColour(pedblip, 5)	
-							BeginTextCommandSetBlipName("STRING")
-							AddTextComponentString(atext .. " Kill:($-"..getMissionConfigProperty(MissionName, "IsDefendTargetKillPenalty")..")")
-							EndTextCommandSetBlipName(pedblip)	
-							
-							--if(Config.DrawText3D and getMissionConfigProperty(MissionName, "IsDefendTargetRescueReward") ~= 0 or getMissionConfigProperty(MissionName, "IsDefendTargetKillPenalty") ~=0 )then
-								--local o1 = GetEntityCoords(ped, true)
-								--DrawText3D({x = o1.x, y =o1.y, z = o1.z}, "~y~Rescue Target: ($"..getMissionConfigProperty(MissionName, "IsDefendTargetRescueReward").."), Kill:($-"..getMissionConfigProperty(MissionName, "IsDefendTargetKillPenalty")..")", 0.6)							
-							--end													
-							
+								elseif  getMissionConfigProperty(MissionName, "IsDefendTargetRescue") then 
+									atext = "Rescue Asset: ($"..getMissionConfigProperty(MissionName, "IsDefendTargetRescueReward").."),"
 								
-						--exclude rescued hostages that are set to -1		
-						else
-							--print('ENEMY PED'.. DecorGetInt(ped, "mrppedfriend"))
-							BeginTextCommandSetBlipName("STRING")
-							if DecorGetInt(ped, "mrppedboss") > 0 then 
-								rtotal = getKillReward(MissionName) + getMissionConfigProperty(MissionName, "KillBossPedBonus")
-								AddTextComponentString("Enemy ($"..rtotal..")")
+								end
+								
+								SetBlipColour(pedblip, 5)	
+								BeginTextCommandSetBlipName("STRING")
+								AddTextComponentString(atext .. " Kill:($-"..getMissionConfigProperty(MissionName, "IsDefendTargetKillPenalty")..")")
+								EndTextCommandSetBlipName(pedblip)	
+								
+								--if(Config.DrawText3D and getMissionConfigProperty(MissionName, "IsDefendTargetRescueReward") ~= 0 or getMissionConfigProperty(MissionName, "IsDefendTargetKillPenalty") ~=0 )then
+									--local o1 = GetEntityCoords(ped, true)
+									--DrawText3D({x = o1.x, y =o1.y, z = o1.z}, "~y~Rescue Target: ($"..getMissionConfigProperty(MissionName, "IsDefendTargetRescueReward").."), Kill:($-"..getMissionConfigProperty(MissionName, "IsDefendTargetKillPenalty")..")", 0.6)							
+								--end													
+								
+									
+							--exclude rescued hostages that are set to -1		
 							else
-								AddTextComponentString("Enemy ($"..getKillReward(MissionName)..")")
-							end
-							--AddTextComponentString("Enemy ($"..getKillReward(MissionName)..")")
-							EndTextCommandSetBlipName(pedblip)	
+								--print('ENEMY PED'.. DecorGetInt(ped, "mrppedfriend"))
+								BeginTextCommandSetBlipName("STRING")
+								if DecorGetInt(ped, "mrppedboss") > 0 then 
+									rtotal = getKillReward(MissionName) + getMissionConfigProperty(MissionName, "KillBossPedBonus")
+									AddTextComponentString("Enemy ($"..rtotal..")")
+								else
+									AddTextComponentString("Enemy ($"..getKillReward(MissionName)..")")
+								end
+								--AddTextComponentString("Enemy ($"..getKillReward(MissionName)..")")
+								EndTextCommandSetBlipName(pedblip)	
 
-							--if(Config.DrawText3D and getKillReward(MissionName) ~= 0 )then
-								--local o1 = GetEntityCoords(ped, true)
-								--DrawText3D({x = o1.x, y =o1.y, z = o1.z}, "~r~Enemy ($"..getKillReward(MissionName)..")", 0.6)							
+								--if(Config.DrawText3D and getKillReward(MissionName) ~= 0 )then
+									--local o1 = GetEntityCoords(ped, true)
+									--DrawText3D({x = o1.x, y =o1.y, z = o1.z}, "~r~Enemy ($"..getKillReward(MissionName)..")", 0.6)							
 							--end							
 								
-						end			
+							end	
+						end
 						--lastfound = GetGameTimer()
 						--i = i + 1
 					
@@ -14958,6 +14965,40 @@ function drawMessage(message,timet)
 	--message
 	AddTextComponentString(message)
 	DrawSubtitleTimed(timet, 1)	--time = 10000
+
+
+end
+
+
+
+function getblipshortrange(ped)
+
+	if DecorGetInt(ped, "mrpvpedid") > 0 and getMissionConfigProperty(MissionName, "DoEnemyVehicleShortRangeBlips") then 
+		if GetVehiclePedIsIn(ped, false) and IsThisModelAPlane(GetEntityModel(GetVehiclePedIsIn(ped, false))) then 
+			--print("plane range")
+			return getMissionConfigProperty(MissionName, "DoEnemyVehicleHeliShortRangeBlipRange")
+		elseif  GetVehiclePedIsIn(ped, false) and IsThisModelAHeli(GetEntityModel(GetVehiclePedIsIn(ped, false))) then
+			--print("heli range")
+			return getMissionConfigProperty(MissionName, "DoEnemyVehicleAirplaneShortRangeBlipRange")
+		elseif GetVehiclePedIsIn(ped, false) then
+			--print("vehicle range")
+			return getMissionConfigProperty(MissionName, "DoEnemyVehicleShortRangeBlipRange")
+		
+		end
+		
+		
+		
+	elseif DecorGetInt(ped, "mrppedfriend") > 0 and getMissionConfigProperty(MissionName, "DoFriendlyShortRangeBlips") then
+		--print("friend range")
+		return getMissionConfigProperty(MissionName, "DoFriendlyShortRangeBlipRange")
+	
+	elseif DecorGetInt(ped, "mrppedid") > 0 and getMissionConfigProperty(MissionName, "DoEnemyShortRangeBlips") then
+		--print("enemy range")
+		return getMissionConfigProperty(MissionName, "DoEnemyShortRangeBlipRange")
+	
+	end
+	
+	return -1 
 
 
 end
