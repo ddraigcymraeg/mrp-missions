@@ -24,6 +24,18 @@ Config.ObjectRescueReward = 3000
 Config.GoalReachedReward = 2000
 
 Config.RepairVehicleFee=500
+
+Config.DoEnemyShortRangeBlips=false
+Config.DoEnemyVehicleShortRangeBlips=false
+Config.DoFriendlyShortRangeBlips=false
+
+Config.DoEnemyShortRangeBlipRange=600
+Config.DoFriendlyShortRangeBlipRange=3000
+--these 3 below  get turned on when Config.DoEnemyVehicleShortRangeBlips=true
+Config.DoEnemyVehicleShortRangeBlipRange=1000
+Config.DoEnemyVehicleHeliShortRangeBlipRange=2000
+Config.DoEnemyVehicleAirplaneShortRangeBlipRange=3000
+
 Config.UseSafeHouseRepair=true
 
 
@@ -4584,10 +4596,10 @@ RandomMissionVehicleWeapons = {0x1B06D571},
 },
 Mission20 = {
     
-	StartMessage = "Locate and take out the enemy targets",
+	StartMessage = "Search and locate the secret enemy hideouts and take out the targets",
 	FinishMessage = "Mission Completed!",
 	MissionTitle = "Bounty Hunt",
-	MissionMessage = "Locate and take out the enemy targets",		
+	MissionMessage = "Search and locate the secret enemy hideouts and take out the targets",		
 	
 	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
 	--The real messages (values above), will be set to the below, based on which Type
@@ -4596,10 +4608,10 @@ Mission20 = {
 	MissionTitleObj = "Bounty Hunt",
 	MissionMessageObj = "Capture the objective!",	
 	
-	StartMessageAss = "Locate and take out the enemy targets",
+	StartMessageAss = "Search and locate the secret enemy hideouts and take out the targets",
 	FinishMessageAss = "Mission Completed!",
 	MissionTitleAss = "Bounty Hunt",
-	MissionMessageAss = "Locate and take out the enemy targets",
+	MissionMessageAss = "Search and locate the secret enemy hideouts and take out the targets",
 	--RandomMissionWeapons = {0x63AB0442},
 	TargetKillReward = 300,
 	KillReward = 100,
@@ -4610,9 +4622,22 @@ Mission20 = {
 	IsRandom = true,
 	IsRandomEvent=true,
 	IsBountyHunt=true, --SET UP SQUADS TO RANDOM SPAWN IN GROUPS
-	IsBountyHuntDoBoats=true,
+	IsBountyHuntDoBoats=false,
 	RandomMissionGuardAircraft=true,
 	RandomMissionBossChance =  0, --bosses are spawned differently when IsBountyHunt = TRUE
+	
+	DoEnemyShortRangeBlips=true,
+	DoEnemyVehicleShortRangeBlips=true,
+	DoFriendlyShortRangeBlips=true,
+
+	DoEnemyShortRangeBlipRange=1500,
+	DoFriendlyShortRangeBlipRange=1500,
+--these 3 below  get turned on when Config.DoEnemyVehicleShortRangeBlips=true
+	DoEnemyVehicleShortRangeBlipRange=1500,
+	DoEnemyVehicleHeliShortRangeBlipRange=1500,
+	DoEnemyVehicleAirplaneShortRangeBlipRange=2000,	
+	
+	
 								  --See Config.RandomMissionBountyBossChance
 	RandomMissionPeds ={"hc_hacker","hc_gunman","ig_tomepsilon","u_m_m_bankman","u_m_m_jewelsec_01","ig_bankman","s_m_m_highsec_02","a_m_m_og_boss_01","u_m_m_jewelthief","s_m_m_movprem_01","ig_fbisuit_01","g_m_m_korboss_01","g_m_m_armboss_01","g_m_m_chiboss_01","g_m_m_mexboss_01","g_m_m_mexboss_02","g_m_y_salvaboss_01","ig_siemonyetarian","ig_solomon","s_m_m_ammucountry","ig_ballasog","ig_andreas","ig_barry","u_m_y_babyd","ig_benny","ig_brad","ig_chef2","ig_chef","ig_claypain","ig_chrisformage","ig_davenorton","ig_devin","ig_dreyfuss","ig_fabien","ig_g","ig_hao","ig_jewelass","ig_jimmyboston","ig_jimmydisanto","ig_joeminuteman","ig_josh","ig_kerrymcintosh","ig_lamardavis","u_m_y_militarybum","ig_milton","a_m_y_musclbeac_02","ig_natalia","ig_nigel","ig_omega","ig_ortega","ig_paige","ig_paper","s_m_y_pestcont_01","ig_popov","ig_ramp_gang","ig_rashcosvki","ig_ramp_mex","ig_roccopelosi","ig_russiandrunk","ig_stevehains","ig_stretch","ig_talina","ig_tanisha","ig_taocheng","ig_taostranslator","u_m_o_taphillbilly","ig_tenniscoach","ig_tracydisanto","ig_tylerdix","ig_vagspeak","ig_wade","ig_chengsr","ig_agent","a_f_y_femaleagent","g_m_importexport_01","g_f_importexport_01","ig_malc","mp_f_cardesign_01","mp_f_chbar_01","mp_f_cocaine_01","mp_f_execpa_01","mp_f_forgery_01","mp_f_meth_01","mp_f_weed_01","mp_m_cocaine_01","mp_m_counterfeit_01","mp_m_execpa_01","mp_m_forgery_01","mp_m_meth_01","mp_m_weapwork_01","mp_m_weed_01","ig_lestercrest_2","ig_avon","a_m_y_breakdance_01","mp_m_g_vagfun_01","a_m_y_vindouche_01","csb_undercover","a_m_m_tranvest_01","g_m_y_strpunk_01","g_m_y_strpunk_02","s_m_m_strpreach_01","a_m_y_gay_01","u_m_m_edtoh","s_m_m_doctor_01","u_m_m_edtoh","a_f_m_bodybuild_01","g_f_y_families_01",
 	},
@@ -4676,7 +4701,11 @@ Mission20 = {
 	
 
 	SMS_Subject="Bounty Hunt",
-	SMS_Message="We need help to find and eliminate various hostile targets running rampant around San Andreas",
+	SMS_Message="We need help to locate and eliminate various hostile targets running rampant around San Andreas",
+	SMS_Message2="We believe they are harboring in secret places around San Andreas",
+	SMS_Message3="So you will need to search around San Andreas to locate them",	
+	
+	
 	--SMS_Message2="",
 	--SMS_Message3="Anyone up for this?",	
 		
@@ -4792,22 +4821,22 @@ Mission20 = {
   },
   Mission21 = {
     
-	StartMessage = "Locate and rescue the hostages",
+	StartMessage = "Search and locate the secret enemy hideouts and rescue the hostages",
 	FinishMessage = "Mission Completed!",
 	MissionTitle = "Missing 411",
-	MissionMessage = "Locate and rescue the hostages",		
+	MissionMessage = "Search and locate the secret enemy hideouts and rescue the hostages",		
 	
 	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
 	--The real messages (values above), will be set to the below, based on which Type
-	StartMessageObj = "Locate and rescue the hostages",
+	StartMessageObj = "Search and locate the secret enemy hideouts and rescue the hostages",
 	FinishMessageObj = "Mission Completed!",
 	MissionTitleObj = "Missing 411",
-	MissionMessageObj = "Locate and rescue the hostages",	
+	MissionMessageObj = "Search and locate the secret enemy hideouts and rescue the hostages",	
 	
-	StartMessageAss = "Locate and rescue the hostages",
+	StartMessageAss = "Search and locate the secret enemy hideouts and rescue the hostages",
 	FinishMessageAss = "Mission Completed!",
 	MissionTitleAss = "Missing 411",
-	MissionMessageAss = "Locate and rescue the hostages",
+	MissionMessageAss = "Search and locate the secret enemy hideouts and rescue the hostages",
 	--RandomMissionWeapons = {0x63AB0442},
 	TargetKillReward = 200,
 	KillReward = 100,
@@ -4819,10 +4848,11 @@ Mission20 = {
 	IsRandom = true,
 	IsRandomEvent=true,
 	IsBountyHunt=true, --SET UP SQUADS TO RANDOM SPAWN IN GROUPS
-	IsBountyHuntDoBoats=true,
+	IsBountyHuntDoBoats=false,
 	RandomMissionBossChance =  0, --bosses are spawned differently when IsBountyHunt = TRUE
 								  --See Config.RandomMissionBountyBossChance
-
+								  
+								 								
 	--RandomMissionVehicles = {	
 	--"apc",},
 	IsBountyHuntMinSquadSize=10,
@@ -4830,6 +4860,19 @@ Mission20 = {
 	IsBountySquadMinRadius=25,
 	IsBountySquadMinRadius=150,
 	RandomMissionBountyBossChance=10,
+	
+	DoEnemyShortRangeBlips=true,
+	DoEnemyVehicleShortRangeBlips=true,
+	DoFriendlyShortRangeBlips=true,
+
+	DoEnemyShortRangeBlipRange=1500,
+	DoFriendlyShortRangeBlipRange=1500,
+--these 3 below  get turned on when Config.DoEnemyVehicleShortRangeBlips=true
+	DoEnemyVehicleShortRangeBlipRange=1500,
+	DoEnemyVehicleHeliShortRangeBlipRange=1500,
+	DoEnemyVehicleAirplaneShortRangeBlipRange=2000,	
+	
+	
 	--IsDefend = true,
 	--IsDefendTarget = true,
 	--IsDefendTargetChase = true,
@@ -4846,6 +4889,9 @@ Mission20 = {
 	RandomMissionChanceToSpawnVehiclePerTry = 100,
 	RandomMissionAircraftChance = 20,
 	RandomMissionGuardAircraft=true,
+		
+	
+	
 	--RandomMissionVehicles = {
 	--"brutus",
 	--"rcbandito",
@@ -4880,10 +4926,10 @@ Mission20 = {
 	--RandomMissionAircraft = {"bombushka"},
 	--RandomMissionVehicles = {"barrage"},
 	
-	SMS_Subject="Bounty Hunt",
-	SMS_Message="We need help to find and rescue various people who have been kidnapped around San Andreas",
-	--SMS_Message2="",
-	--SMS_Message3="Anyone up for this?",	
+	SMS_Subject="Missing People",
+	SMS_Message="We need help to locate and rescue various people who have been kidnapped around San Andreas",
+	SMS_Message2="We believe they are being kept in secret places around San Andreas",
+	SMS_Message3="So you will need to search around San Andreas to locate them",	
 		
 	--SMS_ContactPics={"CHAR_STEVE",
 	--},
