@@ -100,6 +100,19 @@ Config.MissionTitle --red text on lower r.h.s. of the screen.
 Config.MissionMessage --green text on below MissionTitle that reminds players what to do. 
 Config.FailedMessage --= Mission Failed Message. It will be used with a reason why text, and any money lost. 
 
+--See Mission20 and Mission21 for these settings being used. They will turn enemy and hostage blips on based on how far away you 
+--are when turned on.
+Config.DoEnemyShortRangeBlips=false
+Config.DoEnemyVehicleShortRangeBlips=false
+Config.DoFriendlyShortRangeBlips=false
+
+Config.DoEnemyShortRangeBlipRange=600
+Config.DoFriendlyShortRangeBlipRange=3000
+--these 3 below  get turned on when Config.DoEnemyVehicleShortRangeBlips=true
+Config.DoEnemyVehicleShortRangeBlipRange=1000
+Config.DoEnemyVehicleHeliShortRangeBlipRange=2000
+Config.DoEnemyVehicleAirplaneShortRangeBlipRange=3000
+
 
 --These are set per mission (see Mission42 in mission.lua)
 --This allows a mission to automatically lead into another mission (In this case Mission32)
