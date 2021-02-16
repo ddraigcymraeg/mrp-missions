@@ -2,6 +2,10 @@
 See first post at the link below for all the information about mission types and the primary game mode:
 https://forum.cfx.re/t/release-fivem-crackdown-game-mode-and-mission-generator-creation-beta/275613
 
+NOTE: There seems to be a bug when the resource is started and set to automatically spawn the first mission when a player joins, and 2 or more players 
+join at the same time. There can be sync issues. This could well be an issue with FiveM instead of this resource. This only happens when the FiveM server is started 
+and 2 or more players join at the same time to be the first player joining the server, that there can be sync issues.  
+
 Installation:
 Install like any other FiveM Server Resource. Both mrp-missions-v3 and mrpStreetRaces need to be installed. 
 
