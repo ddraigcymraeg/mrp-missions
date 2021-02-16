@@ -13823,8 +13823,13 @@ function calcMissionStats()
 						
 						---get what type of ped, vehicle enemy ped, regular enemy ped, or friendly ped
 						local brange = getblipshortrange(ped)
+						print(brange)
 						local ecoords = GetEntityCoords(ped,true)
-						if brange > -1 and GetDistanceBetweenCoords(pcoords,ecoords,false) <= brange then
+						if (brange > -1 and GetDistanceBetweenCoords(pcoords,ecoords,false) <= brange) 
+						
+						or brange == -1
+						
+						then
 						
 							local Size     = 0.9
 							local pedblip = AddBlipForEntity(ped)
@@ -14975,7 +14980,7 @@ function getblipshortrange(ped)
 
 	if DecorGetInt(ped, "mrpvpedid") > 0 and getMissionConfigProperty(MissionName, "DoEnemyVehicleShortRangeBlips") then 
 		if GetVehiclePedIsIn(ped, false) and IsThisModelAPlane(GetEntityModel(GetVehiclePedIsIn(ped, false))) then 
-			--print("plane range")
+		--	print("plane range")
 			return getMissionConfigProperty(MissionName, "DoEnemyVehicleHeliShortRangeBlipRange")
 		elseif  GetVehiclePedIsIn(ped, false) and IsThisModelAHeli(GetEntityModel(GetVehiclePedIsIn(ped, false))) then
 			--print("heli range")
@@ -14993,7 +14998,7 @@ function getblipshortrange(ped)
 		return getMissionConfigProperty(MissionName, "DoFriendlyShortRangeBlipRange")
 	
 	elseif DecorGetInt(ped, "mrppedid") > 0 and getMissionConfigProperty(MissionName, "DoEnemyShortRangeBlips") then
-		--print("enemy range")
+	--	print("enemy range")
 		return getMissionConfigProperty(MissionName, "DoEnemyShortRangeBlipRange")
 	
 	end
