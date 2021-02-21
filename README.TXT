@@ -45,7 +45,8 @@ regular which gets same equipment as player for mission, as well as by default: 
 Players can press  (RIGHT STICK DOWN & DPAD DOWN) of their gamepad or equivalent keys to dismiss an ally. 
 Players can press  (LB & RB) of their gamepad or equivalent keys to swap seats with their backup if they are both in the vehicle.
 
-Players can press (RB + DPAD DOWNN) of their gamepad to repair their vehicle at a $ cost, if there within 5 meters of it, or inside it. The safehouse has to be open though.
+Players can press (RB + DPAD DOWN) of their gamepad or equivalent keys to repair their vehicle at a $ cost, if they are within 5 meters of it, or inside it. The safehouse has to be open though.
+Players can press (RB + DPAD LEFT) of their gamepad or equivalent keys to heal the character they are defending at a $ cost, if they are  within 2 meters of them. The safehouse has to be open though.
 
 There is a working RC Bandito remote detonation vehicle as well to use on missions. Use LB on the gamepad, or E key to detonate it. Holding the button/key or repeatedly pressing 
 the buttons/keys will repeatedly causes explosions until the rcbandito blows up.
