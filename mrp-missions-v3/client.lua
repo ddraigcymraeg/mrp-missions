@@ -667,7 +667,10 @@ end
 RegisterNetEvent("mt:generateCheckpointsAndEvents")
 AddEventHandler("mt:generateCheckpointsAndEvents", function(MissionName,recordedCheckpoints,Events)
 	--print(#Events)
+	--print("RANDOM EVENTS GENERATED")
 	Config.Missions[MissionName].Events=Events
+	
+		--print("GENERATEVENTSMT: "..#Config.Missions[MissionName].Events)
 	--[[
 	for index, data in ipairs(Events) do
     print(index)
@@ -1264,6 +1267,13 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 			IsRandomDoEventRadius = svIsRandomDoEventRadius
 			IsRandomDoEventType = svIsRandomDoEventType
 			--print("IsRandomDoEvent set active called:"..IsRandomDoEventType)
+			
+			
+			--get any GlobalTargetPed
+			--if not GlobalTargetPed  then 
+				--GlobalTargetPed = GetIsDefendtargetPedJoinMission() 
+			--end
+			
 	
 		else
 			--print("MADE1 IT")
@@ -1752,6 +1762,18 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 				HelpMessage("The safe house needs to be open to repair a vehicle",false,5000)					
 
 			end
+			
+
+			if(getMissionConfigProperty(input, "UseSafeHouseTargetPedHeal")) then 
+				Wait(5000)
+				HelpMessage("Press ~INPUT_WEAPON_WHEEL_PREV~ and ~INPUT_COVER~ to heal a targeted asset you are near",false,5000)
+				Wait(5000)
+				HelpMessage("Cost will be $"..getMissionConfigProperty(input, "HealAssetFee"),false,5000)	
+				Wait(5000)
+				HelpMessage("The safe house needs to be open to  heal a targeted asset",false,5000)					
+
+			end			
+			
 			
 			Wait(5000)
 			HelpMessage("Some Escort/Transport/Rescue/Defend missions can allow you to enter the target vehicle, if in range",false,0)
@@ -2928,23 +2950,25 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,ch
 	local rem_key = {}
 	
 	--print("REvents"..#REvents)
-	for index, irevent in pairs(REvents) do
-		--print(index)
-          if irevent.revent or irevent.checkpoint then
-                        -- Matches existing checkpoint, remove blip and checkpoint from table
-			--print("r"..index)
-             --table.remove(REvents, index)
-			-- print("t"..index)
-			 table.insert(rem_key, index)
-  
-          end
-     end
-	for i = #rem_key, 1, -1 do
-		value = rem_key[i]
-		table.remove(REvents, value)
-	end	 
-	 
-	Config.Missions[input].Events = REvents
+	if REvents then
+		for index, irevent in pairs(REvents) do
+			--print(index)
+			  if irevent.revent or irevent.checkpoint then
+							-- Matches existing checkpoint, remove blip and checkpoint from table
+				--print("r"..index)
+				 --table.remove(REvents, index)
+				-- print("t"..index)
+				 table.insert(rem_key, index)
+	  
+			  end
+		 end
+		for i = #rem_key, 1, -1 do
+			value = rem_key[i]
+			table.remove(REvents, value)
+		end	 
+		 
+		Config.Missions[input].Events = REvents
+	end
 	 
 	
 	for ped in EnumeratePeds() do
@@ -3383,6 +3407,10 @@ AddEventHandler('SpawnPedBlips', function(input)
 		--return
 	--end
 	
+		--GlobalTargetPed = GetIsDefendtargetPedJoinMission()
+		
+		--print("GlobalTargetPed: "..tostring(GlobalTargetPed))
+	
 	if getMissionConfigProperty(input, "MissionTriggerRadius") then 
 		
 		local mcoords = {x=0,y=0,z=0}
@@ -3794,7 +3822,7 @@ function generateExtraRandomEvents(MissionName,SafeHouseLocationIndex)
 			end	
 		end
 		Config.Missions[MissionName].Events = Events
-			--print(#Events)
+			--print("GENERATEVENTS: "..#Config.Missions[MissionName].Events)
 		if((Config.Missions[MissionName].Type ~= "Checkpoint") and Config.Missions[MissionName].IsRandom) or not Config.Missions[MissionName].IsRandom then 
 			--print("made send")
 			
@@ -4028,7 +4056,12 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 	
 	end
 	
+	local IsDefendTargetTriggersEvent=false
 	
+	if getMissionConfigProperty(MissionName, "IsDefend") then 
+		IsDefendTargetTriggersEvent=true
+	
+	end
 
 	--print("evt"..eventtype)
 	--print("checkpoint"..checkpoint)
@@ -4044,14 +4077,14 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		table.insert(Events, {Type="Squad", Position = {x=coords.x,y=coords.y,z=coords.z},
 		 Size     = {radius=radius},
 		 NumberPeds=NumberPeds,isBoss=isBoss, CheckGroundZ=true,
-		 SquadSpawnRadius=math.random(20,100),Message=nil,revent=true})	
+		 SquadSpawnRadius=math.random(20,100),Message=nil,revent=true,IsDefendTargetTriggersEvent=IsDefendTargetTriggersEvent})	
 	
 	
 	elseif eventtype=="Vehicle" and not isWater then
 		local radius =math.random(200.0,300.0)*1.0
 		table.insert(Events, {Type="Vehicle", Position = {x=coords.x+math.random(-10,10),y=coords.y + math.random(-10,10), z=coords.z},
 		Size     = {radius=radius},
-		FacePlayer = true,Message=nil,revent=true}
+		FacePlayer = true,Message=nil,revent=true,IsDefendTargetTriggersEvent=IsDefendTargetTriggersEvent}
 		)	
 	
 	
@@ -4061,7 +4094,7 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		table.insert(Events, {Type="Paradrop", Position = {x=coords.x,y=coords.y,z=coords.z},
 		 Size     = {radius=radius},
 		NumberPeds=math.random(5,10),
-		SpawnAt =  {x=coords.x,y=coords.y,z=coords.z},Message=nil,revent=true}
+		SpawnAt =  {x=coords.x,y=coords.y,z=coords.z},Message=nil,revent=true,IsDefendTargetTriggersEvent=IsDefendTargetTriggersEvent}
 		 )
 		 
 	
@@ -4071,7 +4104,7 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		SpawnAt =  {x=coords.x,y=coords.y,z=coords.z},
 		Size     = {radius=radius},
 		SpawnHeight =math.random(200.0,400.0),
-		FacePlayer = true,Message=nil,revent=true}
+		FacePlayer = true,Message=nil,revent=true,IsDefendTargetTriggersEvent=IsDefendTargetTriggersEvent}
 		)
 		
 		
@@ -4080,7 +4113,7 @@ local eventtype= eventtypes[math.random(#eventtypes)]
 		local radius = math.random(200.0,500.0)*1.0
 		table.insert(Events, {Type="Boat", Position = {x=coords.x+math.random(-10,10),y=coords.y+math.random(-10,10),z=coords.z + 5.0},
 		Size     = {radius=radius},
-		FacePlayer = true,Message=nil,revent=true}
+		FacePlayer = true,Message=nil,revent=true,IsDefendTargetTriggersEvent=IsDefendTargetTriggersEvent}
 		)
 		
 	
@@ -8527,18 +8560,29 @@ end
 --IsDefendTarget Ped
 function TargetIsDefendtargetPed(Ped) 
 	
-	for tped in EnumeratePeds() do
-		if(DecorGetInt(tped,"mrppeddefendtarget")) > 0 then 	
-			RegisterTarget(Ped,tped)
-			
-			--should only ever be one atm.
-			return tped
-		end 
-	end
-	return nil
+
+	if GlobalTargetPed then 
+		RegisterTarget(Ped,GlobalTargetPed)
+		return GlobalTargetPed
+	else 
+		return nil
+	end	
+	
+
 end
 
 function GetIsDefendtargetPed() 
+	
+	if GlobalTargetPed then 
+	
+		return GlobalTargetPed
+	else 
+		return nil
+	end
+end
+
+
+function GetIsDefendtargetPedJoinMission() 
 	
 	for tped in EnumeratePeds() do
 		if(DecorGetInt(tped,"mrppeddefendtarget")) > 0 then 	
@@ -8555,10 +8599,10 @@ end
 --is set to true
 function EventIsDefendtargetPedDistance(pcoords,k) 
 	
-	for ped in EnumeratePeds() do
-		if(DecorGetInt(ped,"mrppeddefendtarget")) > 0 then 	
+	--for ped in EnumeratePeds() do
+		if GlobalTargetPed  then 	
 			
-			local pIsDefendTargetCoords = GetEntityCoords(ped, true)
+			local pIsDefendTargetCoords = GetEntityCoords(GlobalTargetPed, true)
 			--print('hey2')
 			if(GetDistanceBetweenCoords(pIsDefendTargetCoords.x,pIsDefendTargetCoords.y,pIsDefendTargetCoords.z, Config.Missions[MissionName].Events[k].Position.x, Config.Missions[MissionName].Events[k].Position.y, Config.Missions[MissionName].Events[k].Position.z, true) < Config.Missions[MissionName].Events[k].Size.radius) and not Config.Missions[MissionName].Events[k].done then
 				--print('made it')
@@ -8570,7 +8614,7 @@ function EventIsDefendtargetPedDistance(pcoords,k)
 			--should only ever be one atm.
 			return pcoords
 		end 
-	end
+	--end
 	
 	return pcoords
 	
@@ -9027,7 +9071,8 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 				
 				ClearPedTasksImmediately(Config.Missions[input].Peds[i].id)
 				TaskGoStraightToCoord(Config.Missions[input].Peds[i].id,Config.Missions[input].Peds[i].movetocoord.x, Config.Missions[input].Peds[i].movetocoord.y,Config.Missions[input].Peds[i].movetocoord.y, movespeed, 100000, 0.0, 0.0) 
-				SetPedKeepTask(Config.Missions[input].Vehicles[i].id2,true) 
+				--SetPedKeepTask(Config.Missions[input].Vehicles[i].id2,true)
+				SetPedKeepTask(Config.Missions[input].Peds[i].id,true)				
 			end			
 		
 		if Config.Missions[input].Peds[i].armor then --if ped has armor
@@ -10934,7 +10979,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				local randomPropModelHash = getMissionConfigProperty(input, "SafeHouseVehicles")[math.random(1, #getMissionConfigProperty(input, "SafeHouseVehicles"))]
 				
 				randomLocation = Config.Missions[input].BlipSL.Position
-				local spawnRadius = 50
+				local spawnRadius = getMissionConfigProperty(input, "SafeVehicleSpawnRadius")
 				
 				--local goodspawn = false
 				--local tries = 0
@@ -10982,7 +11027,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				local randomPropModelHash = getMissionConfigProperty(input, "SafeHouseAircraft")[math.random(1, #getMissionConfigProperty(input, "SafeHouseAircraft"))]
 				
 				randomLocation = Config.Missions[input].BlipSL.Position
-				local spawnRadius = 50
+				local spawnRadius =  getMissionConfigProperty(input, "SafeVehicleSpawnRadius")
 				rXoffset = randomLocation.x + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
 					
 				rYoffset = randomLocation.y + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
@@ -11022,7 +11067,7 @@ function SpawnSafeHouseProps(input,rIndex,IsRandomSpawnAnywhereInfo)
 				local randomPropModelHash = getMissionConfigProperty(input, "SafeHouseBoat")[math.random(1, #getMissionConfigProperty(input, "SafeHouseBoat"))]
 				
 				randomLocation = Config.Missions[input].BlipSB.Position
-				local spawnRadius = 50
+				local spawnRadius = getMissionConfigProperty(input, "SafeVehicleSpawnRadius")
 				rXoffset = randomLocation.x + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
 					
 				rYoffset = randomLocation.y + roundToNthDecimal(math.random() + math.random(-1*spawnRadius,spawnRadius - 1),4)
@@ -11244,6 +11289,7 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 					local x =  randomLocation.Blip2.Position.x
 					local y =  randomLocation.Blip2.Position.y
 					local z =  randomLocation.Blip2.Position.z
+					local heading = randomLocation.Blip2.Position.heading
 					local spawnedAircraft = 0
 					if(randomLocation.DefendTargetInVehicle) then
 						--print('SPAWN TargetPedRandomVehicle')
@@ -11272,7 +11318,11 @@ function SpawnRandomProp(input,rIndex,IsRandomSpawnAnywhereInfo)
 							end
 							
 							local rHeading = roundToNthDecimal(math.random() + math.random(0,359),2)
-							print("z"..z)
+							
+							if heading then 
+								rHeading = heading
+							end
+							--print("z"..z)
 							TargetPedVehicle = CreateVehicle(vehiclehash, x, y, z + 1.0*spawnedAircraft, rHeading , 1, 0)
 							SetModelAsNoLongerNeeded(vehiclehash)
 							--print('SPAWNED TargetRandomPedVehicle')
@@ -13082,22 +13132,22 @@ function calcMissionStats()
 	local pcoords = GetEntityCoords(playerPed,true)
 	
 	
-	
+	--print("calMissionStats"..GetGameTimer())
 	
 		for ped in EnumerateVehicles() do
 		
-		
+		--+print("calMissionStatsvehs")
 		
 		if DecorGetInt(ped, "mrpvehdid") > 0 and DecorGetInt(ped, "mrpvehdidGround") > 0  then 
 			local ecoords = GetEntityCoords(ped,true)
-			
+			--print('hey1')
 			if ecoords.z == 0.0 then
 				--print("vehped at 0.0.."..DecorGetInt(ped, "mrpvehdid"))
 			end
 			
 			if GetDistanceBetweenCoords(pcoords,ecoords,false) <= 600 then
 				
-				
+				--print('hey2')
 				local Z =ecoords.z+999.0
 				local ground,posZ = GetGroundZFor_3dCoord(ecoords.x+.0,ecoords.y+.0,Z,1)
 				
@@ -13107,7 +13157,8 @@ function calcMissionStats()
 						SetHeliBladesFullSpeed(ped) -- works for planes I guess
 						SetVehicleEngineOn(ped, true, true, false)
 						SetVehicleForwardSpeed(ped, 90.0)
-						SetVehicleLandingGear(ped, 3) --make sure landing gear is retracted						
+						SetVehicleLandingGear(ped, 3) --make sure landing gear is retracted		
+--print('hey3')						
 						
 					end
 					FreezeEntityPosition(ped,false)
@@ -13121,7 +13172,10 @@ function calcMissionStats()
 		end
 		
 		end
+		--print("vehicles done"..GetGameTimer())
+		--print("GlobalTargetPed : "..tostring(GlobalTargetPed))
 		for ped in EnumeratePeds() do
+			--print("calMissionStatspeds")
 			
 			local isNPCDead = (IsEntityDead(ped) ==1 or GetEntityHealth(ped) < 100 or DecorGetInt(ped, "mrppedead") > 0) 
 			
@@ -13129,7 +13183,7 @@ function calcMissionStats()
 			if  DecorGetInt(ped, "mrppeddefendtarget") > 0  then
 			
 				 GlobalTargetPed = ped
-				
+				--print("GlobalTargetPed: "..GlobalTargetPed)
 			
 			end
 			
@@ -13185,7 +13239,7 @@ function calcMissionStats()
 			
 				if DecorGetInt(ped, "mrppedid") > 0 and DecorGetInt(ped, "mrpvehdidGround") > 0  then 
 					local ecoords = GetEntityCoords(ped,true)
-					--print("set ")
+					
 				if ecoords.z == 0.0 then
 					--print("mrppedid at 0.0.."..DecorGetInt(ped, "mrppedid"))
 				end
@@ -13239,9 +13293,10 @@ function calcMissionStats()
 					--print("KILLED BY PLAYER PED VEHICLE:"..GetPedKiller(ped))
 					DecorSetInt(ped,"mrppedkilledbyplayervehicle",1)
 				end	
-			
+				--print('get targets'..tostring(DecorGetInt(ped, "mrppedtarget")))
 				if (DecorGetInt(ped, "mrppedtarget") > 0) then	
 					totalTargets = totalTargets + 1
+					--print('targets calc')
 					--[[if(getMissionConfigProperty(MissionName, "DrawText3D")) and not IsEntityDead(ped)  then
 						
 							local o1 = GetEntityCoords(ped, true)
@@ -13353,7 +13408,8 @@ function calcMissionStats()
 					  ]]--
 					-- 
 					 
-					 --print("getpedkiller:"..tostring(GetPedKiller(ped)==playerPed))
+					--print("getpedkiller:"..tostring(GetPedKiller(ped)))
+					 --print("getpedkillerisplayer:"..tostring(GetPedKiller(ped)==playerPed))
 					 
 					if (DecorGetInt(ped, "mrppedtarget") > 0) then	
 						totalDeadTargets = totalDeadTargets + 1
@@ -13497,10 +13553,12 @@ function calcMissionStats()
 						
 				end	
 				
+				--print ("isdefendtarget made it"..GetGameTimer())		
+							
 				--IsDefendTarget is dead?
 				if getMissionConfigProperty(MissionName, "IsDefend") and getMissionConfigProperty(MissionName, "IsDefendTarget") and (DecorGetInt(ped, "mrppeddefendtarget") > 0) then 
 						
-							--print("isdefendetarget found")
+							--print("isdefebdtarget inner "..GetGameTimer())
 					if(IsEntityDead(ped) == 1) then
 						isDefendTargetDead = 1
 					
@@ -13540,10 +13598,10 @@ function calcMissionStats()
 
 					elseif (getMissionConfigProperty(MissionName, "IsDefendTargetRewardBlip")) then
 						local otherpc  = GetEntityCoords(ped)
-						
+						--print ("IsDefendTargetRewardBlip "..GetGameTimer())		
 						if GetDistanceBetweenCoords(otherpc.x,otherpc.y,otherpc.z,Config.Missions[MissionName].Blip.Position.x, Config.Missions[MissionName].Blip.Position.y,Config.Missions[MissionName].Blip.Position.z,true) <= getMissionConfigProperty(MissionName,"IsDefendTargetGoalDistance") then			
 							isDefendGoalReached=1
-								--print ("made it calc")		
+								--print ("made it calc"..GetGameTimer())		
 							
 						end
 					
@@ -13823,7 +13881,7 @@ function calcMissionStats()
 						
 						---get what type of ped, vehicle enemy ped, regular enemy ped, or friendly ped
 						local brange = getblipshortrange(ped)
-						print(brange)
+						--print(brange)
 						local ecoords = GetEntityCoords(ped,true)
 						if (brange > -1 and GetDistanceBetweenCoords(pcoords,ecoords,false) <= brange) 
 						
@@ -14001,6 +14059,7 @@ function calcMissionStats()
 			--END SHOW OTHER PLAYER BLIPS----
 		end	
 	
+	--print("peds done"..GetGameTimer())
 	--if getMissionConfigProperty(MissionName, "Type") == "ObjectiveRescue" then
 		
 		for obj in EnumerateObjects() do
@@ -14199,6 +14258,7 @@ function calcMissionStats()
 			
 		end
 		
+		--print("objects done"..GetGameTimer())
 	--end
 				--print(type(Config.Missions[MissionName].Events))
 				if Config.Missions[MissionName].Events then 
@@ -14263,7 +14323,8 @@ function calcMissionStats()
 							--print("Triggered event is false")
 							eventOK=false
 						end
-					
+						--print(k.." eventOK :"..tostring(eventOK))
+						
 						if(GetDistanceBetweenCoords(ecoords.x,ecoords.y,ecoords.z, Config.Missions[MissionName].Events[k].Position.x, Config.Missions[MissionName].Events[k].Position.y, Config.Missions[MissionName].Events[k].Position.z, true) < Config.Missions[MissionName].Events[k].Size.radius) and not Config.Missions[MissionName].Events[k].done and eventOK
 						
 						then
@@ -14385,6 +14446,7 @@ function calcMissionStats()
 					
 				end	
 		
+		--print("events done"..GetGameTimer())
 	
 	--print("totalRescuedHostages"..totalRescuedHostages.."hpeds:"..hostagesKilledByPlayer.." regpeds:"..nontargetPedsKilledByPlayer.." targetpeds:"..targetPedsKilledByPlayer.." totpeds:"..totalTargets.." totdeadtargpeds:"..totalDeadTargets.." vehpeds:"..vehiclePedsKilledByPlayer)
 	
@@ -16589,7 +16651,11 @@ Citizen.CreateThread(function()
 				--local start = GetGameTimer()
 				--if Active == 1 and MissionName ~="N/A" then	
 				if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0	then 
+					--local starttime = GetGameTimer()
 					MissionCheck()
+					--local  endtime = GetGameTimer()
+					
+					--print("TIMETAKEN:"..tostring(endtime - starttime))
 					
 				elseif MissionTimeOut then 
 					--check for MissionTimeOut to allow the mission to end
@@ -17718,8 +17784,16 @@ AddEventHandler("mt:doRepairVehicle",function(timerepaired)
 	--print("found vehicle")
 	--print(vehicle)
 	
-	PlaySoundFrontend(-1, "Apt_Style_Purchase", "DLC_APT_Apartment_SoundSet", 0); 
-	Notify("~h~~g~Vehicle Repaired")
+	
+	local vcoords = GetEntityCoords(vehicle,true)
+	local pcoords = GetEntityCoords(GetPlayerPed(-1),true)
+	local vdist = GetDistanceBetweenCoords(vcoords, pcoords, true)
+	
+	if vdist < 10 then 
+		PlaySoundFrontend(-1, "Apt_Style_Purchase", "DLC_APT_Apartment_SoundSet", 0); 
+		Notify("~h~~g~Vehicle Repaired")
+	end
+	
 	if IsThisModelAHeli(GetEntityModel(vehicle)) then 
 		--print('heli')
 		Citizen.InvokeNative(0xFE205F38AAA58E5B,vehicle,1000.0)
@@ -17743,6 +17817,45 @@ AddEventHandler("mt:doRepairVehicle",function(timerepaired)
 	--SetVehicleEngineOn(vehicle, true, true)	
 	
 	--print('vehicle fixed')
+end)
+
+
+RegisterNetEvent("mt:doRepairTarget")
+AddEventHandler("mt:doRepairTarget",function(input)
+	
+	
+	--local vehicle = GlobalTargetPed
+	--[[
+	for veh in EnumerateVehicles() do
+	
+		if DecorGetInt(veh,"repvehicle") == timerepaired then
+			print("timerepaired:"..timerepaired)
+			vehicle = veh
+			break
+		end
+	
+	
+	end
+	]]--
+	--print("found vehicle")
+	--print(vehicle)
+	if not (IsEntityDead(GlobalTargetPed) == 1) then 
+		
+		SetPedMaxHealth(GlobalTargetPed, getMissionConfigProperty(input, "IsDefendTargetMaxHealth"))
+		SetEntityHealth(GlobalTargetPed, getMissionConfigProperty(input, "IsDefendTargetMaxHealth"))
+		SetPlayerMaxArmour(GlobalTargetPed,100)
+		AddArmourToPed(GlobalTargetPed, 100)
+		SetPedArmour(GlobalTargetPed, 100)
+		ClearPedBloodDamage(GlobalTargetPed)
+		
+		PlaySoundFrontend(-1, "Apt_Style_Purchase", "DLC_APT_Apartment_SoundSet", 0); 
+		Notify("~h~~g~Targeted Asset Healed")
+		
+	
+	end
+	
+	
+	
 end)
 
 RegisterNetEvent("doRepairVehicle")
@@ -17808,6 +17921,75 @@ AddEventHandler("doRepairVehicle",function(MissionName,vehicle)
 		end	
 	
 	end
+	
+
+end)
+
+
+RegisterNetEvent("doRepairTarget")
+AddEventHandler("doRepairTarget",function(MissionName,vehicle)
+	
+	
+	Notify("~h~~g~Healing Targeted Asset...")
+	TriggerEvent("mt:missiontext2","~h~~g~Healing Targeted Asset..", 2000)
+	--print("GetGameTimer()"..GetGameTimer())
+	--local timerepaired = GetGameTimer()
+	--DecorSetInt(vehicle,"repvehicle",timerepaired)
+	
+	Wait(2000)
+	--print("GlobalTargetPed:"..tostring(GlobalTargetPed))
+	--print(tostring(not (IsEntityDead(GlobalTargetPed) == 1)))
+	if not (IsEntityDead(GlobalTargetPed) == 1) then
+	
+		
+		TriggerServerEvent("sv:repairtarget",MissionName)
+
+		SetPedMaxHealth(GlobalTargetPed, getMissionConfigProperty(MissionName, "IsDefendTargetMaxHealth"))
+		SetEntityHealth(GlobalTargetPed, getMissionConfigProperty(MissionName, "IsDefendTargetMaxHealth"))
+		SetPlayerMaxArmour(GlobalTargetPed,100)
+		AddArmourToPed(GlobalTargetPed, 100)
+		SetPedArmour(GlobalTargetPed, 100)
+		ClearPedBloodDamage(GlobalTargetPed)
+		
+		PlaySoundFrontend(-1, "Apt_Style_Purchase", "DLC_APT_Apartment_SoundSet", 0); 
+		Notify("~h~~g~Targeted Asset Healed")
+		
+		Notify("~h~~g~Targeted Asset Healed. Cost: $"..getMissionConfigProperty(MissionName, "HealAssetFee"))
+		TriggerEvent("mt:missiontext2","Targeted Asset Healed. Cost: $"..getMissionConfigProperty(MissionName, "HealAssetFee"), 4000)
+		
+		
+		if  getMissionConfigProperty(MissionName, "HealAssetFee") > 0 then
+			local currentmoney = 0
+			local rejuvcost =  getMissionConfigProperty(MissionName, "HealAssetFee")
+			local totalmoney = 0		
+						
+			local _,currentmoney = StatGetInt('MP0_WALLET_BALANCE',-1)
+			playerMissionMoney =  0 - rejuvcost
+			totalmoney =  currentmoney - rejuvcost		
+							
+			if UseESX then 
+				TriggerServerEvent("paytheplayer", totalmoney)
+				TriggerServerEvent("UpdateUserMoney", totalmoney)
+			else
+								--DecorSetInt(GetPlayerPed(-1),"mrpplayermoney",totalmoney)
+				DecorSetInt(GetPlayerPed(-1),"mrpplayermoney",DecorGetInt(GetPlayerPed(-1),"mrpplayermoney") + playerMissionMoney)			
+				mrpplayermoneyG = DecorGetInt(GetPlayerPed(-1),"mrpplayermoney")			
+				StatSetInt('MP0_WALLET_BALANCE',totalmoney, true)
+			end	
+		
+		end	
+	
+	
+	
+	else
+
+		Notify("~h~~r~Targeted Asset is already dead")
+		TriggerEvent("mt:missiontext2","Targeted Asset already dead", 4000)
+		
+	end	
+	
+	
+
 	
 
 end)
@@ -19914,7 +20096,7 @@ while true do
 		if (IsControlPressed(0, 19) and IsControlPressed(0, 44)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 and true then
 			
 			if  Active == 1 and MissionName ~="N/A" then
-				if (getMissionConfigProperty(MissionName, "UseSafeHouseBanditoDrop") and (GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse")) > playerSafeHouse) then			
+				if (getMissionConfigProperty(MissionName, "UseSafeHouseRepair") and (GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse")) > playerSafeHouse) then			
 					local vehtofix = GetVehiclePedIsIn(GetPlayerPed(-1), false)
 					local closestvehdist = 15000.0
 					local outsidevehicle = false
@@ -19984,7 +20166,43 @@ while true do
 				
 				
 			end
-		end		
+		end
+
+
+
+--Left stick down + RB: drop/remove MissionDrop marker
+		if (IsControlPressed(0, 15) and IsControlPressed(0, 44)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 and true then
+			
+			if  Active == 1 and MissionName ~="N/A" then
+				if (getMissionConfigProperty(MissionName, "UseSafeHouseTargetPedHeal") and (GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse")) > playerSafeHouse) then			
+					local vehtofix = GlobalTargetPed
+					
+					
+					local vcoords = GetEntityCoords(GlobalTargetPed,true)
+					local pcoords = GetEntityCoords(GetPlayerPed(-1),true)
+					
+					
+					local vdist = GetDistanceBetweenCoords(vcoords, pcoords, true) 
+					
+					
+					if (vehtofix and vdist < 2)  then
+						TriggerEvent("doRepairTarget",MissionName,vehtofix)
+						playerSafeHouse = GetGameTimer() --reset safehouse timer
+					else 
+						Notify("~h~~b~No targeted asset found to heal")
+						TriggerEvent("mt:missiontext2","~h~No targeted asset found to heal", 4000)
+					end
+					Wait(3500)
+				
+				else
+					Notify("~h~~b~Safehouse needs to be open to heal a targeted asset")
+					TriggerEvent("mt:missiontext2","~h~~b~Safehouse needs to be open  to heal a targeted asset", 4000)
+				end
+				
+				
+				
+			end
+		end				
 	
 	
 		--Left stick down + RB: drop/remove MissionDrop marker
