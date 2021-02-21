@@ -24,6 +24,7 @@ Config.ObjectRescueReward = 3000
 Config.GoalReachedReward = 2000
 
 Config.RepairVehicleFee=500
+Config.HealAssetFee=500
 
 Config.DoEnemyShortRangeBlips=false
 Config.DoEnemyVehicleShortRangeBlips=false
@@ -37,6 +38,7 @@ Config.DoEnemyVehicleHeliShortRangeBlipRange=2000
 Config.DoEnemyVehicleAirplaneShortRangeBlipRange=3000
 
 Config.UseSafeHouseRepair=true
+Config.UseSafeHouseTargetPedHeal=true
 
 
 Config.BackupPeds={ 's_m_y_blackops_01', 's_m_y_blackops_02', 's_m_y_blackops_03',  's_m_y_swat_01' }
@@ -409,7 +411,7 @@ Config.UseSafeHouseBanditoDrop = true
 Config.SafeHouseCost = 500
 Config.SafeHouseCostVehicle = 500
 Config.SafeHouseCostCrate = 500
-Config.SafeHouseCostBandito = 2000
+Config.SafeHouseCostBandito = 500
 Config.SafeHouseSniperExplosiveRoundsGiven = 8 --default in game is 40. Alter this for some balance
 Config.SafeHouseVehiclesMaxClaim = 3 --how many vehicles a player can claim per mission
 Config.SafeHouseTimeTillNextUse = 120000 --2 minutes default 
@@ -419,6 +421,8 @@ Config.SafeHousePedDoctors = {"s_m_m_doctor_01","a_f_y_business_02","u_f_y_princ
 Config.SafeHousePedLeaders = {"s_m_y_blackops_02","s_m_y_blackops_01","s_m_y_blackops_03"}
 Config.SafeHouseProps = {"v_ilev_liconftable_sml"}--{"ex_prop_crate_expl_bc"}
 Config.SafeHousePedWeapons = {0x83BF0278,0x05FC3C11}
+
+Config.SafeVehicleSpawnRadius = 50.0
 
 
 
@@ -4387,6 +4391,7 @@ Mission19 = {
 	IsDefendTarget = true,
 	IsDefendTargetRescue = false,
 	IsDefendTargetChase = true,
+	GenerateExtraRandomEventsNum = 0,
 	--IsVehicleDefendTargetChase = true,
 	--IsDefendTargetSetBlockingOfNonTemporaryEvents=true,
 	--IsDefendTargetEnemySetBlockingOfNonTemporaryEvents=true,
@@ -5785,6 +5790,7 @@ StartMessage = "Ensure that the asset and their plane~n~ make it to the destinat
 	IsDefendTargetPassenger=false,
 	IsDefendTargetGoalDistance=100.0,
 	--RandomMissionDoBoats = true,
+	--IndoorsMission=true,
 	MissionTriggerRadius = 20.0,
 	MissionTriggerStartPoint = { x = 1515.16, y = 3064.27, z = 41.3},
    IsDefendTargetGoalDistance=100.0,
@@ -5898,7 +5904,7 @@ StartMessage = "Ensure that the asset and their plane~n~ make it to the destinat
      },
 	 
 	Vehicles = { 
-		
+		--{id = 1, outside=true, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01", x = -203.92, y = -1096.21, z = 21.16, heading = 143.9},
 	
     },	 
 	
@@ -6779,6 +6785,13 @@ StartMessage = "Fly the asset and their plane~n~ to the destination~n~~r~Hurry!"
 	MissionPickups = {
 		
 		
+	},
+	
+	
+	Events={
+	
+	
+	
 	},
 	
 	RandomMissionPositions = { 
@@ -15572,7 +15585,564 @@ Mission53 = {
 	  --{id = 3, id2 = 3, Vehicle = "valkyrie", modelHash = "S_M_M_ChemSec_01",  x = -1166.42, y = 4641.5, z = 165.11, heading = 210.07,driving=true,pilot=true,isAircraft=true,VehicleGotoMissionTarget=true,SetBlockingOfNonTemporaryEvents=true,},
 	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
     }
-  } ,  
+  } , 
+
+
+Mission54 = {
+    
+StartMessage = "Escort the asset and their plane across San Andreas~n~to the destination ~r~Hurry!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Top Gun",
+	MissionMessage = "New Mission",	
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Capture the objective!",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Takeover",
+	MissionMessageObj = "Capture the objective!",	
+	
+	StartMessageAss = "Escort the asset and their plane across San Andreas~n~to the destination ~r~Hurry!",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Top Gun",
+	MissionMessageAss = "Escort the asset and their plane across San Andreas~n~to the destination ~r~Hurry!",		
+	Type = "Assassinate",	
+	IsRandom = true,
+	RandomMissionTypes ={"Assassinate"},
+	IsDefend = true,
+	IsDefendTarget = true,
+	IsDefendTargetRescue = false,
+	IsDefendTargetChase = true,
+	IsVehicleDefendTargetChase = true,
+	IsDefendTargetSetBlockingOfNonTemporaryEvents=true,
+	--IsDefendTargetEnemySetBlockingOfNonTemporaryEvents=true,
+	IsDefendTargetOnlyPlayersDamagePeds=false,
+	IsVehicleDefendTargetGotoGoal=true,
+	IsDefendTargetRewardBlip = true,
+	GoalReachedReward = 5000,	
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	SafeHouseTimeTillNextUse=30000, --10 seconds
+	--TeleportToSafeHouseOnMissionStartDelay=2000,
+	SafeHousePedDoctors = {},
+	SafeHousePedLeaders = {},
+	SafeHouseProps = {"hei_prop_carrier_crate_01a"},
+	SafeHouseGiveImmediately = true,
+	SafeVehicleSpawnRadius = 30,
+	IsDefendTargetVehiclePassengerRadius=500.0,
+	
+	--RandomMissionDoLandBattle=false, 
+	TeleportToSafeHouseMinDistance = 30,
+	--RemoveWeaponsAndUpgradesAtMissionStart = true,
+	IsDefendTargetOnlyPlayersDamagePeds=true,
+	--SpawnSafeHousePickups = {"WEAPON_COMBATPISTOL"},
+	--SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
+	SpawnSafeHouseComponents = {"COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
+
+	--SafeHouseCrackDownModeHealthAmount=200,
+	--IsDefendTargetDrivetoBlip=true,
+	--TeleportToSafeHouseOnMissionStart = false,
+	RandomMissionSpawnRadius = 250.0, --keep a float for enemy ped wandering to work
+	RandomMissionMaxPedSpawns = 15,
+	RandomMissionMinPedSpawns = 5,
+	RandomMissionMaxVehicleSpawns = 9,
+	RandomMissionMinVehicleSpawns = 4,
+	SafeHouseVehicleCount = 0,
+	SafeHouseAircraftCount = 0,
+	RandomMissionChanceToSpawnVehiclePerTry = 100,
+	RandomMissionAircraftChance = 100,
+	RandomMissionBossChance=20,
+	--RandomMissionWeapons = {0xDD5DF8D9,0x99B507EA,0xCD274149,0x1B06D571},
+	--IsDefendTargetRandomPedWeapons = {0x1B06D571},
+	UseSafeHouseLocations = false,
+	IsDefendTargetPassenger=false,
+	IsDefendTargetGoalDistance=100.0,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	--RandomMissionDoBoats = true,
+	MissionTriggerRadius = 20.0,
+	MissionTriggerStartPoint = {   x = 3087.16, y = -4782.88, z = 14.26,},
+   IsDefendTargetGoalDistance=100.0,
+	IsDefendTargetRandomAircraft = {
+	"pyro", "rogue","tula"
+	},
+	RandomMissionAircraft = {
+	"hydra",
+	"lazer",
+	--"tula",
+	"pyro",
+	"rogue",
+	"starling",
+	"nokota",
+	"molotok",
+	},
+	SafeHouseAircraft = 
+	{
+	"hydra",
+	"lazer",
+	--"tula",
+	"pyro",
+	"rogue",
+	"starling",
+	"nokota",
+	"molotok",
+
+	},
+	
+	--ExtraRandomEventsType: flag 1 = land only, 2 = water and land, 3 = water only 
+	ExtraRandomEventsType = 1,
+
+---how many extra event areas are there in the mission?
+	GenerateExtraRandomEventsNum = 22,
+	
+	--IsRandomSpawnAnywhere = true,
+	
+	--what x and y coordinate range should these mission spawn in?
+	--RandomLocation = true, --for completely random location..
+	
+	
+	SMS_Subject="Escort Mission",
+	SMS_Message="We need help to ensure that an asset is safe to land at the Northwest Coast of San Andreas",
+	SMS_Message2="Escort them to the destination which will be bombed for them to land. They will be flying over soon",
+	SMS_Message3="Expect extreme resistance, since San Andreas has been taken over entirely by mercs who own the air",	
+		
+	SMS_ContactPics={"CHAR_BOATSITE2",
+	},
+	SMS_ContactNames={"Navy Contact",
+	},
+		
+	--SMS_ContactPics={"CHAR_STEVE",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="HAHA",
+	SMS_FailedMessage="You should have stayed away, this is much bigger than you",
+	SMS_PassedSubject="Thank you",
+	SMS_PassedMessage="Los Santos is safe and sound from the attack",	
+	
+	Blip = {
+      Title = "Destination ($5000)",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 38,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	Blip2 = {
+      Title = "Destination ($5000)",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 38,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = {  x = 3087.16, y = -4782.88, z = 14.26,}, 
+      Size     = {x = 6.0, y = 6.0, z = 6.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 500.0,
+    },
+		BlipS = { --safehouse blip
+		  Title = "Mission Safehouse",
+		  Position = {   x = 3090.31, y = -4716.91, z = 14.26}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = {  x = 3090.31, y = -4716.91, z = 14.26 },  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 2.0, y = 2.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = {x = 3083.52, y = -4775.25, z = 14.26,}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},		
+	
+
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 IndoorsMission=true,
+	Vehicles = { 
+		{id = 1, outside=true, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = 3106.08, y = -4818.02, z = 15.26, heading = 23.12},
+			{id = 2, outside=true, Vehicle = "lazer", modelHash = "s_m_y_ammucity_01", x = 3062.85, y = -4683.86, z = 15.77, heading = 2.55},
+			{id = 3, outside=true, Vehicle =  "pyro", modelHash = "s_m_y_ammucity_01", x = 3070.29, y = -4797.68, z = 15.26, heading = 8.03 },
+	{id = 4, outside=true, Vehicle = "lazer", modelHash = "s_m_y_ammucity_01",x = 3084.73, y = -4675.04, z = 15.26, heading = 55.81},
+	{id = 5, outside=true, Vehicle = "rogue", modelHash = "s_m_y_ammucity_01", x = 3101.01, y = -4743.88, z = 15.26, heading = 94.98},
+	{id = 6, outside=true, Vehicle = "starling", modelHash = "s_m_y_ammucity_01",x = 3109.67, y = -4756.21, z = 15.26, heading = 101.85},
+	{id = 7, outside=true, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = 3044.01, y = -4741.49, z = 15.26, heading = 11.25},
+	{id = 8, outside=true, Vehicle = "lazer", modelHash = "s_m_y_ammucity_01",x = 3119.01, y = -4786.79, z = 15.26, heading = 96.94 },
+	{id = 9, outside=true, Vehicle = "pyro", modelHash = "s_m_y_ammucity_01",x = 3083.71, y = -4821.93, z = 15.26, heading = 288.34},
+	{id = 10, outside=true, Vehicle = "nokota", modelHash = "s_m_y_ammucity_01",x = 3049.68, y = -4768.78, z = 15.26, heading = 291.26},
+	{id = 11, outside=true, Vehicle = "molotok", modelHash = "s_m_y_ammucity_01",x = 3044.94, y = -4758.35, z = 15.26, heading = 287.08},
+	{id = 12, outside=true, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = 3037.83, y = -4714.42, z = 15.26, heading = 14.01 },
+	
+
+	
+    },	 
+	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	},
+	
+	RandomMissionPositions = { 
+	
+	{  x = 1318.13, y = 3624.67, z = 33.5,  MissionTitle="The Long Shot",
+		Blip2 = { --safehouse blip
+		  Title = "Mission Start: Rendevouz with the asset",
+		  Position = { x = 4547.74, y = -8000.00, z = 15.26,heading = 24.77}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
+		  Icon     = 58,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 1,
+		  Alpha	 =80,
+
+		  --Used for AddBlipForRadius with IsDefend Missions
+		},
+		Blip = { --safehouse blip
+		  Title = "Destination ($5000)",
+		  Position = { x = 890.31, y = 3717.53, z = 29.66}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
+		  Icon     = 38,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 1,
+		  Alpha	 =80,
+
+		  --Used for AddBlipForRadius with IsDefend Missions
+		},		
+		
+	DefendTargetInVehicle = true,
+	DefendTargetVehicleIsAircraft=true,
+
+	}, 
+
+	},
+RandomMissionDestinations = { 
+
+
+--{ x = 1429.43, y = 6517.94, z = 18.91, MissionTitle="Scenic Route"  }, --uppper coast
+
+{x = 105.71, y = 6959.19, z = 12.84, MissionTitle="Upper N.EE."  },
+
+
+}
+
+
+	
+ },
+
+Mission55 = {
+    
+StartMessage = "Fly the asset across San Andreas~n~to the destination ~r~Hurry!",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "The Long Shot v2",
+	MissionMessage = "New Mission",	
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Capture the objective!",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Takeover",
+	MissionMessageObj = "Capture the objective!",	
+	
+	StartMessageAss = "Fly the asset across San Andreas~n~to the destination ~r~Hurry!",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "The Long Shot v2",
+	MissionMessageAss = "Fly the asset across San Andreas~n~to the destination ~r~Hurry!",		
+	Type = "Assassinate",	
+	IsRandom = true,
+	RandomMissionTypes ={"Assassinate"},
+	IsDefend = true,
+	IsDefendTarget = true,
+	IsDefendTargetRescue = false,
+	IsDefendTargetChase = true,
+	IsVehicleDefendTargetChase = true,
+	IsDefendTargetSetBlockingOfNonTemporaryEvents=true,
+	--IsDefendTargetEnemySetBlockingOfNonTemporaryEvents=true,
+	IsDefendTargetOnlyPlayersDamagePeds=false,
+	IsVehicleDefendTargetGotoGoal=true,
+	IsDefendTargetRewardBlip = true,
+	GoalReachedReward = 5000,	
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	SafeHouseTimeTillNextUse=30000, --10 seconds
+	--TeleportToSafeHouseOnMissionStartDelay=2000,
+	SafeHousePedDoctors = {},
+	SafeHousePedLeaders = {},
+	SafeHouseProps = {"hei_prop_carrier_crate_01a"},
+	SafeHouseGiveImmediately = true,
+	SafeVehicleSpawnRadius = 30,
+	IsDefendTargetVehiclePassengerRadius=500.0,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	
+	--RandomMissionDoLandBattle=false, 
+	TeleportToSafeHouseMinDistance = 30,
+	--RemoveWeaponsAndUpgradesAtMissionStart = true,
+	IsDefendTargetOnlyPlayersDamagePeds=true,
+	--SpawnSafeHousePickups = {"WEAPON_COMBATPISTOL"},
+	--SpawnSafeHouseComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL","COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
+	SpawnSafeHouseComponents = {"COMPONENT_COMBATPISTOL_CLIP_02 WEAPON_COMBATPISTOL"},
+
+	--SafeHouseCrackDownModeHealthAmount=200,
+	--IsDefendTargetDrivetoBlip=true,
+	--TeleportToSafeHouseOnMissionStart = false,
+	RandomMissionSpawnRadius = 250.0, --keep a float for enemy ped wandering to work
+	RandomMissionMaxPedSpawns = 15,
+	RandomMissionMinPedSpawns = 5,
+	RandomMissionMaxVehicleSpawns = 9,
+	RandomMissionMinVehicleSpawns = 4,
+	SafeHouseVehicleCount = 0,
+	SafeHouseAircraftCount = 0,
+	RandomMissionChanceToSpawnVehiclePerTry = 100,
+	RandomMissionAircraftChance = 100,
+	RandomMissionBossChance=20,
+	--RandomMissionWeapons = {0xDD5DF8D9,0x99B507EA,0xCD274149,0x1B06D571},
+	--IsDefendTargetRandomPedWeapons = {0x1B06D571},
+	UseSafeHouseLocations = false,
+	IsDefendTargetPassenger=true,
+	IsDefendTargetGoalDistance=100.0,
+	--RandomMissionDoBoats = true,
+	MissionTriggerRadius = 20.0,
+	MissionTriggerStartPoint = {   x = 3087.16, y = -4782.88, z = 14.26,},
+   IsDefendTargetGoalDistance=100.0,
+	IsDefendTargetRandomAircraft = {
+	"pyro", "rogue","tula"
+	},
+	RandomMissionAircraft = {
+	"hydra",
+	"lazer",
+	--"tula",
+	"pyro",
+	"rogue",
+	"starling",
+	"nokota",
+	"molotok",
+	},
+	SafeHouseAircraft = 
+	{
+	"hydra",
+	"lazer",
+	--"tula",
+	"pyro",
+	"rogue",
+	"starling",
+	"nokota",
+	"molotok",
+
+	},
+	
+	--ExtraRandomEventsType: flag 1 = land only, 2 = water and land, 3 = water only 
+	ExtraRandomEventsType = 1,
+
+---how many extra event areas are there in the mission?
+	GenerateExtraRandomEventsNum = 22,
+	
+	--IsRandomSpawnAnywhere = true,
+	
+	--what x and y coordinate range should these mission spawn in?
+	--RandomLocation = true, --for completely random location..
+	
+	
+	SMS_Subject="Transport Mission",
+	SMS_Message="We need help to ensure that an asset is safe to land at the Northwest Coast of San Andreas",
+	SMS_Message2="Fly them to the destination which will drop a bomb on all local hostiles so they can safely depart",
+	SMS_Message3="Expect extreme resistance, since San Andreas has been taken over entirely by mercs who own the air",	
+		
+	SMS_ContactPics={"CHAR_BOATSITE2",
+	},
+	SMS_ContactNames={"Navy Contact",
+	},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="HAHA",
+	SMS_FailedMessage="You should have stayed away, this is much bigger than you",
+	SMS_PassedSubject="Thank you",
+	SMS_PassedMessage="Los Santos is safe and sound from the attack",	
+	
+	Blip = {
+      Title = "Destination ($5000)",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 38,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	Blip2 = {
+      Title = "Destination ($5000)",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 38,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+
+    Marker = {
+      Type     = 1,
+      Position = {  x = 3087.16, y = -4782.88, z = 14.26,}, 
+      Size     = {x = 6.0, y = 6.0, z = 6.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 500.0,
+    },
+		BlipS = { --safehouse blip
+		  Title = "Mission Safehouse",
+		  Position = {   x = 3090.31, y = -4716.91, z = 14.26}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+		},	
+		 MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = {  x = 3090.31, y = -4716.91, z = 14.26 },  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 2.0, y = 2.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+		},
+		BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = {x = 3083.52, y = -4775.25, z = 14.26,}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+		BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},		
+	
+
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 IndoorsMission=true,
+	Vehicles = { 
+		{id = 1, outside=true, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = 3106.08, y = -4818.02, z = 15.26, heading = 23.12},
+			{id = 2, outside=true, Vehicle = "lazer", modelHash = "s_m_y_ammucity_01", x = 3062.85, y = -4683.86, z = 15.77, heading = 2.55},
+			{id = 3, outside=true, Vehicle =  "pyro", modelHash = "s_m_y_ammucity_01", x = 3070.29, y = -4797.68, z = 15.26, heading = 8.03 },
+	{id = 4, outside=true, Vehicle = "lazer", modelHash = "s_m_y_ammucity_01",x = 3084.73, y = -4675.04, z = 15.26, heading = 55.81},
+	{id = 5, outside=true, Vehicle = "rogue", modelHash = "s_m_y_ammucity_01", x = 3101.01, y = -4743.88, z = 15.26, heading = 94.98},
+	{id = 6, outside=true, Vehicle = "starling", modelHash = "s_m_y_ammucity_01",x = 3109.67, y = -4756.21, z = 15.26, heading = 101.85},
+	{id = 7, outside=true, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = 3044.01, y = -4741.49, z = 15.26, heading = 11.25},
+	{id = 8, outside=true, Vehicle = "lazer", modelHash = "s_m_y_ammucity_01",x = 3119.01, y = -4786.79, z = 15.26, heading = 96.94 },
+	{id = 9, outside=true, Vehicle = "pyro", modelHash = "s_m_y_ammucity_01",x = 3083.71, y = -4821.93, z = 15.26, heading = 288.34},
+	{id = 10, outside=true, Vehicle = "nokota", modelHash = "s_m_y_ammucity_01",x = 3049.68, y = -4768.78, z = 15.26, heading = 291.26},
+	{id = 11, outside=true, Vehicle = "molotok", modelHash = "s_m_y_ammucity_01",x = 3044.94, y = -4758.35, z = 15.26, heading = 287.08},
+	{id = 12, outside=true, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = 3037.83, y = -4714.42, z = 15.26, heading = 14.01 },
+	
+
+	
+    },	 
+	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	},
+	
+	RandomMissionPositions = { 
+	
+	{  x = 1318.13, y = 3624.67, z = 33.5,  MissionTitle="The Long Shot v2",
+		Blip2 = { --safehouse blip
+		  Title = "Mission Start: Rendevouz with the asset",
+		  Position = {  x = 3087.16, y = -4782.88, z = 14.26,heading = 24.77}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
+		  Icon     = 58,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 1,
+		  Alpha	 =80,
+
+		  --Used for AddBlipForRadius with IsDefend Missions
+		},
+		Blip = { --safehouse blip
+		  Title = "Destination ($5000)",
+		  Position = { x = 890.31, y = 3717.53, z = 29.66}, -- x = 2365.07, y = 2958.56, z = 49.06 --{ x = 1944.96, y = 3150.6, z = 46.77}, --x = 1345.43, y = 3152.51, z = 40.41
+		  Icon     = 38,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 1,
+		  Alpha	 =80,
+
+		  --Used for AddBlipForRadius with IsDefend Missions
+		},		
+		
+	DefendTargetInVehicle = true,
+	DefendTargetVehicleIsAircraft=true,
+
+	}, 
+
+	},
+RandomMissionDestinations = { 
+
+
+--{ x = 1429.43, y = 6517.94, z = 18.91, MissionTitle="Scenic Route"  }, --uppper coast
+
+{x = 105.71, y = 6959.19, z = 12.84, MissionTitle="Upper N.EE."  },
+
+
+}
+
+
+	
+ },
+ 
   
 
 --[[
