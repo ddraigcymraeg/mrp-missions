@@ -15137,7 +15137,7 @@ Mission53 = {
 	MissionTitle = "Maximum Crisis",
 	MissionMessage = "Get the missing cargo all over Vinewood Hills from the downed cargo plane before the mercs steal it",	
 	Type = "ObjectiveRescue",	
-	ObjectiveRescueShortRangeBlip = false,
+	ObjectiveRescueShortRangeBlip = true,
 	--MissionTriggerRadius = 50000.0,
 	VehicleGotoMissionTargetVehicle=2,
 	
