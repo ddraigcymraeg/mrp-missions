@@ -773,23 +773,25 @@ AddEventHandler("sv:done", function(input,isstop,isfail,reasontext,blGoalReached
 		local rem_key = {}
 		
 		--print("REvents"..#REvents)
-		for index, irevent in pairs(REvents) do
-			--print(index)
-			  if irevent.revent or irevent.checkpoint then
-							-- Matches existing checkpoint, remove blip and checkpoint from table
-				--print("r"..index)
-				 --table.remove(REvents, index)
-				-- print("t"..index)
-				 table.insert(rem_key, index)
-	  
-			  end
-		 end
-		for i = #rem_key, 1, -1 do
-			value = rem_key[i]
-			table.remove(REvents, value)
-		end	 
-		 
-		Config.Missions[MissionName].Events = REvents
+		if REvents then	
+			for index, irevent in pairs(REvents) do
+				--print(index)
+				  if irevent.revent or irevent.checkpoint then
+								-- Matches existing checkpoint, remove blip and checkpoint from table
+					--print("r"..index)
+					 --table.remove(REvents, index)
+					-- print("t"..index)
+					 table.insert(rem_key, index)
+
+				  end
+			 end
+			for i = #rem_key, 1, -1 do
+				value = rem_key[i]
+				table.remove(REvents, value)
+			end	 
+
+			Config.Missions[MissionName].Events = REvents
+		end
 	
 			--used for mrpStreetRaces:
 			local MName = input
