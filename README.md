@@ -23,6 +23,7 @@ DESIGNING MISSIONS FOR PUBLIC SERVER SUPPORT VS LOCAL SERVER: Most of this was d
  missions like Mission25 that use TaskPlaneChase,TaskHeliChase, TaskPlaneMission, TaskHeliMission etc... that the target uses to chase a dummy vehicle created by  the resource that can be across the map. If that does not work well, use the coordinate arguments for TaskPlaneMission, TaskHeliMission etc.. natives instead, which may work better in case the dummy vehicle does not exist due to being out of collision range. Verfied: In SpawnProps and SpawnRandomProp, you can change TaskHeliChase with TaskHeliMission using coords and mission flag 9 tested, and you can change TaskPlaneChase with TaskPlaneMission, but the mission flag will need to be 6. 
 
 ONESYNC SUPPORT: 
+Added experimental ONESYNC support server.lua in the root of the repo, which you can replac with the one in the repo.
 This resource may have problems with OneSync servers. Depending on the mission, the server side script asks each client to return NetworkIsHost() and spawn missions entities on the one that is true. I gather with OneSync this will return true for all clients(?).
 If that is a problem, you will need to change that code to either pick a random client, or use another solution to pick 
 which client will be the host. Sixsens on forum.fivem.net has used this resource for his public RP server fine, but 
