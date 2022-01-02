@@ -13138,6 +13138,16 @@ function calcMissionStats()
 		
 		--+print("calMissionStatsvehs")
 		
+		--ghk used to remove invisble vehicle glitch.
+		---trailsermsall is used for vehicle AI, and meant to stay invisible.
+		if not IsEntityVisible(ped) then 
+			if GetEntityModel(ped) ~= GetHashKey("trailersmall") then
+			--print("invs vehicle "..GetEntityModel(ped))
+			--print(GetHashKey("trailersmall"))
+				SetEntityVisible(ped,true,true)
+			end 
+		end		
+		
 		if DecorGetInt(ped, "mrpvehdid") > 0 and DecorGetInt(ped, "mrpvehdidGround") > 0  then 
 			local ecoords = GetEntityCoords(ped,true)
 			--print('hey1')
@@ -13177,6 +13187,12 @@ function calcMissionStats()
 		for ped in EnumeratePeds() do
 			--print("calMissionStatspeds")
 			
+			--ghk used to remove invisble ped glitch.
+			if not IsEntityVisible(ped) then 
+				--print("invs ped "..GetEntityModel(ped))
+				SetEntityVisible(ped,true,true)
+			end			
+		
 			local isNPCDead = (IsEntityDead(ped) ==1 or GetEntityHealth(ped) < 100 or DecorGetInt(ped, "mrppedead") > 0) 
 			
 			
