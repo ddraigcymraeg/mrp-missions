@@ -1409,6 +1409,20 @@ Config.Missions = {
 		  modelHash="s_m_y_ammucity_01",
 		  NumberPeds=10,
 		},
+	   { 
+		  Type="Aircraft",
+		  Position = { x = -161.65, y = -1077.89, z = 42.14+100, heading = 70.54}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight = 10.0,
+		 FacePlayer = true,
+		 -- NumberPeds=25,
+		  --SquadSpawnRadius=50.0,
+		  modelHash="s_m_y_ammucity_01",
+		  Vehicle="hydra",
+		  --Target=true,
+		  --CheckGroundZ=true,		  
+		},				
+			
 	
 	},	
 	
@@ -1435,8 +1449,8 @@ Config.Missions = {
       {id = 1, id2 = 1, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01", x = -203.92, y = -1096.21, z = 21.16, heading = 143.9},
 	  {id = 2, id2 = 2, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -187.1, y = -1100.09, z = 42.14, heading = 68.51},
 	 {id = 3, id2 = 3, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -140.47, y = -1091.98, z = 42.14, heading = 250.11},
-	  {id = 4, id2 = 4, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = -161.65, y = -1077.89, z = 42.14+100, heading = 70.54,driving=true,pilot=true,isAircraft=true},
-	  {id = 5, id2 = 5, Vehicle = "trailersmall2", nomods=true, modelHash = "s_m_y_ammucity_01", x = -175.84, y = -1060.36, z = 42.14, heading = 20.14},
+	 -- {id = 4, id2 = 4, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = -161.65, y = -1077.89, z = 42.14+100, heading = 70.54,driving=true,pilot=true,isAircraft=true},
+	  {id = 4, id2 = 4, Vehicle = "trailersmall2", nomods=true, modelHash = "s_m_y_ammucity_01", x = -175.84, y = -1060.36, z = 42.14, heading = 20.14},
 	  -- {id = 6, id2 = 5, Vehicle = "savage", modelHash = "s_m_y_ammucity_01",  x = -1409.41, y = -2391.27, z = 14.73, heading = 160.04,isAircraft=true,pilot=true},
 	  
 	  
