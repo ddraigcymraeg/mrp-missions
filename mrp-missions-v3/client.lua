@@ -3442,8 +3442,26 @@ AddEventHandler('SpawnPedBlips', function(input)
 				mcoords.y,
 				mcoords.z, false) <= getMissionConfigProperty(input, "MissionTriggerRadius") and DecorGetInt(GetPlayerPed(i),"mrpoptout")==0 then 
 				playerTriggered = true
-				
-			end 
+				--print("Triggered event is true")
+
+				--dont trigger event if a passenger in a vehicle, let driver do that.
+				local pvehicle = GetVehiclePedIsIn( GetPlayerPed(-1), false )
+						
+				--if player ped is in a vehicle, is a passenger, which has a driver
+				--then dont trigger event, allow the driver to do that, who will 
+				--invariably be a player. Need this check to stop multiple event triggers
+				if pvehicle ~= 0 and not IsVehicleSeatFree(-1) and GetPlayerPed(-1) ~= GetPedInVehicleSeat(pvehicle, -1) then 
+					--print("Triggered event is false")
+					playerTriggered = false
+				end				
+			
+			end
+
+
+
+
+
+			
 			Wait(1)
 			--BLHOSTFLAG = false
 			 
@@ -5240,6 +5258,19 @@ AddEventHandler('SpawnRandomPed', function(input,MissionType, NumPeds,NumVehicle
 				mcoords.y,
 				mcoords.z, false) <= getMissionConfigProperty(input, "MissionTriggerRadius") and DecorGetInt(GetPlayerPed(i),"mrpoptout")==0 then 
 				playerTriggered = true
+				
+				--dont trigger event if a passenger in a vehicle, let driver do that.
+				local pvehicle = GetVehiclePedIsIn( GetPlayerPed(-1), false )
+						
+				--if player ped is in a vehicle, is a passenger, which has a driver
+				--then dont trigger event, allow the driver to do that, who will 
+				--invariably be a player. Need this check to stop multiple event triggers
+				if pvehicle ~= 0 and not IsVehicleSeatFree(-1) and GetPlayerPed(-1) ~= GetPedInVehicleSeat(pvehicle, -1) then 
+					--print("Triggered event is false")
+					playerTriggered = false
+				end								
+				
+				
 				
 			end 
 			Wait(1)
@@ -7195,6 +7226,19 @@ AddEventHandler('SpawnPed', function(input)
 				mcoords.z, false) <= getMissionConfigProperty(input, "MissionTriggerRadius") and DecorGetInt(GetPlayerPed(i),"mrpoptout")==0 then 
 				playerTriggered = true
 				
+				
+				--dont trigger event if a passenger in a vehicle, let driver do that.
+				local pvehicle = GetVehiclePedIsIn( GetPlayerPed(-1), false )
+						
+				--if player ped is in a vehicle, is a passenger, which has a driver
+				--then dont trigger event, allow the driver to do that, who will 
+				--invariably be a player. Need this check to stop multiple event triggers
+				if pvehicle ~= 0 and not IsVehicleSeatFree(-1) and GetPlayerPed(-1) ~= GetPedInVehicleSeat(pvehicle, -1) then 
+					--print("Triggered event is false")
+					playerTriggered = false
+				end								
+				
+				
 			end 
 			Wait(1)
 			BLHOSTFLAG = true
@@ -7220,9 +7264,12 @@ AddEventHandler('SpawnPed', function(input)
 		
 		end
 		
-
+		--print("madeit")
+		--print(tostring(playerTriggered))
+		--print(tostring(MissionTriggered))
 		
 		if playerTriggered and not MissionTriggered then 
+			--print("trigger event:")
 			
 			TriggerServerEvent("sv:CheckHostFlag",BLHOSTFLAG)
 			MissionTriggered = true			
@@ -7258,8 +7305,7 @@ AddEventHandler('SpawnPed', function(input)
 	
 	
 	end
-
-
+  
 
 	
 	--get any target ped for IsDefendTarget missions
@@ -8465,22 +8511,30 @@ Citizen.CreateThread(function()
 						
 					end
 				
-					local p1 = GetEntityCoords(GetPlayerPed(-1), true)
-					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Peds[i].spawned then 
-						--print("spawn ped"..i)
-						local spawnentity = true
+					
+					local closestPlayer, closestDistance = GetClosestPlayerToCoord(Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z) 
+					
+					
+					
+					if GetPlayerPed(-1) == GetPlayerPed(closestPlayer) then 
+						--local p1 = GetEntityCoords(GetPlayerPed(-1), true)
 						
-						if (Config.Missions[MissionName].IndoorsMissionStrongSpawnCheck and GetPlayersInLineOfSight(Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z)) then
-							spawnentity = false
+						if closestDistance <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Peds[i].spawned then 
+							--print("spawn ped"..i)
+							local spawnentity = true
+							
+							if (Config.Missions[MissionName].IndoorsMissionStrongSpawnCheck and GetPlayersInLineOfSight(Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z)) then
+								spawnentity = false
+							end
+							if spawnentity then 
+							
+								SpawnAPed(MissionName,i,false)
+							end
+							
+							Config.Missions[MissionName].Peds[i].spawned = true
+							TriggerServerEvent("sv:spawned",MissionName, i, false)						
+							
 						end
-						if spawnentity then 
-						
-							SpawnAPed(MissionName,i,false)
-						end
-						
-						Config.Missions[MissionName].Peds[i].spawned = true
-						TriggerServerEvent("sv:spawned",MissionName, i, false)						
-						
 					end
 				end
 			end
@@ -8497,21 +8551,26 @@ Citizen.CreateThread(function()
 						Config.Missions[MissionName].Vehicles[i].spawned = true
 						TriggerServerEvent("sv:spawned",MissionName, i, true)	
 						
-					end				
-					local p1 = GetEntityCoords(GetPlayerPed(-1), true)
-					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Vehicles[i].spawned then 
-						--print("spawn vehicle"..i)
-						local spawnentity = true
-						
-						if (Config.Missions[MissionName].IndoorsMissionStrongSpawnCheck and GetPlayersInLineOfSight(Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z)) then
-							spawnentity = false
+					end
+
+					local closestPlayer, closestDistance = GetClosestPlayerToCoord(Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z) 
+					
+					--local p1 = GetEntityCoords(GetPlayerPed(-1), true)
+					if GetPlayerPed(-1) == GetPlayerPed(closestPlayer) then 
+						if closestDistance <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Vehicles[i].spawned then 
+							--print("spawn vehicle"..i)
+							local spawnentity = true
+							
+							if (Config.Missions[MissionName].IndoorsMissionStrongSpawnCheck and GetPlayersInLineOfSight(Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z)) then
+								spawnentity = false
+							end
+							if spawnentity then 
+								SpawnAPed(MissionName,i,true)
+							end						
+							
+							Config.Missions[MissionName].Vehicles[i].spawned = true
+							TriggerServerEvent("sv:spawned",MissionName, i, true)
 						end
-						if spawnentity then 
-							SpawnAPed(MissionName,i,true)
-						end						
-						
-						Config.Missions[MissionName].Vehicles[i].spawned = true
-						TriggerServerEvent("sv:spawned",MissionName, i, true)
 					end
 				end
 			end			
@@ -18372,6 +18431,29 @@ function GetClosestPlayer()
 				closestDistance = distance
 			end
 		end
+	end
+	return closestPlayer, closestDistance
+end
+
+
+function GetClosestPlayerToCoord(cx,cy,cz)
+	local players = GetPlayers()
+	local closestDistance = -1
+	local closestPlayer = -1
+	local ply = GetPlayerPed(-1)
+	local plyCoords = GetEntityCoords(ply, 0)
+
+	for index,value in ipairs(players) do
+		local target = GetPlayerPed(value)
+		
+		--if(target ~= ply) then
+			local targetCoords = GetEntityCoords(target, 0)
+			local distance = Vdist(cx, cy, cz, targetCoords["x"], targetCoords["y"], targetCoords["z"])
+			if(closestDistance == -1 or closestDistance > distance) then
+				closestPlayer = value
+				closestDistance = distance
+			end
+		--end
 	end
 	return closestPlayer, closestDistance
 end
