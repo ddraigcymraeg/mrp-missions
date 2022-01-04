@@ -17002,7 +17002,7 @@ Citizen.CreateThread(function()
 					--else
 						AddTextComponentString("Hostages Remaining : ~g~"..isHostageRescueCount)
 					--end
-					DrawText(0.705, 0.875)
+					DrawText(0.705, 0.835)
 				end 
 
 				if Config.Missions[MissionName].Type == "ObjectiveRescue" and isObjectiveRescueCount > 0 then
@@ -17022,7 +17022,7 @@ Citizen.CreateThread(function()
 					--else
 						AddTextComponentString("Objectives Remaining : ~o~"..isObjectiveRescueCount)
 					--end
-					DrawText(0.705, 0.875)
+					DrawText(0.705, 0.835)
 				end 
 
 				
@@ -17044,7 +17044,7 @@ Citizen.CreateThread(function()
 					--else
 						AddTextComponentString("Enemy Targets Remaining : ~p~"..isTargetCount)
 					--end
-					DrawText(0.705, 0.875)
+					DrawText(0.705, 0.835)
 				end 
 
 
@@ -17066,7 +17066,7 @@ Citizen.CreateThread(function()
 					--else
 						AddTextComponentString("Enemies Remaining : ~p~"..isTargetCount)
 					--end
-					DrawText(0.705, 0.875)
+					DrawText(0.705, 0.835)
 				end 							
 				
 				
@@ -17087,7 +17087,7 @@ Citizen.CreateThread(function()
 					--else
 						AddTextComponentString("Time Left: ~r~"..currmissionminutesleft.."~w~min~r~"..currmissionsecondsleft.."~w~sec")
 					--end
-					DrawText(0.705, 0.895)
+					DrawText(0.705, 0.855)
 				end 
 
 				if getMissionConfigProperty(MissionName, "UseSafeHouse") or getMissionConfigProperty(MissionName, "UseSafeHouseCrateDrop") then
@@ -17110,7 +17110,7 @@ Citizen.CreateThread(function()
 					end
 					
 						--AddTextComponentString("Safehouse: ~b~Closed ~b~("..((math.floor((playerSafeHouse - nextTimeOpen)/60000) % 60) + 1).." Minute)")
-					DrawText(0.815, 0.895) 		
+					DrawText(0.705, 0.875) 		
 				end 
 				
 				SetTextFont(0)
@@ -17123,7 +17123,7 @@ Citizen.CreateThread(function()
 				SetTextOutline()
 				SetTextEntry("STRING")
 				AddTextComponentString("Mission: ~r~"..Config.Missions[MissionName].MissionTitle)
-				DrawText(0.705, 0.915)		
+				DrawText(0.705, 0.895)		
 			
 				SetTextFont(0)
 				SetTextProportional(1)
@@ -17135,7 +17135,7 @@ Citizen.CreateThread(function()
 				SetTextOutline()
 				SetTextEntry("STRING")
 				AddTextComponentString(Config.Missions[MissionName].MissionMessage)
-				DrawText(0.705, 0.955)	
+				DrawText(0.705, 0.775)	
 			else
 
 				if Config.EnableOptIn and Config.EnableOptInHUD then 
