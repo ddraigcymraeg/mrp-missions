@@ -8497,6 +8497,7 @@ Citizen.CreateThread(function()
 		if (Active == 1) and  MissionName ~="N/A" and Config.Missions[MissionName].IndoorsMission and MissionTriggered then 
 			for i, v in pairs(Config.Missions[MissionName].Peds) do
 				
+				--print("indoorsmission"..i)
 				
 				if Config.Missions[MissionName].Peds[i].spawned then --DoesEntityExist(Config.Missions[MissionName].Peds[i].id) then
 					--print("ped already spawned")
@@ -8510,32 +8511,36 @@ Citizen.CreateThread(function()
 						TriggerServerEvent("sv:spawned",MissionName, i, false)	
 						
 					end
-				
+					--print("indoorsmission"..i)
+					--check if within the IndoorsMissionSpawnRadius for the spawn, then check if this client is indeed the closest player
+					local p1 = GetEntityCoords(GetPlayerPed(-1), true)
+					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Peds[i].spawned then 
 					
-					local closestPlayer, closestDistance = GetClosestPlayerToCoord(Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z) 
-					
-					
-					
-					if GetPlayerPed(-1) == GetPlayerPed(closestPlayer) then 
-						--local p1 = GetEntityCoords(GetPlayerPed(-1), true)
+						local closestPlayer, closestDistance = GetClosestPlayerToCoord(Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z) 
 						
-						if closestDistance <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Peds[i].spawned then 
-							--print("spawn ped"..i)
-							local spawnentity = true
+						if GetPlayerPed(-1) == GetPlayerPed(closestPlayer) then 
+							--local p1 = GetEntityCoords(GetPlayerPed(-1), true)
 							
-							if (Config.Missions[MissionName].IndoorsMissionStrongSpawnCheck and GetPlayersInLineOfSight(Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z)) then
-								spawnentity = false
+							if closestDistance <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Peds[i].spawned then 
+								--print("spawn ped"..i)
+								local spawnentity = true
+								
+								if (Config.Missions[MissionName].IndoorsMissionStrongSpawnCheck and GetPlayersInLineOfSight(Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z)) then
+									spawnentity = false
+										--print("spawn ped false"..i)
+								end
+								if spawnentity then 
+									--print("spawn ped true"..i)
+									SpawnAPed(MissionName,i,false)
+								end
+								
+								Config.Missions[MissionName].Peds[i].spawned = true
+								TriggerServerEvent("sv:spawned",MissionName, i, false)						
+								
 							end
-							if spawnentity then 
-							
-								SpawnAPed(MissionName,i,false)
-							end
-							
-							Config.Missions[MissionName].Peds[i].spawned = true
-							TriggerServerEvent("sv:spawned",MissionName, i, false)						
-							
 						end
 					end
+					
 				end
 			end
 			for i, v in pairs(Config.Missions[MissionName].Vehicles) do
@@ -8553,25 +8558,32 @@ Citizen.CreateThread(function()
 						
 					end
 
-					local closestPlayer, closestDistance = GetClosestPlayerToCoord(Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z) 
 					
-					--local p1 = GetEntityCoords(GetPlayerPed(-1), true)
-					if GetPlayerPed(-1) == GetPlayerPed(closestPlayer) then 
-						if closestDistance <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Vehicles[i].spawned then 
-							--print("spawn vehicle"..i)
-							local spawnentity = true
-							
-							if (Config.Missions[MissionName].IndoorsMissionStrongSpawnCheck and GetPlayersInLineOfSight(Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z)) then
-								spawnentity = false
+					--check if within the IndoorsMissionSpawnRadius for the spawn, then check if this client is indeed the closest player
+					local p1 = GetEntityCoords(GetPlayerPed(-1), true)
+					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Vehicles[i].spawned then 
+						
+						local closestPlayer, closestDistance = GetClosestPlayerToCoord(Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z) 
+						
+						--local p1 = GetEntityCoords(GetPlayerPed(-1), true)
+						if GetPlayerPed(-1) == GetPlayerPed(closestPlayer) then 
+							if closestDistance <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Vehicles[i].spawned then 
+								--print("spawn vehicle"..i)
+								local spawnentity = true
+								
+								if (Config.Missions[MissionName].IndoorsMissionStrongSpawnCheck and GetPlayersInLineOfSight(Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z)) then
+									spawnentity = false
+								end
+								if spawnentity then 
+									SpawnAPed(MissionName,i,true)
+								end						
+								
+								Config.Missions[MissionName].Vehicles[i].spawned = true
+								TriggerServerEvent("sv:spawned",MissionName, i, true)
 							end
-							if spawnentity then 
-								SpawnAPed(MissionName,i,true)
-							end						
-							
-							Config.Missions[MissionName].Vehicles[i].spawned = true
-							TriggerServerEvent("sv:spawned",MissionName, i, true)
 						end
-					end
+					end	
+						
 				end
 			end			
 			
