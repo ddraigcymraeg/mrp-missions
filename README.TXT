@@ -340,7 +340,15 @@ when CheckpointsDoWater=true, only boats or amphibious enemys are spawned. A mis
 Mission51 is the same as Mission50, except CheckpointsDoWaterAndLand=true and IsRandomSpawnAnywhereCoordRange is set to be around the Alamo Sea to include land. 
 So checkpoints are spawned in land and sea. Players will need to use the mission boat safehouse and mission land safehouse (or steal vehicles) to finish the race.
 
-Mission52 is another ObjectRescue mission this time every ebemy spawned is through events.
+Mission52 is another ObjectiveRescue mission this time every ebemy spawned is through events.
+
+Mission53 is another ObjectiveRescue mission. Uses VehicleGotoMissionTargetVehicle to get a helicopter and plane to guard one of the objectives. Typically this setting relies on a 'trailersmall' vehicle that is invisible and frozen, and invincible, but in this case its a crashed cargo plane. The AI task function works must better with following a vehicle (hence the hack with trailersmall) than following a set coordinare for some reason. Also GenerateExtraRandomEventsNum = 0, which by default 7, so no random enemy encounters beyond whats specififed in the mission. 
+
+Mission54 is a plane escort mission where the player can either hop on board as a passenger and/or on turret for the isdefendtarget AI you need to defend, or hopon another plane to defend the friend AI plane. The AI plane to defend needs to make it to the goal to finish the mission. 
+A few settings on this one to get the behaviour to be correct and the mission to work. 
+
+Mission55 similar to Mission53, except the player flys the plane, and the isdefendtarget AI is a passenger. Other players can hope on extra seats, like turrents, or fly other planes to defend the AI plane so it can make it to the goal. 
+
 
 
 	
