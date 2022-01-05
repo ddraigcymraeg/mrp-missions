@@ -3495,7 +3495,8 @@ AddEventHandler('SpawnPedBlips', function(input)
 			--if no mission host where  BLHOSTFLAG = true
 			--that triggers the mission with MissionTriggered=true
 			--then we need to cancel the mission. 
-			Wait(1000)
+			--needs to be 5 seconds, not 1 second here. 
+			Wait(5000)
 			--if mission is stopped, exit out of the event:
 			if Active == 0 or MissionName =="N/A" then
 				--print('spawnpedblips2 called3')
@@ -3511,7 +3512,7 @@ AddEventHandler('SpawnPedBlips', function(input)
 				--TriggerEvent("DONE", MissionName) --ghk needed?
 				aliveCheck() --<-- NEEDED?
 				MissionName = "N/A"	
---print('spawnpedblips2 called4')
+				--				print('spawnpedblips2 called4')
 				return
 				
 			end 			
@@ -17147,7 +17148,7 @@ Citizen.CreateThread(function()
 				SetTextOutline()
 				SetTextEntry("STRING")
 				AddTextComponentString(Config.Missions[MissionName].MissionMessage)
-				DrawText(0.705, 0.775)	
+				DrawText(0.705, 0.805)	
 			else
 
 				if Config.EnableOptIn and Config.EnableOptInHUD then 
