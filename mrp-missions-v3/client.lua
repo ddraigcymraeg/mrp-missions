@@ -5122,7 +5122,8 @@ function doBossBuff(Ped,modelHash,MissionName,bossWeapon)
 				--weapon = "weapon_heavysniper_mk2"
 				--component = "COMPONENT_HEAVYSNIPER_MK2_CLIP_EXPLOSIVE
 			--weapon ="weapon_rayminigun"
-			weapon ="weapon_railgun"
+			--weapon ="weapon_railgun"   --GHK, remove railgun, too overpowered.
+			weapon ="weapon_rayminigun"
 			elseif chance > 50 then
 				--weapon = "weapon_smg_mk2"
 				--component = "COMPONENT_SMG_MK2_CLIP_HOLLOWPOINT"
