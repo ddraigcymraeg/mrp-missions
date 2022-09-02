@@ -18628,7 +18628,9 @@ AddEventHandler("playerSpawned", function(spawn)
 	DecorSetInt(GetPlayerPed(-1),"mrprescuecount",mrprescuecountG)
 	DecorSetInt(GetPlayerPed(-1),"mrpobjrescuecount",mrpobjectivecountG)	
 	DecorSetInt(GetPlayerPed(-1),"mrpcheckpoint",mrpcheckpointG)	
-	DecorSetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed",mrpcheckpointsclaimedG)		
+	DecorSetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed",mrpcheckpointsclaimedG)	
+		
+	SetPedParachuteTintIndex(GetPlayerPed(-1), 6)		
 	
 	local ped  = GetPlayerPed(-1)
 		--GHK Add blackops preferred variations
