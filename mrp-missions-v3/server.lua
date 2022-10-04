@@ -96,6 +96,12 @@ AddEventHandler("sv:repairvehicle",function()
 	
 end)
 
+RegisterServerEvent("sv:repairtarget")
+AddEventHandler("sv:repairtarget",function(MissionName)
+	TriggerClientEvent("mt:doRepairTarget",-1,MissionName)
+	
+end)
+
 --looks for setting within a mission, else looks at global setting
 function getMissionConfigProperty(MissionName, PropName) 
 	--print('MissionName'..MissionName)
