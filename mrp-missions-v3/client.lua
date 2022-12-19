@@ -12382,8 +12382,27 @@ function SpawnPickups(oldmission,rewardPlayer)
 				getSpawnRewardComponents(oldmission)
 			end			
 
-			--default in game is 40 rounds for explosive heavy sniper rounds. Alter this for some balance:
-			SetPedAmmoByType(GetPlayerPed(-1), 0xADD16CB9, getMissionConfigProperty(oldmission, "SafeHouseSniperExplosiveRoundsGiven"))
+				--for below see: https://github.com/jayr33n/altv-trainer/blob/master/src/client/enums/ammoType.ts
+				--default in game is 250 rounds for sniper standard ammo, change this for some balance:
+				SetPedAmmoByType(GetPlayerPed(-1), 0x4C98087B, getMissionConfigProperty(MissionName, "SafeHouseSniperRoundsGiven"))
+				--default in game is 40 rounds for explosive heavy sniper mk2 rounds. Alter this for some balance:
+				SetPedAmmoByType(GetPlayerPed(-1), 0xADD16CB9, getMissionConfigProperty(MissionName, "SafeHouseSniperExplosiveRoundsGiven"))
+				--default in game is 40 rounds for explosive n\marksman mk2 FMJ rounds. Alter this for some balance:
+				SetPedAmmoByType(GetPlayerPed(-1), 0xF5F1C616, getMissionConfigProperty(MissionName, "SafeHouseSniperFMJRoundsGiven"))
+				
+				--ammotype doesnt work for rpg, stinger or grenadelauncher
+				--default in game is 10 rounds for homing launcher standard ammo, change this for some balance:
+				--SetPedAmmoByType(GetPlayerPed(-1), 0x914C813A, getMissionConfigProperty(MissionName, "SafeHouseHominglauncherRoundsGiven"))
+				SetPedAmmo(GetPlayerPed(-1),0x63AB0442,getMissionConfigProperty(MissionName, "SafeHouseHomingLauncherRoundsGiven"))
+				--default in game is 20 rounds for RPG rounds. Alter this for some balance:
+				--SetPedAmmoByType(GetPlayerPed(-1), 0xADD16CB9, getMissionConfigProperty(MissionName, "SafeHouseRPGRoundsGiven"))
+				SetPedAmmo(GetPlayerPed(-1),0xB1CA77B1,getMissionConfigProperty(MissionName, "SafeHouseRPGRoundsGiven"))
+				--default in game is 20 rounds for Grenade Launcher rounds. Alter this for some balance:
+				--SetPedAmmoByType(GetPlayerPed(-1), 0x3BCCA5EE, getMissionConfigProperty(MissionName, "SafeHouseGrenadeLauncherRoundsGiven"))
+				SetPedAmmo(GetPlayerPed(-1),0xA284510B,getMissionConfigProperty(MissionName, "SafeHouseGrenadeLauncherRoundsGiven"))
+				
+
+				--SetPedAmmo(GetPlayerPed(-1),0x0C472FE2,8)
 			
 		end
 				
@@ -15992,8 +16011,27 @@ function BuyObj()
 				getSpawnSafeHousePickups(MissionName)
 				getSpawnSafeHouseComponents(MissionName)	
 				
-				--default in game is 40 rounds for explosive heavy sniper rounds. Alter this for some balance:
+				--for below see: https://github.com/jayr33n/altv-trainer/blob/master/src/client/enums/ammoType.ts
+				--default in game is 250 rounds for sniper standard ammo, change this for some balance:
+				SetPedAmmoByType(GetPlayerPed(-1), 0x4C98087B, getMissionConfigProperty(MissionName, "SafeHouseSniperRoundsGiven"))
+				--default in game is 40 rounds for explosive heavy sniper mk2 rounds. Alter this for some balance:
 				SetPedAmmoByType(GetPlayerPed(-1), 0xADD16CB9, getMissionConfigProperty(MissionName, "SafeHouseSniperExplosiveRoundsGiven"))
+				--default in game is 40 rounds for explosive n\marksman mk2 FMJ rounds. Alter this for some balance:
+				SetPedAmmoByType(GetPlayerPed(-1), 0xF5F1C616, getMissionConfigProperty(MissionName, "SafeHouseSniperFMJRoundsGiven"))
+				
+				--ammotype doesnt work for rpg, stinger or grenadelauncher
+				--default in game is 10 rounds for homing launcher standard ammo, change this for some balance:
+				--SetPedAmmoByType(GetPlayerPed(-1), 0x914C813A, getMissionConfigProperty(MissionName, "SafeHouseHominglauncherRoundsGiven"))
+				SetPedAmmo(GetPlayerPed(-1),0x63AB0442,getMissionConfigProperty(MissionName, "SafeHouseHomingLauncherRoundsGiven"))
+				--default in game is 20 rounds for RPG rounds. Alter this for some balance:
+				--SetPedAmmoByType(GetPlayerPed(-1), 0xADD16CB9, getMissionConfigProperty(MissionName, "SafeHouseRPGRoundsGiven"))
+				SetPedAmmo(GetPlayerPed(-1),0xB1CA77B1,getMissionConfigProperty(MissionName, "SafeHouseRPGRoundsGiven"))
+				--default in game is 20 rounds for Grenade Launcher rounds. Alter this for some balance:
+				--SetPedAmmoByType(GetPlayerPed(-1), 0x3BCCA5EE, getMissionConfigProperty(MissionName, "SafeHouseGrenadeLauncherRoundsGiven"))
+				SetPedAmmo(GetPlayerPed(-1),0xA284510B,getMissionConfigProperty(MissionName, "SafeHouseGrenadeLauncherRoundsGiven"))
+				
+
+				--SetPedAmmo(GetPlayerPed(-1),0x0C472FE2,8)
 				
 				local safehousecost = calcSafeHouseCost(true,false,false,MissionName)
 				--if safehousecost ~= 0 then 
@@ -20130,8 +20168,27 @@ function CrateDropMRP(weapon, ammo, planeSpawnDistance, dropCoords,thisMission)
 				--call twice, to make sure all custom rounds get added. Not sure why it doesnt work first time.
 				getSpawnSafeHousePickups(thisMission)
 				getSpawnSafeHouseComponents(thisMission)
-				--default in game is 40 rounds for explosive heavy sniper rounds. Alter this for some balance:
-				SetPedAmmoByType(GetPlayerPed(-1), 0xADD16CB9, getMissionConfigProperty(thisMission, "SafeHouseSniperExplosiveRoundsGiven"))
+				--for below see: https://github.com/jayr33n/altv-trainer/blob/master/src/client/enums/ammoType.ts
+				--default in game is 250 rounds for sniper standard ammo, change this for some balance:
+				SetPedAmmoByType(GetPlayerPed(-1), 0x4C98087B, getMissionConfigProperty(MissionName, "SafeHouseSniperRoundsGiven"))
+				--default in game is 40 rounds for explosive heavy sniper mk2 rounds. Alter this for some balance:
+				SetPedAmmoByType(GetPlayerPed(-1), 0xADD16CB9, getMissionConfigProperty(MissionName, "SafeHouseSniperExplosiveRoundsGiven"))
+				--default in game is 40 rounds for explosive n\marksman mk2 FMJ rounds. Alter this for some balance:
+				SetPedAmmoByType(GetPlayerPed(-1), 0xF5F1C616, getMissionConfigProperty(MissionName, "SafeHouseSniperFMJRoundsGiven"))
+				
+				--ammotype doesnt work for rpg, stinger or grenadelauncher
+				--default in game is 10 rounds for homing launcher standard ammo, change this for some balance:
+				--SetPedAmmoByType(GetPlayerPed(-1), 0x914C813A, getMissionConfigProperty(MissionName, "SafeHouseHominglauncherRoundsGiven"))
+				SetPedAmmo(GetPlayerPed(-1),0x63AB0442,getMissionConfigProperty(MissionName, "SafeHouseHomingLauncherRoundsGiven"))
+				--default in game is 20 rounds for RPG rounds. Alter this for some balance:
+				--SetPedAmmoByType(GetPlayerPed(-1), 0xADD16CB9, getMissionConfigProperty(MissionName, "SafeHouseRPGRoundsGiven"))
+				SetPedAmmo(GetPlayerPed(-1),0xB1CA77B1,getMissionConfigProperty(MissionName, "SafeHouseRPGRoundsGiven"))
+				--default in game is 20 rounds for Grenade Launcher rounds. Alter this for some balance:
+				--SetPedAmmoByType(GetPlayerPed(-1), 0x3BCCA5EE, getMissionConfigProperty(MissionName, "SafeHouseGrenadeLauncherRoundsGiven"))
+				SetPedAmmo(GetPlayerPed(-1),0xA284510B,getMissionConfigProperty(MissionName, "SafeHouseGrenadeLauncherRoundsGiven"))
+				
+
+				--SetPedAmmo(GetPlayerPed(-1),0x0C472FE2,8)
 				
 				SetEntityCoords(pickup, -10000.647, -10000.97, 0.7186, 0.968)
 				--local safehousecost = calcSafeHouseCost(true,false,true,thisMission)
