@@ -21,12 +21,16 @@ NOTE: MORE CHALLENGING AI: AI mission backups can be summoned 1 per player at a 
 Unfortunately to get the enemy AI to work with friendly AI, the enemy AI can damage themselves. The solution I tried looks like it should work, but does not. 
 To make the AI tougher much more fun and challening set DoMissionBackup=false to remove the AI backup. 
 
-NOTE: $ GIVEN FOR MISSIONS: MissionShareMoney = true by default, where players share the mission $ rewards . This was added because the peer that spawned a ped or vehicle will
+NOTE: $ GIVEN FOR MISSIONS: MissionShareMoney = false by default, where players share the mission $ rewards . This was added because the peer that spawned a ped or vehicle will
 get a kill reward even when the peds kill themselves via crashing or whatever, not making it fair to other players. 
-Causes of death provided by the natives will not cover all cases either, sometimes the ped seems to vanish, which is scored as a kill for the host. Setting this to false 
+Causes of death provided by the natives will not cover all cases either, sometimes the ped seems to vanish, which is scored as a kill for the host. (NOTE: this is set back to false, since the problems listed above now should be non-existent or negligible).Setting this to false (the default now)
 will bring up the old $ scoring, where players score for themselves. For both, $ losses come from player deaths, 
 or buying vehicles/weapons/upgrades or killing hostages/protect targets etc…
 
+NOTE: Since many missions can turn into snipe-fests, the amount of sniper ammo given (as well as rpg, stinger and grenade launcher) at mission start and at mission
+completion reward, can be set globally and/or per mission. Sniper ammo, as well as rpg and and grenade launcher ammo has been decreased by default. This will make
+many missions a little harder (players cant sit back and snipe as much). Look for 'SafeHouseSniperExplosiveRoundsGiven' in missions.lua to set these variables 
+and to see default ammo amounts.
 
 CONTROLS (which can be turned on/off depending on mission config settings, and based on DEFAULT GTA5 binds): 
 
