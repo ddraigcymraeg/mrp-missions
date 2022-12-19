@@ -557,6 +557,18 @@ Config.UseSafeHouseCrateDrop = true
 --turn on bandito remote detonate bomb deploys?
 Config.UseSafeHouseBanditoDrop = true
 
+--for below see: https://github.com/jayr33n/altv-trainer/blob/master/src/client/enums/ammoType.ts
+--Missions can become a snipe-fest, to make the missions a bit harder, you can limit powerful weapon ammo like for sniper rifles
+--and rpg, stinger and grenade launcher
+Config.SafeHouseSniperExplosiveRoundsGiven = 8 --default in game is 40 for (DEFAULT) Heavy Sniper Mk 2  Alter this for some balance
+Config.SafeHouseSniperRoundsGiven = 20 --default in game is 250. (DEFAULT) for standard Heavy Sniper. Alter this for some balance
+Config.SafeHouseSniperFMJRoundsGiven = 20 --default in game is 40. (DEFAULT) for Marksman Mk 2. Alter this for some balance
+Config.SafeHouseHomingLauncherRoundsGiven = 10 --default in game is 10. Alter this for some balance
+Config.SafeHouseRPGRoundsGiven = 10 --default in game is 20. Alter this for some balance
+Config.SafeHouseGrenadeLauncherRoundsGiven = 10 --default in game is 20. Alter this for some balance
+
+
+
 --$ cost to use:
 Config.SafeHouseCost = 2000
 
