@@ -17032,162 +17032,320 @@ Citizen.CreateThread(function()
         if Active == 1 and MissionName ~="N/A" and IsControlPressed(0, 43) and not IsPlayerFreeAiming(PlayerId()) then
 			if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
 			
-			HelpMessage("Press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~ for a quick tutorial on controls and mission help",false,0)
+				HelpMessage("Press ~INPUT_LOOK_BEHIND~ and ~INPUT_PICKUP~ for a quick tutorial on controls and mission help",false,0)
 				
 				local currmissionminutesleft = string.format("%02d", tostring(math.floor((MilliSecondsLeft)/60000) % 60))
 				local currmissionsecondsleft = string.format("%02d", tostring(math.floor((MilliSecondsLeft)/1000) % 60))
-			
-				if Config.Missions[MissionName].Type == "HostageRescue" and isHostageRescueCount > 0 then
-					SetTextFont(0)
-					SetTextProportional(1)
-					SetTextScale(0.0, 0.3)
-					SetTextColour(255, 255, 255, 255)
-					SetTextDropshadow(0, 0, 0, 0, 255)
-					SetTextEdge(1, 0, 0, 0, 255)
-					SetTextDropShadow()
-					SetTextOutline()
-					SetTextEntry("STRING")
-					--if MilliSecondsLeft <= 0 then
-						--now what?
-						--server will respond to time out the mission
-						--AddTextComponentString("~r~Mission Over")
-					--else
-						AddTextComponentString("Hostages Remaining : ~g~"..isHostageRescueCount)
-					--end
-					DrawText(0.705, 0.835)
-				end 
+				if Config.HUDSplitScreen then
+					if Config.Missions[MissionName].Type == "HostageRescue" and isHostageRescueCount > 0 then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Hostages Remaining : ~g~"..isHostageRescueCount)
+						--end
+						DrawText(0.705, 0.835)
+					end 
 
-				if Config.Missions[MissionName].Type == "ObjectiveRescue" and isObjectiveRescueCount > 0 then
-					SetTextFont(0)
-					SetTextProportional(1)
-					SetTextScale(0.0, 0.3)
-					SetTextColour(255, 255, 255, 255)
-					SetTextDropshadow(0, 0, 0, 0, 255)
-					SetTextEdge(1, 0, 0, 0, 255)
-					SetTextDropShadow()
-					SetTextOutline()
-					SetTextEntry("STRING")
-					--if MilliSecondsLeft <= 0 then
-						--now what?
-						--server will respond to time out the mission
-						--AddTextComponentString("~r~Mission Over")
-					--else
-						AddTextComponentString("Objectives Remaining : ~o~"..isObjectiveRescueCount)
-					--end
-					DrawText(0.705, 0.835)
-				end 
+					if Config.Missions[MissionName].Type == "ObjectiveRescue" and isObjectiveRescueCount > 0 then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Objectives Remaining : ~o~"..isObjectiveRescueCount)
+						--end
+						DrawText(0.705, 0.835)
+					end 
 
-				
-				if (Config.Missions[MissionName].Type == "Assassinate" or Config.Missions[MissionName].Type == "BossRush")
-				and isTargetCount > 0 and not Config.Missions[MissionName].IsDefend  then
-					SetTextFont(0)
-					SetTextProportional(1)
-					SetTextScale(0.0, 0.3)
-					SetTextColour(255, 255, 255, 255)
-					SetTextDropshadow(0, 0, 0, 0, 255)
-					SetTextEdge(1, 0, 0, 0, 255)
-					SetTextDropShadow()
-					SetTextOutline()
-					SetTextEntry("STRING")
-					--if MilliSecondsLeft <= 0 then
-						--now what?
-						--server will respond to time out the mission
-						--AddTextComponentString("~r~Mission Over")
-					--else
-						AddTextComponentString("Enemy Targets Remaining : ~p~"..isTargetCount)
-					--end
-					DrawText(0.705, 0.835)
-				end 
-
-
-				if Config.Missions[MissionName].IsDefend 
-				and isTargetCount > 0 then
-					SetTextFont(0)
-					SetTextProportional(1)
-					SetTextScale(0.0, 0.3)
-					SetTextColour(255, 255, 255, 255)
-					SetTextDropshadow(0, 0, 0, 0, 255)
-					SetTextEdge(1, 0, 0, 0, 255)
-					SetTextDropShadow()
-					SetTextOutline()
-					SetTextEntry("STRING")
-					--if MilliSecondsLeft <= 0 then
-						--now what?
-						--server will respond to time out the mission
-						--AddTextComponentString("~r~Mission Over")
-					--else
-						AddTextComponentString("Enemies Remaining : ~p~"..isTargetCount)
-					--end
-					DrawText(0.705, 0.835)
-				end 							
-				
-				
-				if (not MissionNoTimeout) and MilliSecondsLeft >= 0 then
-					SetTextFont(0)
-					SetTextProportional(1)
-					SetTextScale(0.0, 0.3)
-					SetTextColour(255, 255, 255, 255)
-					SetTextDropshadow(0, 0, 0, 0, 255)
-					SetTextEdge(1, 0, 0, 0, 255)
-					SetTextDropShadow()
-					SetTextOutline()
-					SetTextEntry("STRING")
-					--if MilliSecondsLeft <= 0 then
-						--now what?
-						--server will respond to time out the mission
-						--AddTextComponentString("~r~Mission Over")
-					--else
-						AddTextComponentString("Time Left: ~r~"..currmissionminutesleft.."~w~min~r~"..currmissionsecondsleft.."~w~sec")
-					--end
-					DrawText(0.705, 0.855)
-				end 
-
-				if getMissionConfigProperty(MissionName, "UseSafeHouse") or getMissionConfigProperty(MissionName, "UseSafeHouseCrateDrop") then
-					SetTextFont(0)
-					SetTextProportional(1)
-					SetTextScale(0.0, 0.3)
-					SetTextColour(255, 255, 255, 255)
-					SetTextDropshadow(0, 0, 0, 0, 255)
-					SetTextEdge(1, 0, 0, 0, 255)
-					SetTextDropShadow()
-					SetTextOutline()
-					SetTextEntry("STRING")
-					local nextTimeOpen = (GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse"))
-					local nextTimeOpenminutesleft =  string.format("%02d", tostring(math.floor((playerSafeHouse - nextTimeOpen)/60000) % 60))
-					local nextTimeOpensecondsleft = string.format("%02d", tostring(math.floor((playerSafeHouse - nextTimeOpen)/1000) % 60))			
-					if (nextTimeOpen >= playerSafeHouse) then
-						AddTextComponentString("Safehouse: ~g~Open")
-					else
-						AddTextComponentString("Safehouse: ~b~Closed ~b~("..nextTimeOpenminutesleft.."min"..nextTimeOpensecondsleft.."sec)")
-					end
 					
-						--AddTextComponentString("Safehouse: ~b~Closed ~b~("..((math.floor((playerSafeHouse - nextTimeOpen)/60000) % 60) + 1).." Minute)")
-					DrawText(0.705, 0.875) 		
-				end 
+					if (Config.Missions[MissionName].Type == "Assassinate" or Config.Missions[MissionName].Type == "BossRush")
+					and isTargetCount > 0 and not Config.Missions[MissionName].IsDefend  then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Enemy Targets Remaining : ~p~"..isTargetCount)
+						--end
+						DrawText(0.705, 0.835)
+					end 
+
+
+					if Config.Missions[MissionName].IsDefend 
+					and isTargetCount > 0 then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Enemies Remaining : ~p~"..isTargetCount)
+						--end
+						DrawText(0.705, 0.835)
+					end 							
+					
+					
+					if (not MissionNoTimeout) and MilliSecondsLeft >= 0 then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Time Left: ~r~"..currmissionminutesleft.."~w~min~r~"..currmissionsecondsleft.."~w~sec")
+						--end
+						DrawText(0.705, 0.855)
+					end 
+
+					if getMissionConfigProperty(MissionName, "UseSafeHouse") or getMissionConfigProperty(MissionName, "UseSafeHouseCrateDrop") then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						local nextTimeOpen = (GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse"))
+						local nextTimeOpenminutesleft =  string.format("%02d", tostring(math.floor((playerSafeHouse - nextTimeOpen)/60000) % 60))
+						local nextTimeOpensecondsleft = string.format("%02d", tostring(math.floor((playerSafeHouse - nextTimeOpen)/1000) % 60))			
+						if (nextTimeOpen >= playerSafeHouse) then
+							AddTextComponentString("Safehouse: ~g~Open")
+						else
+							AddTextComponentString("Safehouse: ~b~Closed ~b~("..nextTimeOpenminutesleft.."min"..nextTimeOpensecondsleft.."sec)")
+						end
+						
+							--AddTextComponentString("Safehouse: ~b~Closed ~b~("..((math.floor((playerSafeHouse - nextTimeOpen)/60000) % 60) + 1).." Minute)")
+						DrawText(0.705, 0.875) 		
+					end 
+					
+					SetTextFont(0)
+					SetTextProportional(1)
+					SetTextScale(0.0, 0.3)
+					SetTextColour(255, 255, 255, 255)
+					SetTextDropshadow(0, 0, 0, 0, 255)
+					SetTextEdge(1, 0, 0, 0, 255)
+					SetTextDropShadow()
+					SetTextOutline()
+					SetTextEntry("STRING")
+					AddTextComponentString("Mission: ~r~"..Config.Missions[MissionName].MissionTitle)
+					DrawText(0.705, 0.895)		
 				
-				SetTextFont(0)
-				SetTextProportional(1)
-				SetTextScale(0.0, 0.3)
-				SetTextColour(255, 255, 255, 255)
-				SetTextDropshadow(0, 0, 0, 0, 255)
-				SetTextEdge(1, 0, 0, 0, 255)
-				SetTextDropShadow()
-				SetTextOutline()
-				SetTextEntry("STRING")
-				AddTextComponentString("Mission: ~r~"..Config.Missions[MissionName].MissionTitle)
-				DrawText(0.705, 0.895)		
-			
-				SetTextFont(0)
-				SetTextProportional(1)
-				SetTextScale(0.0, 0.3)
-				SetTextColour(99, 209, 62, 255)
-				SetTextDropshadow(0, 0, 0, 0, 255)
-				SetTextEdge(1, 0, 0, 0, 255)
-				SetTextDropShadow()
-				SetTextOutline()
-				SetTextEntry("STRING")
-				AddTextComponentString(Config.Missions[MissionName].MissionMessage)
-				DrawText(0.705, 0.805)	
+					SetTextFont(0)
+					SetTextProportional(1)
+					SetTextScale(0.0, 0.3)
+					SetTextColour(99, 209, 62, 255)
+					SetTextDropshadow(0, 0, 0, 0, 255)
+					SetTextEdge(1, 0, 0, 0, 255)
+					SetTextDropShadow()
+					SetTextOutline()
+					SetTextEntry("STRING")
+					AddTextComponentString(Config.Missions[MissionName].MissionMessage)
+					DrawText(0.705, 0.805)	
+				
+				else 
+				
+					if Config.Missions[MissionName].Type == "HostageRescue" and isHostageRescueCount > 0 then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Hostages Remaining : ~g~"..isHostageRescueCount)
+						--end
+						DrawText(0.705, 0.855)
+					end 
+
+					if Config.Missions[MissionName].Type == "ObjectiveRescue" and isObjectiveRescueCount > 0 then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Objectives Remaining : ~o~"..isObjectiveRescueCount)
+						--end
+						DrawText(0.705, 0.855)
+					end 
+
+					
+					if (Config.Missions[MissionName].Type == "Assassinate" or Config.Missions[MissionName].Type == "BossRush")
+					and isTargetCount > 0 and not Config.Missions[MissionName].IsDefend  then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Enemy Targets Remaining : ~p~"..isTargetCount)
+						--end
+						DrawText(0.705, 0.855)
+					end 
+
+
+					if Config.Missions[MissionName].IsDefend 
+					and isTargetCount > 0 then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Enemies Remaining : ~p~"..isTargetCount)
+						--end
+						DrawText(0.705, 0.855)
+					end 							
+					
+					
+					if (not MissionNoTimeout) and MilliSecondsLeft >= 0 then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						--if MilliSecondsLeft <= 0 then
+							--now what?
+							--server will respond to time out the mission
+							--AddTextComponentString("~r~Mission Over")
+						--else
+							AddTextComponentString("Time Left: ~r~"..currmissionminutesleft.."~w~min~r~"..currmissionsecondsleft.."~w~sec")
+						--end
+						DrawText(0.705, 0.875)
+					end 
+
+					if getMissionConfigProperty(MissionName, "UseSafeHouse") or getMissionConfigProperty(MissionName, "UseSafeHouseCrateDrop") then
+						SetTextFont(0)
+						SetTextProportional(1)
+						SetTextScale(0.0, 0.3)
+						SetTextColour(255, 255, 255, 255)
+						SetTextDropshadow(0, 0, 0, 0, 255)
+						SetTextEdge(1, 0, 0, 0, 255)
+						SetTextDropShadow()
+						SetTextOutline()
+						SetTextEntry("STRING")
+						local nextTimeOpen = (GetGameTimer() - getMissionConfigProperty(MissionName, "SafeHouseTimeTillNextUse"))
+						local nextTimeOpenminutesleft =  string.format("%02d", tostring(math.floor((playerSafeHouse - nextTimeOpen)/60000) % 60))
+						local nextTimeOpensecondsleft = string.format("%02d", tostring(math.floor((playerSafeHouse - nextTimeOpen)/1000) % 60))			
+						if (nextTimeOpen >= playerSafeHouse) then
+							AddTextComponentString("Safehouse: ~g~Open")
+						else
+							AddTextComponentString("Safehouse: ~b~Closed ~b~("..nextTimeOpenminutesleft.."min"..nextTimeOpensecondsleft.."sec)")
+						end
+						
+							--AddTextComponentString("Safehouse: ~b~Closed ~b~("..((math.floor((playerSafeHouse - nextTimeOpen)/60000) % 60) + 1).." Minute)")
+						DrawText(0.705, 0.895) 		
+					end 
+					
+					SetTextFont(0)
+					SetTextProportional(1)
+					SetTextScale(0.0, 0.3)
+					SetTextColour(255, 255, 255, 255)
+					SetTextDropshadow(0, 0, 0, 0, 255)
+					SetTextEdge(1, 0, 0, 0, 255)
+					SetTextDropShadow()
+					SetTextOutline()
+					SetTextEntry("STRING")
+					AddTextComponentString("Mission: ~r~"..Config.Missions[MissionName].MissionTitle)
+					DrawText(0.705, 0.915)		
+				
+					SetTextFont(0)
+					SetTextProportional(1)
+					SetTextScale(0.0, 0.3)
+					SetTextColour(99, 209, 62, 255)
+					SetTextDropshadow(0, 0, 0, 0, 255)
+					SetTextEdge(1, 0, 0, 0, 255)
+					SetTextDropShadow()
+					SetTextOutline()
+					SetTextEntry("STRING")
+					AddTextComponentString(Config.Missions[MissionName].MissionMessage)
+					DrawText(0.705, 0.955)	
+								
+				
+				end
+				
 			else
 
 				if Config.EnableOptIn and Config.EnableOptInHUD then 
