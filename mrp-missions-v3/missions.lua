@@ -5,6 +5,9 @@ Config.MissionSpaceTime = 30000 --milliseconds between missions
 Config.MissionLengthMinutes = 60
 Config.MissionNoTimeout = false
 
+--change hud for splitscreen resolution?
+Config.HUDSplitScreen = false
+
 --whole map
 Config.MissionTriggerRadius = 15000.0
 
