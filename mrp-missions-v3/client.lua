@@ -43,6 +43,7 @@ PedLeaderModel=nil
 PedDoctorModel=nil	
 GlobalBackup=nil
 GlobalBackupIndex=0
+GlobalTargetInVehicle=false
 
 --[[
 local entitys = {} --entitys table
@@ -1536,6 +1537,16 @@ AddEventHandler("mt:missiontext", function(input, timet)
 		--end
 	end
 	
+	if getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius") > 0 and getMissionConfigProperty(input, "IsDefendTarget") then 
+			--Notify("~h~~b~Within "..getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius")  
+			--.."m of the target's vehicle, you can press ~INPUT_WEAPON_WHEEL_PREV~ AND ~INPUT_PICKUP~ to enter it")
+			--print("made it")
+			--lineTwo ="Within " 
+			
+			TriggerEvent("mt:doisDefendVehicleHelp")
+			
+	end
+	
 	--global here since this can be called twice sometimes. 
 	--also show for all players, including those opted out.
 	if not MissionDoneSMS then 
@@ -1589,17 +1600,6 @@ AddEventHandler("mt:missiontext", function(input, timet)
 		--AddTextComponentString("Check your map for mission data. Press ~INPUT_SNIPER_ZOOM_OUT_SECONDARY~ to view mission info.")
 		--DisplayHelpTextFromStringLabel(0, 0, 1, 5000)
 		
-		
-		
-		if getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius") > 0 and getMissionConfigProperty(input, "IsDefendTarget") then 
-			--Notify("~h~~b~Within "..getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius")  
-			--.."m of the target's vehicle, you can press ~INPUT_WEAPON_WHEEL_PREV~ AND ~INPUT_PICKUP~ to enter it")
-			--print("made it")
-			--lineTwo ="Within " 
-			
-			TriggerEvent("mt:doisDefendVehicleHelp")
-			
-		end
 		
 		   
 		Wait(7000)
@@ -1794,16 +1794,21 @@ end)
 RegisterNetEvent("mt:doisDefendVehicleHelp")
 AddEventHandler("mt:doisDefendVehicleHelp", function()
 
+	--print("made it: true")
 	 while MissionName ~="N/A" and Active == 1  do
        
 			
 			if GlobalTargetPed then 
 			
+			
 			local pcoords = GetEntityCoords(GetPlayerPed(-1),true)
 				local GTVehicle = GetVehiclePedIsIn(GlobalTargetPed, false)
-				if Config.Missions[MissionName].IsDefendTarget and GlobalTargetPed and GTVehicle and 
+					--print(GTVehicle)
+				if Config.Missions[MissionName].IsDefendTarget and GlobalTargetPed and GTVehicle > 0 and 
 				DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then	
 					local v = GetEntityCoords(GTVehicle,true)
+					GlobalTargetInVehicle=true
+					--print("made it: true")
 					--print("made it:"..tostring(GetDistanceBetweenCoords(pcoords.x,pcoords.y,pcoords.z, v.x, v.y, v.z, true)))
 					if GTVehicle ~= GetVehiclePedIsIn(GetPlayerPed(-1), false)
 					and getMissionConfigProperty(MissionName, "IsDefendTargetVehiclePassengerRadius") > 0 
@@ -1819,6 +1824,26 @@ AddEventHandler("mt:doisDefendVehicleHelp", function()
 					
 					
 					end
+					
+				--ped not in vehicle, player in vehicle, allow pplayer pull ped back into their vehicle
+				elseif Config.Missions[MissionName].IsDefendTarget and Config.Missions[MissionName].IsVehicleDefendTargetChase and GlobalTargetPed and GTVehicle == 0 and GetVehiclePedIsIn(GetPlayerPed(-1), false) > 0
+				 and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then	
+				
+				 
+					--print(GTVehicle);
+					GlobalTargetInVehicle=false
+					local v = GetEntityCoords(GlobalTargetPed,true)
+						
+					if getMissionConfigProperty(MissionName, "IsDefendTargetVehiclePassengerRadius") > 0 and GetDistanceBetweenCoords(pcoords.x,pcoords.y,pcoords.z, v.x, v.y, v.z, true) <  getMissionConfigProperty(MissionName, "IsDefendTargetVehiclePassengerRadius")
+				
+					then
+					
+						HelpMessage("Press ~INPUT_WEAPON_WHEEL_PREV~ and ~INPUT_PICKUP~ to get target to join your vehicle",true,0)
+					end 
+				else 
+					--print(GTVehicle);
+					--print("hey")
+					--print(tostring( Config.Missions[MissionName].RandomMissionPositions));
 
 				end
 			end
@@ -2766,6 +2791,7 @@ AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,ch
 		GlobalGotoGoalY = nil
 		GlobalGotoGoalZ = nil
 		GlobalTargetPed=nil
+		GlobalTargetInVehicle=false
 		PlayingAnimL=false
 		PlayingAnimD=false
 		PedLeaderModel=nil
@@ -10437,6 +10463,116 @@ function PutPlayerIntoTargetVehicle(PedVehicle,input)
 
 end
 
+
+--place target in players vehicle 
+--lastly look for turrets, firstly non-turret seatids
+--only place if the seatid is free
+
+function PutTargetPedIntoPlayerVehicle(PedVehicle,input)
+	--already in the vehicle
+	if GetVehiclePedIsIn(GlobalTargetPed, false) == GetVehiclePedIsIn(GetPlayerPed(-1),false) or getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius") <= 0 then 
+		return
+	end
+
+	local coords = GetEntityCoords(GetPlayerPed(-1),true)
+	local v = GetEntityCoords(GlobalTargetPed,true)
+
+	if GetDistanceBetweenCoords(coords.x,coords.y,coords.z, v.x, v.y, v.z, true) >  
+	getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius")
+	then
+		Notify("~h~~r~Your vehicle needs to be within "..getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius").."m of the target for them to enter")
+		TriggerEvent("mt:missiontext2","~r~The target needs to be within "..getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius").."m of your vehicle to enter", 4000)
+		Wait(3500)
+		return
+		
+	end
+	
+	local maxseatid = GetVehicleMaxNumberOfPassengers(PedVehicle) - 1
+		--print(vehicleHash.."  maxseatid:"..maxseatid)
+	local setPed=false
+	
+		--if target is a driver lets check driver's seat first
+		if not getMissionConfigProperty(input, "IsDefendTargetPassenger")
+		and IsVehicleSeatFree(PedVehicle, -1) then 
+			SetPedIntoVehicle(GlobalTargetPed, PedVehicle, -1)
+			setPed=true
+					
+			Notify("~h~~g~Target moved to your vehicle as the driver")
+			TriggerEvent("mt:missiontext2","~g~Target moved to your vehicle as the driver", 4000)
+			Wait(3500)
+			return
+		
+		end
+		
+		--have target not get into custom preferred seats or turrets first.
+		if not setPed then 
+		
+			for v = -1,maxseatid,1 
+			do
+				--print("vehicleseatid:"..v)
+			
+				if IsVehicleSeatFree(PedVehicle, v) then
+					SetPedIntoVehicle(GlobalTargetPed, PedVehicle, v)
+					setPed=true
+					if v == -1 then 
+						Notify("~h~~g~Target moved to your vehicle as the driver")
+						TriggerEvent("mt:missiontext2","~g~Target moved to your vehicle as the driver", 4000)
+					else 
+						Notify("~h~~g~Target moved to your vehicle as a passenger")
+						TriggerEvent("mt:missiontext2","~g~Target moved to your vehicle as a passenger", 4000)
+					end 
+				
+					Wait(3500)
+					return
+				end
+				
+			end		
+		
+		end		
+		
+		
+		--get override, like for apc gun, which is not a turret...
+		local prefseat = getPreferrableSeatId(input,GetEntityModel(PedVehicle))
+	
+		if prefseat ~=nil and IsVehicleSeatFree(PedVehicle, prefseat) then
+			SetPedIntoVehicle(GlobalTargetPed, PedVehicle, prefseat)
+			setPed=true
+			--print("prefseat:"..prefseat)
+			Wait(3500)
+			return 
+		
+		end		
+		
+		
+		for v = -1,maxseatid,1 
+		do
+			--print("vehicleseatid:"..v)
+			--look for turret seats first...IsTurretSeat...
+			if  Citizen.InvokeNative(0xE33FFA906CE74880,PedVehicle, v) and IsVehicleSeatFree(PedVehicle, v) then
+				SetPedIntoVehicle(GlobalTargetPed, PedVehicle, v)
+				setPed=true
+			
+				Notify("~h~~g~Target moved to a turret on the your vehicle")
+				TriggerEvent("mt:missiontext2","~gTarget moved to a turret on the your vehicle", 4000)
+				Wait(3500)
+				return 
+			end
+			
+		end
+		
+		
+		if not setPed then--print
+			Notify("~h~~r~All seats are taken in your vehicle, target cannot enter the vehicle")
+			TriggerEvent("mt:missiontext2","~r~All seats are taken in your vehicle, target cannot enter the vehicle", 4000)
+			Wait(3500)
+		end
+		
+		
+		return setPed
+
+
+end
+
 function getFailedMessage(currentmission) 
 
 	if Config.Missions[currentmission].FailedMessage ~= nil then
@@ -12981,12 +13117,15 @@ Citizen.CreateThread(function()
     while true do
         Wait(50)
 		
-		if Config.HostileAmbientPeds and Config.HostileAmbientPeds > 0 then 
+		if Config.HostileAmbientPeds and Config.HostileAmbientPeds > 0 or (Active == 1 and MissionName ~="N/A" 
+			and getMissionConfigProperty(MissionName, "HostileAmbientPeds") and getMissionConfigProperty(MissionName, "HostileAmbientPeds") > 0) then 
 		   for _, group in ipairs(relationshipTypes) do
 				-- not sure about argument order, players don't have AI so only one of these should be needed
 				--SetRelationshipBetweenGroups(RELATIONSHIP_HATE, GetHashKey('PLAYER'), GetHashKey(group))
+				SetRelationshipBetweenGroups(RELATIONSHIP_HATE, GetHashKey(group), GetHashKey('ISDEFENDTARGET'))
 				SetRelationshipBetweenGroups(RELATIONSHIP_HATE, GetHashKey(group), GetHashKey('PLAYER'))
 				SetRelationshipBetweenGroups(RELATIONSHIP_COMPANION,  GetHashKey(group), GetHashKey(group))
+				
 				
 				--try to minimize infighting on the whole: 
 				if Config.HostileAmbientPeds == 1 then
@@ -17014,17 +17153,36 @@ Citizen.CreateThread(function()
 	--if DPAD LEFT AND LB PRESSED ('E' key and 'SCROLLWHEEL UP' key)
 		 if Active == 1 and MissionName ~="N/A" and IsControlPressed(0, 15) and  IsControlPressed(0, 38) then
 			
-			if Config.Missions[MissionName].IsDefendTarget and GlobalTargetPed and GetVehiclePedIsIn(GlobalTargetPed, false) and 
-			DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
-				
-				PutPlayerIntoTargetVehicle(GetVehiclePedIsIn(GlobalTargetPed, false),MissionName)
+			--print(GlobalTargetInVehicle)
 			
-			else
-				if Config.Missions[MissionName].IsDefendTarget and GlobalTargetPed then 
-					Notify("~r~Cannot find the target's vehicle to enter")
-					Wait(3500)
+			if GlobalTargetInVehicle then 
+				if Config.Missions[MissionName].IsDefendTarget and GlobalTargetPed and GetVehiclePedIsIn(GlobalTargetPed, false) and 
+				DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
+					
+					PutPlayerIntoTargetVehicle(GetVehiclePedIsIn(GlobalTargetPed, false),MissionName)
+				
+				else
+					if Config.Missions[MissionName].IsDefendTarget and GlobalTargetPed then 
+						Notify("~r~Cannot find the target's vehicle to enter")
+						Wait(1500)
+					end
 				end
+			else 
+			
+				if Config.Missions[MissionName].IsDefendTarget and Config.Missions[MissionName].IsVehicleDefendTargetChase and GlobalTargetPed and GetVehiclePedIsIn(GlobalTargetPed, false) == 0 and GetVehiclePedIsIn(GetPlayerPed(-1), false) > 0 and 
+					DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
+						
+						PutTargetPedIntoPlayerVehicle(GetVehiclePedIsIn(GetPlayerPed(-1), false),MissionName)
+					
+					else
+						if Config.Missions[MissionName].IsDefendTarget and GlobalTargetPed then 
+							Notify("~r~Target cannot find the player's vehicle to enter")
+							Wait(1500)
+						end
+					end			
+				
 			end
+			
 		end	
 
 			
@@ -17509,7 +17667,7 @@ Citizen.CreateThread(function()
 			and  getMissionConfigProperty(MissionName, "HostileAmbientPeds") and getMissionConfigProperty(MissionName, "HostileAmbientPeds") > 0 
 			then
 			
-				print("do hostile zone")
+				--print("do hostile zone")
 				doHostileZone(ped)
 			end
 		end
