@@ -63,6 +63,9 @@ Players can toggle night vision and thermal vision if enabled. Player will press
 For IsDefendTarget missions, where the target is a vehicle, and the player is within a range of the vehicle, Pressing 
 DPAD LEFT AND LB PRESSED ('E' key and 'SCROLLWHEEL UP' key) will have the player enter (teleport to) the drivers seat if empty,
 else any turret seat if empty, else any passanger seat if empty. This can make some escort/transport missions more fun.
+Similarly, if the target you are defending gets thrown out of their vehicle, and you are in range, and in a vehicle, you 
+can use the same key combination DPAD LEFT AND LB PRESSED ('E' key and 'SCROLLWHEEL UP' key), to have the target enter your 
+vehicle.
 
 When in a vehicle, and an AI Backup is the vehicle with the player, pressing LB + RB or Q + E keys (default) will swap the seat you are in with you backup's seat. This can
 be helpful for switching to a turret, or letting AI drive etc...
