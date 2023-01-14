@@ -357,6 +357,17 @@ A few settings on this one to get the behaviour to be correct and the mission to
 Mission55 similar to Mission53, except the player flys the plane, and the isdefendtarget AI is a passenger. Other players can hope on extra seats, like turrents, or fly other planes to defend the AI plane so it can make it to the goal. 
 
 
+Mission56 similar to Mission24, except no regular enemies, the ambient peds are the enemies. HostileAmbientPeds=1, this setting makes the ambient peds all attack
+the players.
+
+Mission57 similar to Mission27, except no regular enemies, the ambient peds are the enemies. HostileAmbientPeds=1, this setting makes the ambient peds all attack
+the players. 
+
+Mission58 similar to Mission54, except its helicopters. 
+
+Mission59 similar to Mission55, except its helicopters. 
+
+
 
 	
 
