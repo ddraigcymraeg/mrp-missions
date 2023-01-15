@@ -47,7 +47,7 @@ Config.UseSafeHouseTargetPedHeal=true
 Config.BackupPeds={ 's_m_y_blackops_01', 's_m_y_blackops_02', 's_m_y_blackops_03',  's_m_y_swat_01' }
 
 -- L3 + DPAD LEFT,
-Config.MissionDoBackup=true
+Config.MissionDoBackup=false
 
 Config.BackupPedHealth=5000
 
