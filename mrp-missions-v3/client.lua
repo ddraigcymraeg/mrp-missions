@@ -190,6 +190,8 @@ local mrprescuecountG = 0
 local mrpcheckpointG = 0
 local mrpcheckpointsclaimedG = 0
 local playerwasinmissionG = 0
+local mrpoptoutG = 0
+local mrpoptinG = 0
 
 --Used for Type="HostageRescue" when IsRandom=true
 local IsRandomMissionHostageCount = 0
@@ -16625,6 +16627,7 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(5)
+		
 		--print(DecorGetInt(GetPlayerPed(-1),"mrpoptout"))
 		if DecorGetInt(GetPlayerPed(-1),"mrpoptin") == 0 and Config.EnableOptIn then 
 			DecorSetInt(GetPlayerPed(-1),"mrpoptout",1)
@@ -16641,6 +16644,7 @@ Citizen.CreateThread(function()
 					--Notify("~b~You can opt out after the mission is over with the '~o~Q~b~' and '~o~[~b~' keys or ~o~RB + DPAD DOWN")
 					
 					HelpMessage("You can opt out after the mission is over with ~INPUT_SNIPER_ZOOM_OUT_SECONDARY~ and ~INPUT_COVER~",false,5000)
+					
 					
 					if getMissionConfigProperty(MissionName,"TeleportToSafeHouseOnMissionStart") then 
 						doTeleportToSafeHouse(false)
@@ -17503,6 +17507,20 @@ Citizen.CreateThread(function()
 								
 				
 				end
+				
+				--if Config.EnableOptIn and Config.EnableOptInHUD then 
+			
+				--	HelpMessage("You can opt out after the mission is over with ~INPUT_SNIPER_ZOOM_OUT_SECONDARY~ and ~INPUT_COVER~",false,0)
+					
+				--elseif Config.EnableSafeHouseOptIn and Config.EnableOptInHUD then
+					
+				--	HelpMessage("Go to a mission's safehouse and then press ~INPUT_SNIPER_ZOOM_IN_SECONDARY~ to join the mission",false,0)
+					
+					
+				--end
+
+				
+				
 				
 			else
 
@@ -18895,6 +18913,9 @@ AddEventHandler("baseevents:onPlayerDied", function(player, reason, pos)
 	mrpobjectivecountG = DecorGetInt(GetPlayerPed(-1),"mrpobjrescuecount")
 	mrpcheckpointG = DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint")
 	mrpcheckpointsclaimedG = DecorGetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed")
+	mrpoptoutG = DecorGetInt(GetPlayerPed(-1),"mrpoptout")
+	mrpoptinG = DecorGetInt(GetPlayerPed(-1),"mrpoptin")
+	
 	--print("made it died")
 	if (Active == 1) and  MissionName ~="N/A" and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
 		if SHOWWASTEDMESSAGE  then 
@@ -18931,6 +18952,8 @@ AddEventHandler("baseevents:onPlayerKilled", function(player, killer, reason, po
 	mrpobjectivecountG = DecorGetInt(GetPlayerPed(-1),"mrpobjrescuecount")
 	mrpcheckpointG = DecorGetInt(GetPlayerPed(-1),"mrpcheckpoint")
 	mrpcheckpointsclaimedG = DecorGetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed")
+	mrpoptoutG = DecorGetInt(GetPlayerPed(-1),"mrpoptout")
+	mrpoptinG = DecorGetInt(GetPlayerPed(-1),"mrpoptin")
 	--print("made it killed")
 	if (Active == 1) and  MissionName ~="N/A" and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then
 		if SHOWWASTEDMESSAGE  then 
@@ -18982,7 +19005,9 @@ AddEventHandler("playerSpawned", function(spawn)
 	DecorSetInt(GetPlayerPed(-1),"mrprescuecount",mrprescuecountG)
 	DecorSetInt(GetPlayerPed(-1),"mrpobjrescuecount",mrpobjectivecountG)	
 	DecorSetInt(GetPlayerPed(-1),"mrpcheckpoint",mrpcheckpointG)	
-	DecorSetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed",mrpcheckpointsclaimedG)	
+	DecorSetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed",mrpcheckpointsclaimedG)
+	DecorSetInt(GetPlayerPed(-1),"mrpcheckpoint",mrpoptoutG)	
+	DecorSetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed",mrpoptinG)
 		
 	SetPedParachuteTintIndex(GetPlayerPed(-1), 6)		
 	
