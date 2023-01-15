@@ -1,6 +1,6 @@
 # CrackDown: Missions and Mission Generator/Mission Creation Resource. 
 See first post at the link below for all the information about mission types and the primary game mode:
-https://forum.cfx.re/t/release-fivem-crackdown-game-mode-and-mission-generator-creation-beta/275613
+https://forum.cfx.re/t/release-crackdown-missions-system-v3-github-for-your-own-missions/961763
 
 NOTE: There seems to be a bug when the resource is started and set to automatically spawn the first mission when a player joins, and 2 or more players 
 join at the same time. There can be sync issues. This could well be an issue with FiveM instead of this resource. This only happens when the FiveM server is started 
