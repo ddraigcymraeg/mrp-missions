@@ -191,7 +191,7 @@ local mrpcheckpointG = 0
 local mrpcheckpointsclaimedG = 0
 local playerwasinmissionG = 0
 local mrpoptoutG = 0
-local mrpoptinG = 2
+local mrpoptinG = 1
 
 --Used for Type="HostageRescue" when IsRandom=true
 local IsRandomMissionHostageCount = 0
@@ -19006,8 +19006,8 @@ AddEventHandler("playerSpawned", function(spawn)
 	DecorSetInt(GetPlayerPed(-1),"mrpobjrescuecount",mrpobjectivecountG)	
 	DecorSetInt(GetPlayerPed(-1),"mrpcheckpoint",mrpcheckpointG)	
 	DecorSetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed",mrpcheckpointsclaimedG)
-	DecorSetInt(GetPlayerPed(-1),"mrpoptoutG",mrpoptoutG)	
-	DecorSetInt(GetPlayerPed(-1),"mrpoptinG",mrpoptinG)
+	DecorSetInt(GetPlayerPed(-1),"mrpoptout",mrpoptoutG)	
+	DecorSetInt(GetPlayerPed(-1),"mrpoptin",mrpoptinG)
 		
 	SetPedParachuteTintIndex(GetPlayerPed(-1), 6)		
 	
