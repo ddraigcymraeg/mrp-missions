@@ -190,8 +190,8 @@ local mrprescuecountG = 0
 local mrpcheckpointG = 0
 local mrpcheckpointsclaimedG = 0
 local playerwasinmissionG = 0
-local mrpoptoutG = 0
-local mrpoptinG = 1
+local mrpoptoutG = 1
+local mrpoptinG = 0
 
 --Used for Type="HostageRescue" when IsRandom=true
 local IsRandomMissionHostageCount = 0
@@ -1539,19 +1539,22 @@ AddEventHandler("mt:missiontext", function(input, timet)
 		--end
 	end
 	
-	if getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius") > 0 and getMissionConfigProperty(input, "IsDefendTarget") then 
-			--Notify("~h~~b~Within "..getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius")  
-			--.."m of the target's vehicle, you can press ~INPUT_WEAPON_WHEEL_PREV~ AND ~INPUT_PICKUP~ to enter it")
-			--print("made it")
-			--lineTwo ="Within " 
-			
-			TriggerEvent("mt:doisDefendVehicleHelp")
-			
-	end
 	
 	--global here since this can be called twice sometimes. 
 	--also show for all players, including those opted out.
 	if not MissionDoneSMS then 
+	
+	
+		if getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius") > 0 and getMissionConfigProperty(input, "IsDefendTarget") then 
+				--Notify("~h~~b~Within "..getMissionConfigProperty(input, "IsDefendTargetVehiclePassengerRadius")  
+				--.."m of the target's vehicle, you can press ~INPUT_WEAPON_WHEEL_PREV~ AND ~INPUT_PICKUP~ to enter it")
+				--print("made it")
+				--lineTwo ="Within " 
+				--print("sms and isvehicledefend")
+				TriggerEvent("mt:doisDefendVehicleHelp")
+				
+		end
+	
 		--RequestStreamedTextureDict("CHAR_WE",1)
 		--while not HasStreamedTextureDictLoaded("CHAR_WE")  do
 				--Wait(1)
@@ -19008,6 +19011,12 @@ AddEventHandler("playerSpawned", function(spawn)
 	DecorSetInt(GetPlayerPed(-1),"mrpcheckpointsclaimed",mrpcheckpointsclaimedG)
 	DecorSetInt(GetPlayerPed(-1),"mrpoptout",mrpoptoutG)	
 	DecorSetInt(GetPlayerPed(-1),"mrpoptin",mrpoptinG)
+	
+	--print("optout and optin1")
+	--print(DecorGetInt(GetPlayerPed(-1),"mrpoptout"))
+	--print(DecorGetInt(GetPlayerPed(-1),"mrpoptin"))
+	--print("enableoptin")
+	--print(Config.EnableOptIn)
 		
 	SetPedParachuteTintIndex(GetPlayerPed(-1), 6)		
 	
@@ -19064,6 +19073,14 @@ AddEventHandler("playerSpawned", function(spawn)
         for _, i in ipairs(ptable) do
 			cnt = cnt + 1 
         end	
+		--need to use below (for one sync or more modern way?)
+		--[[
+		i,player in ipairs(GetActivePlayers()) do
+			local ped = GetPlayerPed(player)
+– 			--do stuff
+		end
+		--]]
+		
 		--if cnt = 1, then only 1 player, this player, 
 		--so have server handle to start or restart a mission
 		--print("player spawned firstjoin is true")
@@ -19072,13 +19089,16 @@ AddEventHandler("playerSpawned", function(spawn)
 		if not (Config.EnableOptIn or Config.EnableSafeHouseOptIn)then
 			DecorSetInt(GetPlayerPed(-1),"mrpoptout",0)
 			DecorSetInt(GetPlayerPed(-1),"mrpoptin",1)
+			--print("a")
 		elseif cnt == 1 and (Config.EnableOptIn) and Config.StartMissionsOnSpawn then 
 			--first player starts the missions
 			DecorSetInt(GetPlayerPed(-1),"mrpoptout",0)
 			DecorSetInt(GetPlayerPed(-1),"mrpoptin",1)	
+			--print("b")
 		elseif cnt == 1 and (Config.EnableSafeHouseOptIn) and Config.StartMissionsOnSpawn then 
 			DecorSetInt(GetPlayerPed(-1),"mrpoptout",0)
 			DecorSetInt(GetPlayerPed(-1),"mrpoptin",1)	
+			--print("c")
 		
 		end
 		
@@ -19093,9 +19113,17 @@ AddEventHandler("playerSpawned", function(spawn)
 				print("sv:checkmission,false")
 			end
 		end
+		
+			--print("optout and optin2")
+	--print(DecorGetInt(GetPlayerPed(-1),"mrpoptout"))
+	--print(DecorGetInt(GetPlayerPed(-1),"mrpoptin"))
 
 		
 	else 
+	
+				--print("optout and optin3")
+	--print(DecorGetInt(GetPlayerPed(-1),"mrpoptout"))
+	--print(DecorGetInt(GetPlayerPed(-1),"mrpoptin"))
 	
 		
 		--reset safehouse access when player respawns?
