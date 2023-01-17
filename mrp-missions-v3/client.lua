@@ -19090,6 +19090,11 @@ AddEventHandler("playerSpawned", function(spawn)
 			DecorSetInt(GetPlayerPed(-1),"mrpoptout",0)
 			DecorSetInt(GetPlayerPed(-1),"mrpoptin",1)
 			--print("a")
+		
+		---BELOW deprecated, dont have since mrpoptoutG and mrpoptinG above will drive
+		--logic for mrpoptout and mrpoptin. Dont have Config.EnableOptIn or 
+		--Config.EnableSafeHouseOptIn teleport players if not opted in.
+		--[[
 		elseif cnt == 1 and (Config.EnableOptIn) and Config.StartMissionsOnSpawn then 
 			--first player starts the missions
 			DecorSetInt(GetPlayerPed(-1),"mrpoptout",0)
@@ -19099,8 +19104,11 @@ AddEventHandler("playerSpawned", function(spawn)
 			DecorSetInt(GetPlayerPed(-1),"mrpoptout",0)
 			DecorSetInt(GetPlayerPed(-1),"mrpoptin",1)	
 			--print("c")
+		]]--	
 		
 		end
+		
+		
 		
 		--make sure we are respawning not during mid-game
 		if MissionName =="N/A" and Active == 0 then
@@ -19143,8 +19151,10 @@ AddEventHandler("playerSpawned", function(spawn)
 --do we teleport?
 --Wait(1000)
 	if not firstjoin then --already taken care of in missionblips event
-		doTeleportToSafeHouse(true)
-	
+		if DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 then 
+			--print("hey");
+			doTeleportToSafeHouse(true)
+		end 
 	end
 	
 	if MissionName ~="N/A" and Active == 1 then
