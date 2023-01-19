@@ -8527,7 +8527,52 @@ end)
 --used with SpawnAPed, which is derived from the default SpawnPed event
 Citizen.CreateThread(function()
     while true do
-		if (Active == 1) and  MissionName ~="N/A" and Config.Missions[MissionName].IndoorsMission and MissionTriggered then 
+		if (Active == 1) and  MissionName ~="N/A" and Config.Missions[MissionName].IndoorsMission and MissionTriggered then
+			--print("serverid:"..GetPlayerServerId(PlayerId()))
+			--print("PlayerId:"..PlayerId())
+			
+			
+			
+			local pid = 0
+			local foundIamspawner = false
+			
+			--For one sync legacy find if I am the greatest playerid, is so, I am the spawner
+			--experimental.
+			if Config.UsingOneSync then 
+				for _, i in ipairs(GetActivePlayers()) do
+					if NetworkIsPlayerActive(i) then
+						pid  = i
+					end
+				end
+				
+				if PlayerId() == pid then
+					--print("PlayerId found:"..PlayerId())
+					foundIamspawner = true
+				else
+					--print("PlayerId not found:"..PlayerId())
+				end
+				
+			else
+				--onesync legacy turned off, default beahvior.
+				if NetworkIsHost() then 
+					foundIamspawner = true
+				end
+			
+			end
+			
+			--[[
+				local players = GetPlayers()
+				local pid2 = 0;
+				for index,value in ipairs(players) do
+					pid2 = value
+				end
+				
+				if PlayerId() == pid2 then
+					--print("PlayerId found 2:"..PlayerId())
+				else 
+					--print("PlayerId not found 2:"..PlayerId())
+				end
+			--]]
 			for i, v in pairs(Config.Missions[MissionName].Peds) do
 				
 				--print("indoorsmission"..i)
@@ -8537,8 +8582,10 @@ Citizen.CreateThread(function()
 					
 				else
 					--allow for 'outside' peds to spawn right away, but let host do that
-					if(Config.Missions[MissionName].Peds[i].outside and NetworkIsHost()) then 
+					
+					if(Config.Missions[MissionName].Peds[i].outside and foundIamspawner) then 
 						--print("spawn outside ped"..i)
+						
 						SpawnAPed(MissionName,i,false)
 						Config.Missions[MissionName].Peds[i].spawned = true
 						TriggerServerEvent("sv:spawned",MissionName, i, false)	
@@ -8547,7 +8594,7 @@ Citizen.CreateThread(function()
 					--print("indoorsmission"..i)
 					--check if within the IndoorsMissionSpawnRadius for the spawn, then check if this client is indeed the closest player
 					local p1 = GetEntityCoords(GetPlayerPed(-1), true)
-					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Peds[i].spawned then 
+					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Peds[i].spawned and not Config.Missions[MissionName].Peds[i].outside then 
 					
 						local closestPlayer, closestDistance = GetClosestPlayerToCoord(Config.Missions[MissionName].Peds[i].x,Config.Missions[MissionName].Peds[i].y,Config.Missions[MissionName].Peds[i].z) 
 						
@@ -8583,8 +8630,9 @@ Citizen.CreateThread(function()
 				else
 				
 					--allow for 'outside' vehicles to spawn right away, but let host do that
-					if(Config.Missions[MissionName].Vehicles[i].outside and NetworkIsHost()) then 
+					if(Config.Missions[MissionName].Vehicles[i].outside and foundIamspawner) then 
 						--print("spawn outside vehicle"..i)
+						
 						SpawnAPed(MissionName,i,true)
 						Config.Missions[MissionName].Vehicles[i].spawned = true
 						TriggerServerEvent("sv:spawned",MissionName, i, true)	
@@ -8594,7 +8642,7 @@ Citizen.CreateThread(function()
 					
 					--check if within the IndoorsMissionSpawnRadius for the spawn, then check if this client is indeed the closest player
 					local p1 = GetEntityCoords(GetPlayerPed(-1), true)
-					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Vehicles[i].spawned then 
+					if GetDistanceBetweenCoords(p1.x,p1.y,p1.z,Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z,true) <= getMissionConfigProperty(MissionName, "IndoorsMissionSpawnRadius") and not Config.Missions[MissionName].Vehicles[i].spawned and not Config.Missions[MissionName].Vehicles[i].outside then 
 						
 						local closestPlayer, closestDistance = GetClosestPlayerToCoord(Config.Missions[MissionName].Vehicles[i].x,Config.Missions[MissionName].Vehicles[i].y,Config.Missions[MissionName].Vehicles[i].z) 
 						
@@ -8624,7 +8672,6 @@ Citizen.CreateThread(function()
     		Citizen.Wait(1)
 	end
 end)
-
 --does ray cast on all players for the spawn position to see if 
 --the spawn position can spawn a vehicle/ped
 --need to check for all players per client, not just for local player, since other players can be > 30m but in line of sight
