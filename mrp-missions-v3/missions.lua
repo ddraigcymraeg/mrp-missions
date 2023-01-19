@@ -5,6 +5,10 @@ Config.MissionSpaceTime = 30000 --milliseconds between missions
 Config.MissionLengthMinutes = 60
 Config.MissionNoTimeout = false
 
+--only support for onesync legacy.
+--'set onesync legacy'
+Config.UsingOneSync = false
+
 --change hud for splitscreen resolution?
 Config.HUDSplitScreen = false
 
