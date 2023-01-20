@@ -8522,6 +8522,41 @@ AddEventHandler('SpawnPed', function(input)
     aliveCheck()
 end)
 
+
+function FoundIamSpawner()
+
+	local pid = 0
+			
+	--For one sync legacy find if I am the greatest playerid, is so, I am the spawner
+	--experimental.
+	if Config.UsingOneSync then 
+		for _, i in ipairs(GetActivePlayers()) do
+			if NetworkIsPlayerActive(i) then
+				pid  = i
+			end
+		end
+		if PlayerId() == pid then
+			--print("PlayerId found:"..PlayerId())
+			return true
+		else
+			return false
+		--print("PlayerId not found:"..PlayerId())
+		end
+				
+	else
+		--onesync legacy turned off, default beahvior.
+		if NetworkIsHost() then 
+			return true
+			
+		else 
+			return false
+		end
+			
+	end
+
+
+end
+
 --FOR: Config.Missions[MissionName].IndoorsMission=true
 --spawn NPCs nearby (30m) as players progress, to stop invisible peds showing up
 --used with SpawnAPed, which is derived from the default SpawnPed event
@@ -8531,34 +8566,6 @@ Citizen.CreateThread(function()
 			--print("serverid:"..GetPlayerServerId(PlayerId()))
 			--print("PlayerId:"..PlayerId())
 			
-			
-			
-			local pid = 0
-			local foundIamspawner = false
-			
-			--For one sync legacy find if I am the greatest playerid, is so, I am the spawner
-			--experimental.
-			if Config.UsingOneSync then 
-				for _, i in ipairs(GetActivePlayers()) do
-					if NetworkIsPlayerActive(i) then
-						pid  = i
-					end
-				end
-				
-				if PlayerId() == pid then
-					--print("PlayerId found:"..PlayerId())
-					foundIamspawner = true
-				else
-					--print("PlayerId not found:"..PlayerId())
-				end
-				
-			else
-				--onesync legacy turned off, default beahvior.
-				if NetworkIsHost() then 
-					foundIamspawner = true
-				end
-			
-			end
 			
 			--[[
 				local players = GetPlayers()
@@ -8583,7 +8590,7 @@ Citizen.CreateThread(function()
 				else
 					--allow for 'outside' peds to spawn right away, but let host do that
 					
-					if(Config.Missions[MissionName].Peds[i].outside and foundIamspawner) then 
+					if(Config.Missions[MissionName].Peds[i].outside and FoundIamSpawner()) then 
 						--print("spawn outside ped"..i)
 						
 						SpawnAPed(MissionName,i,false)
@@ -8630,7 +8637,7 @@ Citizen.CreateThread(function()
 				else
 				
 					--allow for 'outside' vehicles to spawn right away, but let host do that
-					if(Config.Missions[MissionName].Vehicles[i].outside and foundIamspawner) then 
+					if(Config.Missions[MissionName].Vehicles[i].outside and FoundIamSpawner()) then 
 						--print("spawn outside vehicle"..i)
 						
 						SpawnAPed(MissionName,i,true)
