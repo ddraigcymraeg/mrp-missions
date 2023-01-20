@@ -32,6 +32,17 @@ completion reward, can be set globally and/or per mission. Sniper ammo, as well 
 many missions a little harder (players cant sit back and snipe as much). Look for 'SafeHouseSniperExplosiveRoundsGiven' in missions.lua to set these variables 
 and to see default ammo amounts.
 
+ONESYNC SUPPORT: 
+Added experimental ONESYNC support server.lua in the root of the repo, which you can replac with the one in the repo.
+This resource may have problems with OneSync servers. Depending on the mission, the server side script asks each client to return NetworkIsHost() and spawn missions entities on the one that is true. I gather with OneSync this will return true for all clients(?).
+If that is a problem, you will need to change that code to either pick a random client, or use another solution to pick 
+which client will be the host. Sixsens on forum.fivem.net has used this resource for his public RP server fine, but 
+had to make some changes when he went to OneSync. One of the changes he made was to set IndoorsMission=true for 
+missions, which will spawn entities dynamically on any player's machine which is closest to where the entity should spawn. 
+He changed the hardcoded value for distance check (IndoorsMissionSpawnRadius) from 30m to 300m. Hopefully you will not 
+need to do this if you are on OneSync. 
+UPDATE: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync server.lua provided, as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on may make the resource unstable. These onesync settings are done in server.cfg
+
 CONTROLS (which can be turned on/off depending on mission config settings, and based on DEFAULT GTA5 binds): 
 
 Mission Help in-game, which has all the control information below + more, can be viewed by pressing RIGHT STICK DOWN & LB.
