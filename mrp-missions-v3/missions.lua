@@ -1905,6 +1905,7 @@ Config.Missions = {
 	MissionTriggerRadius = 500.0,
 	--VehicleGotoMissionTarget=true,
 	--HostageRescue=true,
+	GenerateExtraRandomEventsNum=0,
 	
 	SMS_Subject="Help!",
 	SMS_Message="Help me! I've been kidnapped by a maniac in a sports car. He's coked up and running over people!",
