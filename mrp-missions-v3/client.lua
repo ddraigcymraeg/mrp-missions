@@ -790,6 +790,19 @@ AddEventHandler("onResourceStart", function(resource)
    
 	if resource == GetCurrentResourceName() then
 		
+		if GetPlayerPed(-1) > 0 then
+		
+			if not (Config.EnableOptIn or Config.EnableSafeHouseOptIn)then
+				DecorSetInt(GetPlayerPed(-1),"mrpoptout",0)
+				DecorSetInt(GetPlayerPed(-1),"mrpoptin",1)
+			else
+			--resouirce restart, let players opt-in again 
+				DecorSetInt(GetPlayerPed(-1),"mrpoptout",1)
+				DecorSetInt(GetPlayerPed(-1),"mrpoptin",0)			
+			end
+		end 
+		
+		
 		--reset player upgrade mode
 		if GetEntityMaxHealth(GetPlayerPed(-1)) == Config.SafeHouseCrackDownModeHealthAmount and Config.SafeHouseCrackDownMode then 
 			playerUpgraded = true
@@ -8522,10 +8535,11 @@ AddEventHandler('SpawnPed', function(input)
     aliveCheck()
 end)
 
-
 function FoundIamSpawner()
 
 	local pid = 0
+	local foundIamspawner = false
+	local pnum = 0
 			
 	--For one sync legacy find if I am the greatest playerid, is so, I am the spawner
 	--experimental.
@@ -8534,7 +8548,9 @@ function FoundIamSpawner()
 			if NetworkIsPlayerActive(i) then
 				pid  = i
 			end
+			pnum = pnum + 1
 		end
+			--print("total players found:"..tostring(pnum))
 		if PlayerId() == pid then
 			--print("PlayerId found:"..PlayerId())
 			return true
