@@ -7,7 +7,12 @@ join at the same time. There can be sync issues. This could well be an issue wit
 and 2 or more players join at the exact same time to be the first player joining the server, that there can be sync issues.  
 
 Installation:
+
+UPDATE: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync server.lua provided, as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on may make the resource unstable. These onesync settings are done in server.cfg
+
 Install like any other FiveM Server Resource. Both mrp-missions-v3 and mrpStreetRaces need to be installed. 
+
+install resources as well from shadowstate-missionpack.zip which some missions require.
 
 'mrp-missions_spawn' is purely optional, and has defined player skins to spawn as. 
 
@@ -41,6 +46,7 @@ had to make some changes when he went to OneSync. One of the changes he made was
 missions, which will spawn entities dynamically on any player's machine which is closest to where the entity should spawn. 
 He changed the hardcoded value for distance check (IndoorsMissionSpawnRadius) from 30m to 300m. Hopefully you will not 
 need to do this if you are on OneSync. 
+
 UPDATE: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync server.lua provided, as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on may make the resource unstable. These onesync settings are done in server.cfg
 
 CONTROLS (which can be turned on/off depending on mission config settings, and based on DEFAULT GTA5 binds): 
