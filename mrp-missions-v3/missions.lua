@@ -44,8 +44,12 @@ Config.DoEnemyVehicleShortRangeBlipRange=1000
 Config.DoEnemyVehicleHeliShortRangeBlipRange=2000
 Config.DoEnemyVehicleAirplaneShortRangeBlipRange=3000
 
+Config.ObjectiveRescueShortRangeBlip=false
+Config.ObjectiveRescueShortRangeBlipDistance=100
+
 Config.UseSafeHouseRepair=true
 Config.UseSafeHouseTargetPedHeal=true
+
 
 
 Config.BackupPeds={ 's_m_y_blackops_01', 's_m_y_blackops_02', 's_m_y_blackops_03',  's_m_y_swat_01' }
@@ -2647,6 +2651,7 @@ Events = {
 	--TargetKillReward = 150, 
 	--KillReward = 150,
 	IsDefend = true,
+	GenerateExtraRandomEventsNum = 0,
 	
 	SMS_Subject="Fury Road",
 	SMS_Message="We are taking over the oil field, and you better step out of the way",
@@ -2732,8 +2737,8 @@ Events = {
 
     Marker = {
       Type     = 1,
-      Position = {x = 1453.72, y = -2282.69, z = 67.47},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
-      Size     = {x = 150.0, y = 150.0, z = 2.0},
+      Position = {x = 1453.72, y = -2282.69, z = 47.47},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 150.0, y = 150.0, z = 40.0},
       Color    = {r = 100, g = 100, b = 204},
       DrawDistance = 200.0,
     },
@@ -3695,6 +3700,7 @@ Events = {
 	VehicleGotoMissionTargetVehicle=9,
 	MissionTriggerStartPoint = {x = -29.44, y = -950.3, z = 29.41},
 	MissionTriggerRadius = 20.0,
+	GenerateExtraRandomEventsNum = 0,
 	
 	--Type = "Assassinate",	
 	Type = "Assassinate",	
@@ -3741,8 +3747,8 @@ Events = {
 
     Marker = {
       Type     = 1,
-      Position = { x = -29.44, y = -950.3, z = 29.41},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
-      Size     = {x = 150.0, y = 150.0, z = 2.0},
+      Position = { x = -29.44, y = -950.3, z = 20.41},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 150.0, y = 150.0, z = 15.0},
       Color    = {r = 100, g = 100, b = 204},
       DrawDistance = 200.0,
     },
@@ -17397,7 +17403,521 @@ RandomMissionDestinations = {
 
 
 	
- },  
+ }, 
+
+Mission60 = {
+    
+	StartMessage = "Take out the Mercenaries infrastructure and clients~n~to help finish off the threat",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "OmniCorp V2",
+	MissionMessage = "Take out the Mercenaries infrastructure and clients~n~to help finish off the threat",	
+	Type = "ObjectiveRescue",	
+	IndoorsMission = true,
+	--IndoorsMissionStrongSpawnCheck = true,
+	ObjectiveRescueShortRangeBlip = true,
+	ObjectiveRescueShortRangeBlipDistance=10,
+	SafeHouseSniperExplosiveRoundsGiven=8,
+	--MissionTriggerRadius = 10.0,
+	GenerateExtraRandomEventsNum = 0,
+	
+	SMS_Subject="OmniCorp V2",
+	SMS_Message="Our intel have revealed the clients of renegade mercenaries terrorizing San Andreas.",
+	SMS_Message2="We are calling them The Syndicate. We need someone to take out the mercs infrastructure and clients",
+	SMS_Message3="This will help finish off the threat. Can you help?",	
+		
+	--SMS_ContactPics={"CHAR_AGENT14",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="HAHA",
+	SMS_FailedMessage="You should have stayed away, this is much bigger than you",
+	SMS_PassedSubject="Thank you",
+	SMS_PassedMessage="Los Santos is safe and sound from the attack",			
+	
+    Blips = {
+		{
+		Title = "Mission: Syndicate Headquarters",
+		Position = {x = -156.94, y = -606.43, z = 48.24},
+		Icon     = 58,
+		Display  = 4,
+		Size     = 1.2,
+		Color    = 1,
+		},
+		{
+		  Title = "Mission: Mercenaries Weed Farm",
+		  Position =  { x = 1190.4223, y = -3329.8059, z = 5.6322 },
+		  Icon     = 58,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 1,
+		},
+		{
+		Title = "Mission: Mercenaries Meth Lab",
+		Position = {x = 910.5475, y = -1065.3074, z = 37.9432},
+		Icon     = 58,
+		Display  = 4,
+		Size     = 1.2,
+		Color    = 1,
+		},
+
+		{
+		Title = "Mission: Mercenaries Coke Lab",
+		Position = {x = 387.5175, y = 3584.7612, z = 33.29222},
+		Icon     = 58,
+		Display  = 4,
+		Size     = 1.2,
+		Color    = 1,
+		},	
+
+		{
+		Title = "Mission: Mercenaries Club 1",
+		Position = {x = 964.4832, y = -1027.0417, z = 40.84750},
+		Icon     = 58,
+		Display  = 4,
+		Size     = 1.2,
+		Color    = 1,
+		},					
+		
+		{
+		Title = "Mission: Mercenaries Vehicle Warehouse",
+		Position = {x = -70.74, y = -1821.85, z = 26.94},
+		Icon     = 58,
+		Display  = 4,
+		Size     = 1.2,
+		Color    = 1,
+		},	
+
+	{
+		Title = "Mission: Mercenaries Club 2",
+		Position = {x = -60.35, y = 6442.31, z = 31.49},
+		Icon     = 58,
+		Display  = 4,
+		Size     = 1.2,
+		Color    = 1,
+		},					
+		
+	},
+
+    Marker = {
+      Type     = 1,
+      Position = { x = 2358.2, y = 2920.95, z = -85.78}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	SafeHouseVehicles = {
+	"insurgent3",
+	"kuruma2",
+	"khanjali",
+	},
+	SafeHouseAircraft = 
+	{
+	"hydra",
+	"valkyrie",
+	"thruster",
+	},
+	SafeHouseBoat = 
+	{
+	"dinghy4",
+	"seashark",
+	"toro2",
+	"jetmax",
+	"submersible2",
+	"submersible",
+	},	
+	
+	BlipS = { --safehouse blip 
+		  Title = "Mission Safehouse",
+		  Position = { x = 1731.94, y = 3308.24, z = 41.22}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 417,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 2,
+		  Alpha	 =80, 
+	},	
+	MarkerS = { --safehouse marker
+		  Type     = 1,
+		  Position = { x = 1731.94, y = 3308.24, z = 40.22},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+		  Size     = {x = 6.0, y = 6.0, z = 2.0},
+		  Color    = {r = 117, g = 218, b = 255},
+		  DrawDistance = 200.0,
+	},
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = 1480.63, y = 3167.93, z = 40.99}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+	},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 1481.84, y = 3873.37, z = 30.04}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+	},	
+	
+	
+	Props = {
+		--MAZE BANK
+		{ id=1,  Name = "prop_amb_phone", isObjective=true,Position = { x = 1042.87, y = -3194.95, z = -38.36, heading = 1.44}},
+		{ id=2,  Name = "prop_amb_phone", isObjective=true,Position = {x = 960.84, y = -3001.65, z = -39.99, heading = 82.06 }},
+		--SUBMARINE
+		{ id=3,  Name = "prop_amb_phone", isObjective=true,Position = { x = 1015.71, y = -3198.44, z = -39.50, heading = 454.76 }},
+		--{ id=2,  Name = "prop_large_gold",isObjective=true, Position = {x = 1724.91, y = 3303.87, z = 41.22, heading = 174.83  }},
+		--gun bunker
+		{ id=4,  Name = "prop_amb_phone", isObjective=true,Position = { x = 1001.43, y = -3165.48, z = -34.16, heading = 86.93 }},
+		{id=5,  Name = "prop_amb_phone", isObjective=true,Position = {x = 1102.76, y = -3195.85, z = -39.50, heading = 78.55 }},
+		{id=6,  Name = "prop_amb_phone", isObjective=true,Position = {x = 1111.61, y = -3145.02, z = -37.50, heading = 270.75 }},
+		{id=7,  Name = "prop_amb_phone", isObjective=true,Position = { x = -125.36, y = -640.56, z = 168.64, heading = 99.07 }},	
+		--{ id=4,  Name = "hei_prop_hst_usb_drive", isObjective=true,Position = {x = 827.1, y = -3232.84, z = -98.83, heading = 264.05 }},
+		--{ id=5,  Name = "hei_prop_hst_usb_drive_light", Position = {x = 827.1, y = -3232.84, z = -98.83, heading = 264.05 }},
+    },
+	
+	
+	
+
+
+
+	
+	Pickups = {
+	},
+	MissionPickups = {
+		
+	},	
+		 
+	
+
+    Peds = {
+			--MAZE BANK
+			--{id = 1, modelHash = "u_m_y_juggernaut_01",isBoss=true,x = -84.47, y = -836.25, z = 40.56, heading = 144.41,outside=true, },
+			--{id = 2, modelHash = "u_m_y_juggernaut_01",isBoss=true,x = -79.44, y = -838.36, z = 40.56, heading = 161.16 ,outside=true, },
+			--{id = 3, modelHash = "ig_bankman",Weapon =0xAF113F99,x = -67.55, y = -819.04, z = 243.39, heading = 71.12,target=true },
+			--{id = 3, modelHash = "cs_gurk",Weapon =0xEFE7E2DF,x = -66.49, y = -821.17, z = 243.39, heading = 5.69,target=true },
+			
+			--{id = 1, modelHash = "a_m_m_og_boss_01",Weapon =0xA2719263, x = 1041.35, y = -3200.43, z = -38.16, heading = 193.16 },
+			{id = 1,  modelHash = "mp_m_weed_01", x = 1040.46, y = -3206.57, z = -38.16, heading = 181.4, friendly=true},
+			--{id = 3,  modelHash = "mp_f_weed_01", x = 1050.19, y = -3188.05, z = -39.05, heading = 63.79, friendly=true},
+			--{id = 4,  modelHash = "mp_f_weed_01", x = 1060.6, y = -3203.34, z = -39.16, heading = 189.46, friendly=true},
+			
+						
+			--{id = 2, modelHash = "mp_m_waremech_01",Weapon =0xA2719263, x = 963.82, y = -3000.11, z = -39.64, heading = 96.14 },
+			{id = 2,  modelHash = "mp_m_weed_01", x = 1008.06, y = -3021.83, z = -39.65, heading = 329.15, friendly=true},
+			--{id = 7,  modelHash = "mp_m_weed_01", x = 980.26, y = -3031.24, z = -39.65, heading = 190.97, friendly=true},
+			--{id = 8,  modelHash = "mp_m_weed_01",  x = 955.08, y = -2990.53, z = -39.65, heading = 26.19, friendly=true},
+			
+			
+			--{id = 9, modelHash = "mp_m_meth_01",Weapon =0xA2719263, x = 1013.46, y = -3201.54, z = -38.99, heading = 75.86  },
+			--{id = 10,  modelHash = "mp_f_meth_01", x = 1005.92, y = -3198.88, z = -38.99, heading = 70.97, friendly=true},
+			{id = 3,  modelHash = "mp_f_meth_01",x = 1015.57, y = -3195.84, z = -38.99, heading = -70.84, friendly=true},		
+
+			--{id = 12, modelHash = "g_m_y_lost_03",Weapon =0xA2719263,  x = 1009.04, y = -3169.83, z = -38.89, heading = 396.72  },
+			--{id = 13,  modelHash = "mp_m_weapwork_01", x = 1014.62, y = -3151.51, z = -38.9, heading = 224.12, friendly=true},
+			{id = 4,  modelHash = "mp_f_stripperlite",x = 1006.98, y = -3164.68, z = -34.08, heading = 38.68, friendly=true},		
+
+			--{id = 15, modelHash = "mp_m_cocaine_01",Weapon =0xA2719263,  x = 1100.37, y = -3194.53, z = -38.99, heading = 89.25  },
+			--{id = 16,  modelHash = "mp_f_cocaine_01",  x = 1088.78, y = -3198.13, z = -38.99, heading = 118.35, friendly=true},
+			{id = 5,  modelHash = "mp_f_cocaine_01", x = 1096.84, y = -3194.34, z = -38.99, heading = 327.8, friendly=true},		
+
+			--{id = 18, modelHash = "g_m_y_lost_01",Weapon =0xA2719263,  x = 1123.62, y = -3148.1, z = -37.06, heading = 125.2  },
+			{id = 6,  modelHash = "mp_f_stripperlite",   x = 1120.89, y = -3161.36, z = -36.87, heading = 133.09 , friendly=true},
+			--{id = 20,  modelHash = "mp_m_weapwork_01",x = 1099.54, y = -3142.99, z = -37.52, heading = 405.43, friendly=true},		
+
+			{id = 7, modelHash = "u_m_y_juggernaut_01",isBoss=true,x = -153.09, y = -608.82, z = 48.25, heading = 124.82,outside=true, },
+			{id = 8, modelHash = "u_m_y_juggernaut_01",isBoss=true, x = -161.05, y = -599.22, z = 48.23, heading = 123.69 ,outside=true, },	
+			{id = 9, modelHash = "u_m_y_juggernaut_01",isBoss=true,  x = -128.15, y = -639.29, z = 168.82, heading = 107.66 , },		
+			{id = 10, modelHash = "ig_tomepsilon",Weapon =0xAF3696A1,x = -125.48, y = -644.22, z = 168.82, heading = 84.2,target=true },	
+			{id = 11, modelHash = "u_m_m_jewelsec_01",Weapon =0x624FE830,x = -135.05, y = -633.8, z = 168.82, heading = 34.52 },
+			{id = 12, modelHash = "s_m_m_highsec_01",Weapon =0x624FE830,x = -148.97, y = -632.59, z = 168.82, heading = 281.42 },
+			{id = 13, modelHash = "s_m_m_highsec_02",Weapon =0x624FE830,x = -149.17, y = -643.63, z = 168.82, heading = 280.63 },			
+			{id = 14, modelHash = "mp_g_m_pros_01",Weapon =0xAF113F99, x = -141.46, y = -645.87, z = 168.82, heading = 3.99},
+			{id = 15, modelHash = "u_m_m_jewelthief",Weapon =0x476BF155, x = -133.74, y = -645.2, z = 168.82, heading = 3.74 },
+			{id = 16, modelHash = "u_m_m_bankman",Weapon =0xAF113F99 ,x = -130.23, y = -635.41, z = 168.82, heading = 37.97},
+			
+			
+			
+			
+			
+		
+    },
+	
+	Events = {
+	
+		--[[	{ 
+		  Type="Vehicle",
+		  Position = { x = -103.41, y = -438.73, z = 36.02, heading = 167.51 }, 
+		  Size     = {radius=10000},
+		  SpawnHeight =200.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  Vehicle="trailersmall",
+		  Weapon=0xBD248B55,
+		  SquadSpawnRadius=1.0,
+		  Message="~h~~r~Warning: Psychotronic countermeasures deployed. Civilians may be hostile.",
+		  --CheckGroundZ=true,
+		},	]]--
+		
+		{ 
+		  Type="Squad",
+		  Position = {x = 1190.4223, y = -3329.8059, z = 5.6322}, 
+		  Size     = {radius=500.0},
+		  --SpawnHeight = 200.0,
+		 -- FacePlayer = true,
+		 NumberPeds=3,
+		  SquadSpawnRadius=15.0,
+		 -- modelHash="s_m_y_ammucity_01",
+		  CheckGroundZ=true,		  
+		},
+	
+		{ Type="Vehicle",
+		  Position = {x = 1230.13, y = -3339.81, z = 5.8, heading = 269.49}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight =300.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  --Vehicle="barrage",
+		  Weapon=0x13532244,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},
+	
+		{ Type="Vehicle",
+		  Position = {x = 1167.5, y = -3336.75, z = 5.86, heading = 51.63}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight =300.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  --Vehicle="barrage",
+		  Weapon=0x13532244,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+		
+		
+				{ 
+		  Type="Squad",
+		  Position = {x = -70.74, y = -1821.85, z = 26.94}, 
+		  Size     = {radius=500.0},
+		  --SpawnHeight = 200.0,
+		 -- FacePlayer = true,
+		 NumberPeds=3,
+		  SquadSpawnRadius=15.0,
+		 -- modelHash="s_m_y_ammucity_01",
+		  CheckGroundZ=true,		  
+		},
+		
+		{ Type="Vehicle",
+		  Position = {x = -68.08, y = -1832.95, z = 26.94, heading = -129.27}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight =300.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  --Vehicle="barrage",
+		  Weapon=0x13532244,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+		
+		{ Type="Vehicle",
+		  Position = {x = -47.51, y = -1842.68, z = 26.26, heading = 358.86}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight =300.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  --Vehicle="barrage",
+		  Weapon=0x13532244,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+
+	
+
+
+		{ 
+		  Type="Squad",
+		  Position = {x = 910.5475, y = -1065.3074, z = 37.9432}, 
+		  Size     = {radius=500.0},
+		  --SpawnHeight = 200.0,
+		 -- FacePlayer = true,
+		 NumberPeds=3,
+		  SquadSpawnRadius=15.0,
+		 -- modelHash="s_m_y_ammucity_01",
+		  CheckGroundZ=true,		  
+		},		
+		
+		{ Type="Vehicle",
+		  Position = { x = 904.28, y = -1053.98, z = 32.83, heading = 90.54}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight =300.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  --Vehicle="barrage",
+		  Weapon=0x13532244,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},			
+		
+		
+		{ 
+		  Type="Squad",
+		  Position = {x = 964.4832, y = -1027.0417, z = 40.84750}, 
+		  Size     = {radius=500.0},
+		  --SpawnHeight = 200.0,
+		 -- FacePlayer = true,
+		 NumberPeds=3,
+		  SquadSpawnRadius=15.0,
+		 -- modelHash="s_m_y_ammucity_01",
+		  CheckGroundZ=true,		  
+		},		
+		
+
+
+		{ 
+		  Type="Squad",
+		  Position = {x = 387.5175, y = 3584.7612, z = 33.29222}, 
+		  Size     = {radius=500.0},
+		  --SpawnHeight = 200.0,
+		 -- FacePlayer = true,
+		 NumberPeds=3,
+		  SquadSpawnRadius=15.0,
+		 -- modelHash="s_m_y_ammucity_01",
+		  CheckGroundZ=true,		  
+		},	
+
+
+
+		{ Type="Vehicle",
+		  Position = { x = 401.38, y = 3590.39, z = 33.28, heading = 360.92}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight =300.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  --Vehicle="barrage",
+		  Weapon=0x13532244,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+
+	{ 
+		  Type="Squad",
+		  Position = {x = -77.35, y = 6457.49, z = 31.44, heading = 209.6 }, 
+		  Size     = {radius=500.0},
+		  --SpawnHeight = 200.0,
+		 -- FacePlayer = true,
+		 NumberPeds=3,
+		  SquadSpawnRadius=15.0,
+		 -- modelHash="s_m_y_ammucity_01",
+		  CheckGroundZ=true,		  
+		},			
+				
+		{ Type="Vehicle",
+		  Position = { x = -55.29, y = 6452.15, z = 31.5, heading = 40.49}, 
+		  Size     = {radius=300.0},
+		  SpawnHeight =300.0,
+		  FacePlayer = true,
+		  --NumberPeds=10,
+		  isBoss=false,
+		  Target=false,
+		  --Vehicle="barrage",
+		  Weapon=0x13532244,
+		  SquadSpawnRadius=1.0,
+		  --CheckGroundZ=true,
+		},	
+
+	{ 
+		  Type="Squad",
+		  Position = {x = -175.59, y = -617.32, z = 48.23, heading = 127.51  }, 
+		  Size     = {radius=500.0},
+		  --SpawnHeight = 200.0,
+		 -- FacePlayer = true,
+		 NumberPeds=3,
+		  SquadSpawnRadius=15.0,
+		 -- modelHash="s_m_y_ammucity_01",
+		  CheckGroundZ=true,		  
+		},					
+	
+
+	
+		
+
+	},	
+	--this needs to be 'on' for all the other mission target vehicle logic to work, even if 1 is not used.
+	VehicleGotoMissionTargetVehicle=1,
+	--VehicleGotoMissionTargetPed=16,
+    Vehicles = {
+		--maze bank
+		{id = 1, Weapon= 0x2BE6766B, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01", x = 1190.4223, y = -3329.8059, z = -4.6322, heading = 377.86,Freeze=true,notvisible=true,outside=true,},
+		 {id = 2, id2 = 2, Vehicle = "tula", modelHash = "s_m_y_ammucity_01",x = 1600.4223, y = -3329.8059, z = 160.6322, heading = 177.86, Weapon=0x13532244,driving=true,outside=true, isAircraft=true,VehicleGotoMissionTarget=true,VehicleGotoMissionTargetVehicle=1,SetBlockingOfNonTemporaryEvents=true,},
+		 
+		 {id = 3, id2 = 3, Vehicle = "maverick", modelHash = "s_m_y_ammucity_01",x = 1190.4223, y = -3329.8059, z = 45.6322, heading = 51.63, Weapon=0x13532244,driving=true,outside=true, isAircraft=true,VehicleGotoMissionTarget=true,VehicleGotoMissionTargetVehicle=1,SetBlockingOfNonTemporaryEvents=true,},
+		 
+		  {id = 4, Vehicle = "insurgent3", modelHash = "s_m_y_ammucity_01",x = 978.16, y = -3001.85, z = -39.6, heading = 443.83, Weapon=0x13532244,},
+		  {id = 5, Vehicle = "barrage", modelHash = "s_m_y_ammucity_01",x = 997.13, y = -3009.49, z = -39.65, heading = 177.08, Weapon=0x13532244,},
+		  
+		  {id = 6, Weapon= 0x2BE6766B, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01",  x = 970.28, y = -1028.68, z = 40.9, heading = 253.55,Freeze=true,notvisible=true,outside=true,},
+		  
+		 {id = 7, id2 = 7, Vehicle = "valkyrie", modelHash = "s_m_y_ammucity_01", x = 975.28, y = -1028.68, z = 60.9, heading = 253.55, Weapon=0x13532244,driving=true,outside=true, isAircraft=true,VehicleGotoMissionTarget=true,VehicleGotoMissionTargetVehicle=6,SetBlockingOfNonTemporaryEvents=true,},	
+		  {id = 8, Vehicle = "dune3", modelHash = "s_m_y_ammucity_01",x = 1001.65, y = -3172.28, z = -38.91, heading = 356.7, Weapon=0x13532244,},
+	
+		  {id = 9, Weapon= 0x2BE6766B, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01",   x = 391.89, y = 3591.96, z = 33.29, heading = 53.3,Freeze=true,notvisible=true,outside=true,},
+		  
+		 {id = 10, id2 = 10, Vehicle = "bombushka", modelHash = "s_m_y_ammucity_01", x = 491.89, y = 3591.96, z = 253.29, heading = 53.3, Weapon=0x13532244,driving=true,outside=true, isAircraft=true,VehicleGotoMissionTarget=true,VehicleGotoMissionTargetVehicle=9,SetBlockingOfNonTemporaryEvents=true,},	
+
+		{id = 11, id2 = 11, Vehicle = "volatol", modelHash = "s_m_y_ammucity_01",  x = 400.89, y = 3591.96, z = 193.29, heading = 153.3, Weapon=0x13532244,driving=true,outside=true, isAircraft=true,VehicleGotoMissionTarget=true,VehicleGotoMissionTargetVehicle=9,SetBlockingOfNonTemporaryEvents=true,},
+		  {id = 12, Vehicle = "deathbike", modelHash = "s_m_y_ammucity_01",x = 1100.61, y = -3156.43, z = -37.52, heading = 266.04, Weapon=0x13532244,},	
+
+		{id = 13, Weapon= 0x2BE6766B, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01", x = -69.4, y = 6453.09, z = 31.41, heading = 206.98,Freeze=true,notvisible=true,outside=true,},	
+
+		{id = 14, id2 = 14, Weapon= 0x2BE6766B, Vehicle = "akula", modelHash = "s_m_y_ammucity_01", x = -69.4, y = 6453.09, z = 91.41, heading = 206.98,driving=true,outside=true, isAircraft=true,VehicleGotoMissionTarget=true,VehicleGotoMissionTargetVehicle=13,SetBlockingOfNonTemporaryEvents=true,},			
+		
+		{id = 15, Weapon= 0x2BE6766B, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01", x = -183.61, y = -619.27, z = 48.17, heading = 291.83,Freeze=true,notvisible=true,outside=true,},	
+
+		{id = 16, id2 = 16, Weapon= 0x2BE6766B, Vehicle = "akula", modelHash = "s_m_y_ammucity_01",  x = -183.61, y = -619.27, z = 78.17, heading = 291.83,driving=true,outside=true, isAircraft=true,VehicleGotoMissionTarget=true,VehicleGotoMissionTargetVehicle=15,SetBlockingOfNonTemporaryEvents=true,},		
+		  
+		 --SUBMARINE
+		-- {id = 2, id2 = 2, Vehicle = "barrage", modelHash = "s_m_y_ammucity_01",x = 492.26, y = -3244.5, z = 6.07, heading = 178.93, Weapon=0x13532244,outside=true,},
+		 --{id = 3, id2 = 3, Vehicle = "menacer", modelHash = "s_m_y_ammucity_01",x = 500.2, y = -3219.9, z = 6.07, heading = 355.45, Weapon=0x13532244,outside=true,},
+		 --{id = 4, id2 = 4, Vehicle = "bombushka", modelHash = "s_m_y_ammucity_01",x = 501.9, y = -3032.73, z = 6.08+1000, heading = 356.03, Weapon=0x13532244,outside=true,pilot=true, isAircraft=true,},
+		 --{id = 5, id2 = 5, Vehicle = "hunter", modelHash = "s_m_y_ammucity_01",x = 576.48, y = -3028.14, z = 6.07+1000, heading = 360.01, Weapon=0x13532244,outside=true,pilot=true, isAircraft=true,},
+		 
+		 --gun bunker
+		 --{id = 6, id2 = 6, Vehicle = "trailersmall2", modelHash = "s_m_y_ammucity_01",  x = -3045.66, y = 3332.0, z = 11.93, heading = 275.61, Weapon=0x13532244,outside=true,nomods=true,driverfiringpattern=0xC6EE6B4C},
+		 --{id = 7, id2 = 7, Vehicle = "trailersmall2", modelHash = "s_m_y_ammucity_01",x = -3057.6, y = 3329.54, z = 12.31, heading = 277.92, Weapon=0x13532244,outside=true,nomods=true,driverfiringpattern=0xC6EE6B4C},
+		 
+		 --{id = 8, id2 = 8, Vehicle = "tula", modelHash = "s_m_y_ammucity_01",x = -2981.75, y = 3277.26, z = 9.91+1000.0, heading = 284.19,Weapon=0x13532244,outside=true,pilot=true, isAircraft=true,},
+		--{id = 9, id2 = 9, Vehicle = "starling", modelHash = "s_m_y_ammucity_01", x = -3009.96, y = 3398.75, z = 10.44+1500, heading = 265.66,Weapon=0x13532244,outside=true,pilot=true, isAircraft=true,},
+		-- {id = 10, id2 = 10, Vehicle = "pyro", modelHash = "s_m_y_ammucity_01",x = -2941.0, y = 3514.49, z = 8.3+1250, heading = 238.99,Weapon=0x13532244,outside=true,pilot=true, isAircraft=true,},
+		 
+		-- {id = 1, id2 = 1, Vehicle = "bmx", modelHash = "s_m_y_dealer_01", x = 2338.23, y = 2914.42, z = -84.8, heading = 174.26, Weapon=0x624FE830},
+		--{id = 2, id2 = 2, Vehicle = "bmx", modelHash = "s_m_y_robber_01", x = 2338.5, y = 2930.59, z = -84.8, heading = 355.12,Weapon=0x624FE830},
+      -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
+   	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
+	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
+	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
+	 -- {id = 1, id2 = 1, Vehicle = "annihilator", modelHash = "S_M_M_ChemSec_01",  x = -1166.42, y = 4641.5, z = 145.11, heading = 210.07,driving=true,pilot=true},
+	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
+    }
+  }, 
   
   
 }
