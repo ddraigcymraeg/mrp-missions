@@ -16413,13 +16413,15 @@ Citizen.CreateThread(function()
 						--SetBlipSprite (SafeHouseBlip, 417)
 						SetBlipColour(SafeHouseBlip, 2)
 						 TriggerEvent('chatMessage', "^1[MISSIONS]: ^2the mission safe house is open.")
-						
+						 Notify("~h~~b~Mission Safehouse is now open")
 					end
 				else 
 					if SafeHouseBlipOn then 
 						SafeHouseBlipOn = (not SafeHouseBlipOn) 
 						SetBlipColour(SafeHouseBlip, 40)
 						 TriggerEvent('chatMessage', "^1[MISSIONS]: ^2the mission safe house is closed.")
+						 Notify("~h~~r~Mission Safehouse is now closed")
+						 
 					end
 				
 				end			
