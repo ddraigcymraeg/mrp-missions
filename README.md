@@ -38,6 +38,7 @@ had to make some changes when he went to OneSync. One of the changes he made was
 missions, which will spawn entities dynamically on any player's machine which is closest to where the entity should spawn. 
 He changed the hardcoded value for distance check (IndoorsMissionSpawnRadius) from 30m to 300m. Hopefully you will not 
 need to do this if you are on OneSync. 
+
 *UPDATE*: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync server.lua provided, as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on may make the resource unstable. These onesync settings are done in server.cfg
 
 MIGRATION: There is no built in support for when a player whose machine spawned mission entities disconnects mid-mission. No NetIDs 
