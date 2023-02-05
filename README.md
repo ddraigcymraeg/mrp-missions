@@ -40,6 +40,7 @@ He changed the hardcoded value for distance check (IndoorsMissionSpawnRadius) fr
 need to do this if you are on OneSync. 
 
 *UPDATE*: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync server.lua provided, as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on may make the resource unstable. These onesync settings are done in server.cfg
+(If you are experiencing issues, after turning off other custom resources and doing the above try running on gamebuild 1604. If that is still an issue try running on the server artifact here: https://www.mediafire.com/file/aahzl5yslqhwpbv/FXServer_jan19.zip/file (very old server version, defaults to 1604 and default to onesync off).)
 
 MIGRATION: There is no built in support for when a player whose machine spawned mission entities disconnects mid-mission. No NetIDs 
 or calls to native Migration functions. Behavior can be unpredictable. NPCs may become inert etc... It does seem that there is some 
