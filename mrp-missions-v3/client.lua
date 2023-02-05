@@ -8186,7 +8186,7 @@ AddEventHandler('SpawnPed', function(input)
 							
 							--print("hey")
 							if IsThisModelAPlane(pmodel) then 
-								--print("hey")
+								--print("hey task plane")
 								
 								SetVehicleForwardSpeed(Config.Missions[input].Vehicles[i].id,movespeed)
 								SetHeliBladesFullSpeed(Config.Missions[input].Vehicles[i].id) -- works for planes I guess
@@ -9592,7 +9592,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 			local pmodel = vehicleModel
 			if(IsThisModelAPlane(pmodel) or IsThisModelAHeli(pmodel)) then 
 				
-				--print("aircraft event")
+				--print("aircraft event:"..tostring(AircraftEvent))
 				if getMissionConfigProperty(input, "SafeHousePlaneAttack") and getMissionConfigProperty(input, "UseSafeHouse") and getMissionConfigProperty(input, "TeleportToSafeHouseOnMissionStart") and Config.Missions[input].MarkerS and not AircraftEvent then 
 					
 					local origx =  Config.Missions[input].MarkerS.Position.x
@@ -9717,16 +9717,29 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 								dotargetped = true
 							elseif Config.Missions[input].VehicleGotoMissionTargetVehicle then 
 								local j = Config.Missions[input].VehicleGotoMissionTargetVehicle
-								--print("j:"..j)
+								--print("target vehicle j:"..j)
 								TargetMissionVehicle = Config.Missions[input].Vehicles[j].id
 								--print("made it2"..tostring(TargetMissionVehicle))
 								dotargetped = false
 							end
+							--also allow individual targets per vehicle:
+							if Config.Missions[input].Vehicles[i].VehicleGotoMissionTargetPed then 
+								local j = Config.Missions[input].Vehicles[i].VehicleGotoMissionTargetPed
+								TargetMissionVehicle = Config.Missions[input].Peds[j].id
+								dotargetped = true
+							--print("made it2")
+							elseif Config.Missions[input].Vehicles[i].VehicleGotoMissionTargetVehicle then 
+								local j = Config.Missions[input].Vehicles[i].VehicleGotoMissionTargetVehicle
+								TargetMissionVehicle = Config.Missions[input].Vehicles[j].id
+								--print("made it3")
+								dotargetped = false
+							end													
+							
 							
 							
 							if IsThisModelAPlane(pmodel) then 
-								--print("hey")
-								
+								--print("hey plane task")
+								--print("actual target vehicle:"..TargetMissionVehicle)
 							
 								SetVehicleForwardSpeed(Config.Missions[input].Vehicles[i].id,movespeed)
 								SetHeliBladesFullSpeed(Config.Missions[input].Vehicles[i].id) -- works for planes I guess
@@ -14510,7 +14523,7 @@ function calcMissionStats()
 							
 							--local p1 = GetEntityCoords(GetPlayerPed(-1), true)
 							local o1 = GetEntityCoords(obj, true)
-							if GetDistanceBetweenCoords(pcoords.x,pcoords.y,pcoords.z,o1.x,o1.y,o1.z,true) <= 100 then	
+							if GetDistanceBetweenCoords(pcoords.x,pcoords.y,pcoords.z,o1.x,o1.y,o1.z,true) <= getMissionConfigProperty(MissionName, "ObjectiveRescueShortRangeBlipDistance") then	
 								--if(Config.DrawText3D and getKillReward(MissionName) ~= 0 )then
 								--local o1 = GetEntityCoords(obj, true)
 								--DrawText3D({x = o1.x, y =o1.y, z = o1.z}, "~o~Objective ($"..getMissionConfigProperty(MissionName, "ObjectRescueReward")..")", 0.6)						
