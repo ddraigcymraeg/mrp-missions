@@ -25,6 +25,7 @@ Should work fine, but some people have reported problems. The 2 ESX hooks one in
 fxmanifest.lua and resource.lua 
 This resource uses resource.lua which should work still, byt may become deprecated. If you need to update the code to use FXManifest, set it to adamant (thanks Nocteau) and set every occurance of a prop spawn to be like Prop = CreateObject(GetHashKey(randomPropModelHash), randomLocation.x, randomLocation.y, randomLocation.z, true, true, true) Believe the difference is in the last booleans.  
 
+
 DESIGNING MISSIONS FOR PUBLIC SERVER SUPPORT VS LOCAL SERVER: Most of this was designed for my private local server. Something I noticed during testing is that some mission designs may not work as well on a public server with more users and more latency etc... Sixsens who tested this resource on his public server helped me add better support for situations where entities stopped existing for peers when they were outside collision/streaming range (approx. 300m), but will come back into existence when a player is within 300m. You should use the MissionTriggerRadius setting to be around this value or less to make sure that the entities exist and are within range of a player to show any blips, and peform any mission tasks, etc.. During testing, on my local server, with much fewer players and less latency this was not a problem. Missions like Mission20 and Mission21 which spawn entities all around the map, *may* not be well suited to a public server, since players may not see the blips/locations of the entities, due to not being close enough. Many missions in Missions.lua were re-done with public server support in mind, where the mission entities only spawn when a player is nearby. Also using IndoorsMission=true with IndoorsMissionSpawnRadius (doesnt have to be an indoor mission) (see Missions.lua, Config_Guide.lua.txt and further down) can be extremely helpful, which Sixsens verified. Also, if you are having problems with mission quirkiness, set the MissionTriggerRadius to be <= 300. There are other missions too, like Mission16 which spawn entities around the map, and IsDefendTarget
  missions like Mission25 that use TaskPlaneChase,TaskHeliChase, TaskPlaneMission, TaskHeliMission etc... that the target uses to chase a dummy vehicle created by  the resource that can be across the map. If that does not work well, use the coordinate arguments for TaskPlaneMission, TaskHeliMission etc.. natives instead, which may work better in case the dummy vehicle does not exist due to being out of collision range. Verfied: In SpawnProps and SpawnRandomProp, you can change TaskHeliChase with TaskHeliMission using coords and mission flag 9 tested, and you can change TaskPlaneChase with TaskPlaneMission, but the mission flag will need to be 6. 
 
@@ -37,7 +38,7 @@ had to make some changes when he went to OneSync. One of the changes he made was
 missions, which will spawn entities dynamically on any player's machine which is closest to where the entity should spawn. 
 He changed the hardcoded value for distance check (IndoorsMissionSpawnRadius) from 30m to 300m. Hopefully you will not 
 need to do this if you are on OneSync. 
-UPDATE: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync server.lua provided, as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on may make the resource unstable. These onesync settings are done in server.cfg
+*UPDATE*: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync server.lua provided, as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on may make the resource unstable. These onesync settings are done in server.cfg
 
 MIGRATION: There is no built in support for when a player whose machine spawned mission entities disconnects mid-mission. No NetIDs 
 or calls to native Migration functions. Behavior can be unpredictable. NPCs may become inert etc... It does seem that there is some 
@@ -63,6 +64,14 @@ I would start with focusing on triggering entites to spawn dynamically for only 
 but without the extra fluff. There will probably be benefits in adding NetworkGetNetworkIdFromEntity, NetToEnt etc.. calls using 
 network id handle as well. This thread as some informative comments from a cfx/fivem project lead: https://forum.cfx.re/t/problem-with-vehicle-network-id/771619 , specifically the SetNetworkIdSyncToPlayer native mentioned that may fix the 300m streaming/collision range 
 behavior that can be exhibited (see DESIGNING MISSIONS FOR PUBLIC SERVER SUPPORT VS LOCAL SERVER above)
+
+Duplicate Spawning in Multiplayer.
+The resource has been tested to work in MP. This should not happen, but if you are noticing duplicate spawns for Events in MP, some tidy up could probably happen around where sv:UpdateEvents
+is called in client.lua. Instead of the client calling TriggerEvent doSquad etc... then calling sv:UpdateEvents, call sv:UpdateEvents first, and let that server function determine who should spawn the following: TriggerEvent doSquad etc.
+Same with where sv:spawned is called in client.lua. SpawnAPed is called first, instead let logic on server side sv:spawned function decide who calls SpawnAPed.
+
+Crashing with 'Object Pool'... errors
+This should not happen, the resource has been tested and coded to not cause these errors (due to too many entitities spawned) but some missions like Mission60 can potentially have a lot of peds spawned. If this error happens, lower the peds spawned for the mission. peds vehicles spawned via Events would be the first choice to alter. 
 
 
 
