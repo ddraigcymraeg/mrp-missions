@@ -10,19 +10,19 @@ FIVEM CRACKDOWN MISSIONS v3 BETA RESOURCE CONFIGURATION
 Config = {}
 
 --DIFFERENT TYPES OF MISSIONS:
-Type="Objective", where you need to capture one main objective to complete the mission.
-Type="ObjectiveRescue", where you need to capture multiple objectives to complete the mission. See 'isObjective=true' in MISSION SETUP further down. Only for Regular mission, not 'IsRandom'
-Type="Assassinate", where you need to kill all the target NPCs to complete the mission.
-Type="HostageRescue", where you need to rescue all friendly NPCs to complete the mission. If a hostage dies the mission fails.
-Type="BossRush", where you need to kill all the target 'Boss' NPCs. 
+Type="Objective"--, where you need to capture one main objective to complete the mission.
+Type="ObjectiveRescue"--, where you need to capture multiple objectives to complete the mission. See 'isObjective=true' in MISSION SETUP further down. Only for Regular mission, not 'IsRandom'
+Type="Assassinate"--, where you need to kill all the target NPCs to complete the mission.
+Type="HostageRescue"--, where you need to rescue all friendly NPCs to complete the mission. If a hostage dies the mission fails.
+Type="BossRush"--, where you need to kill all the target 'Boss' NPCs. 
 
 
 --MISSIONS CAN ALSO BE/HAVE:
-Regular : where you can specify exact Peds, Props and Vehicles with their exact positions, and behaviors using attributes (see below)
+--Regular : where you can specify exact Peds, Props and Vehicles with their exact positions, and behaviors using attributes (see below)
 IsRandom=true --: Random mission generator missions, where you can specify random mission generator settings globally or per mission.
 --what distance to trigger the mission. Distance from Blip or from MissionTriggerStartPoint
 Config.MissionTriggerRadius = 15000.0
-—used with variable above
+--used with variable above
 MissionTriggerStartPoint={x=0.0,y=0.0,z=0.0}
 
 IndoorMissions=true --Add this to Regular indoor missions that happen in indoor locations like Doomsday Heist Bunker or Humane Labs to have Peds/Vehicles spawn dynamically, which fixes this problem: 
@@ -42,10 +42,10 @@ Config.IndoorsMissionSpawnRadius=30
 IndoorsMissionStrongSpawnCheck = true --Used with IndoorMissions=true. Does raytracing on players within 300m of spawn location, to make sure the NPC/Vehicle doesnt just appear out of nowhere in front of a player. 
 --if any player is in the line of sight it will not spawn. Sometimes you will not want this on.
 
-VehicleGotoMissionTarget="trailersmall", —create an inert vehicle to make vehicle  NPCs that have the VehicleGotoMissionTarget=true attribute to circle/chase
-VehicleGotoMissionTargetPed   —index of npc ped for vehicles npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
-VehicleGotoMissionTargetVehicle —index of npc vehicle for vehicle npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
-—NOTE, you can set VehicleGotoMissionTargetPed or VehicleGotoMissionTargetPed attributes per vehicle definition as well. See below. 
+VehicleGotoMissionTarget="trailersmall" --create an inert vehicle to make vehicle  NPCs that have the VehicleGotoMissionTarget=true attribute to circle/chase
+--VehicleGotoMissionTargetPed   --index of npc ped for vehicles npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
+--VehicleGotoMissionTargetVehicle --index of npc vehicle for vehicle npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
+--NOTE, you can set VehicleGotoMissionTargetPed or VehicleGotoMissionTargetPed attributes per vehicle definition as well. See below. 
 
 
 
@@ -55,23 +55,23 @@ IsDefend=true --: Players must defend a zone from being reached by enemy NPCs, e
 IsDefendTarget=true --: Players must defend an NPC target from being eliminated by the enemy NPCs, else the mission failes. Requires IsDefend=true.
 IsDefendTargetRescue = true --Can rescue the friendly NPC target by walking up to them for 1 second, like a regular hostage. This will complete the mission. 
 Config.IsDefendTargetMaxHealth = 600  --extra health buff for friendly NPC target
-ObjectiveRescueShortRangeBlip = true, --only show objectiverescue objective blips on the map when the players are close by (within 100m)
-IsDefendTargetGotoGoal — NPC target goes to Blip goal, escort them, or transport them to the goal Blip
-IsDefendTargetDoPlaneMission —call planemission task instead of plane chase task for ai.
+ObjectiveRescueShortRangeBlip = true --only show objectiverescue objective blips on the map when the players are close by (within 100m)
+--IsDefendTargetGotoGoal -- NPC target goes to Blip goal, escort them, or transport them to the goal Blip
+--IsDefendTargetDoPlaneMission --call planemission task instead of plane chase task for ai.
 
-IsDefendTargetRewardBlip, — when IsDefendTargetGotoGoal is true, create a marker with IsDefendTargetGoalDistance radius
+--IsDefendTargetRewardBlip -- when IsDefendTargetGotoGoal is true, create a marker with IsDefendTargetGoalDistance radius
 
-IsDefendTargetGoalDistance —radius of goal reward area
+--IsDefendTargetGoalDistance --radius of goal reward area
 
-IsDefendTargetChase —used to make enemy npcs chase NPC target:
-IsVehicleDefendTargetChase =—used to make enemy npcs vehicles chase NPC target/vehicle
-IsVehicleDefendTargetGotoBlipTargetOnly=true, —think this is deprecated, Makes only the npc target to defend go to the blip
-IsDefendTargetEnemySetBlockingOfNonTemporaryEvents=true, —used for when IsRandom=true to make enemies keep to task until IsDefendTargetAttackDistance or IsDefendTargetVehicleAttackDistance is reached
-IsDefendTargetSetBlockingOfNonTemporaryEvents=true, —used for when IsRandom=true make the target to defend npc stay still or keep to task
+--IsDefendTargetChase --used to make enemy npcs chase NPC target:
+--IsVehicleDefendTargetChase = --used to make enemy npcs vehicles chase NPC target/vehicle
+IsVehicleDefendTargetGotoBlipTargetOnly=true --think this is deprecated, Makes only the npc target to defend go to the blip
+IsDefendTargetEnemySetBlockingOfNonTemporaryEvents=true --used for when IsRandom=true to make enemies keep to task until IsDefendTargetAttackDistance or IsDefendTargetVehicleAttackDistance is reached
+IsDefendTargetSetBlockingOfNonTemporaryEvents=true --used for when IsRandom=true make the target to defend npc stay still or keep to task
 
 --How close to the IsDefendTargetVehicle does the player need to be 
 --in order to be able to teleport to a free seat? 
-if 0 or 0.0 turns this feature off
+--if 0 or 0.0 turns this feature off
 Config.IsDefendTargetVehiclePassengerRadius=25.0
 
 --How close to the target will peds on feet finally attack? Useful when SetBlockingOfNonTemporaryEvents is set for a ped.
@@ -79,26 +79,26 @@ Config.IsDefendTargetAttackDistance = 10.0
 
 Config.IsDefendTargetVehicleAttackDistance = 50.0
 
-IsDefendTargetOnlyPlayersDamagePeds —Override, since for IsDefendTarget missions, SetEntityOnlyDamagedByPlayer is set to false.
+--IsDefendTargetOnlyPlayersDamagePeds --Override, since for IsDefendTarget missions, SetEntityOnlyDamagedByPlayer is set to false.
 
-IsDefendTargetPassenger —for escort mission, force target NPC to defend into passenger seat. default seatid 0
-IsDefendTargetPassengerSeatId —if IsDefendTargetPassenger= true, what seated if not 0?
+--IsDefendTargetPassenger --for escort mission, force target NPC to defend into passenger seat. default seatid 0
+--IsDefendTargetPassengerSeatId --if IsDefendTargetPassenger= true, what seated if not 0?
 
-- Meant for random missions where IsDefendTargetPassenger=true. Allows the target ped to go into a specific seatid, based on vehicle model name. Mission44 uses it, to shuffle the transport target passenger to a non-turret seat. IsDefendTargetPassengerSeatId, if set, will override this:
+--Meant for random missions where IsDefendTargetPassenger=true. Allows the target ped to go into a specific seatid, based on vehicle model name. Mission44 uses it, to shuffle the transport target passenger to a non-turret seat. IsDefendTargetPassengerSeatId, if set, will override this:
 IsDefendTargetSeatIds = {
 	valkyrie=2,akula = 0, savage=2,buzzard=0
 	}
 
 
-—SEE FURTHER DOWN AS WELL, MORE IsDefendTarget settings explained above.
+--SEE FURTHER DOWN AS WELL, MORE IsDefendTarget settings explained above.
 
 
 --NOTE: only around 98 characters will display for these messages below:
-Config.StartMessage --Large mission intro text that pops up and disappears. 
-Config.FinishMessage --Large mission outro text that pops up and disappears on completion. Used with $ reward text and reason why. 
-Config.MissionTitle --red text on lower r.h.s. of the screen.
-Config.MissionMessage --green text on below MissionTitle that reminds players what to do. 
-Config.FailedMessage --= Mission Failed Message. It will be used with a reason why text, and any money lost. 
+--Config.StartMessage --Large mission intro text that pops up and disappears. 
+--Config.FinishMessage --Large mission outro text that pops up and disappears on completion. Used with $ reward text and reason why. 
+--Config.MissionTitle --red text on lower r.h.s. of the screen.
+--Config.MissionMessage --green text on below MissionTitle that reminds players what to do. 
+--Config.FailedMessage --= Mission Failed Message. It will be used with a reason why text, and any money lost. 
 
 --See Mission20 and Mission21 for these settings being used. They will turn enemy and hostage blips on based on how far away you 
 --are when turned on.
@@ -119,9 +119,9 @@ Config.DoEnemyVehicleAirplaneShortRangeBlipRange=3000
 --This can allow for a campaign or a series of mini-missions to finish to complete the overall mission:
 NextMission="Mission32" 
 --What mission to go to if the mission fails?
-NextMissionIfFailed="Mission42",
+NextMissionIfFailed="Mission42"
 --progress to NextMission even if the mission has failed?:
-ProgressToNextMissionIfFail=false,
+ProgressToNextMissionIfFail=false
 
 
 -- OPT-OUT/OPT-IN SETTINGS. NOT PER MISSION, ONLY GLOBAL:
@@ -154,7 +154,7 @@ Config.UseMissionDrop=true
 Config.UseMissionDropFee=500
 
 
--show help notifications on how to play and controls at mission start?
+--show help notifications on how to play and controls at mission start?
 Config.DoHelpScreens = false
 
 
@@ -185,7 +185,7 @@ Config.BackupPedHeavyMunitionsCost={2500,3500,2500}
 
 --Mission Backups Start:
 --what sight and hearing range?
-Config.BackupPedSensesDistance=1500.0 is heavy sniper max range
+Config.BackupPedSensesDistance=1500.0 --is heavy sniper max range
 
 --https://gist.github.com/alexguirre/0af600eb3d4c91ad4f900120a63b8992
 Config.BackupVoiceName="S_M_Y_BLACKOPS_01_WHITE_MINI_01"
@@ -280,22 +280,22 @@ Config.SMS_PlaySound = true
 
 
 --MORE SMS MISSION SEND OPTIONS, SET PER MISSION, THESE will OVERRIDE ABOVE VALUES:
-SMS_Subject="Capture the goods",
+SMS_Subject="Capture the goods"
 --99 char limit per message, so can use up to 3 SMS texts:
 SMS_Message=""
 SMS_Message2=""
 SMS_Message3=""
 
 --WHAT TO SEND FROM MISSION CONTACT AFTER MISSION FAIL:
-SMS_FailedSubject="HAHA",
-SMS_FailedMessage="You should have stayed away, this is much bigger than you",
+SMS_FailedSubject="HAHA"
+SMS_FailedMessage="You should have stayed away, this is much bigger than you"
 --WHAT TO SEND FROM MISSION CONTACT AFTER PASSING MISSION:
-SMS_PassedSubject="It Exists!",
+SMS_PassedSubject="It Exists!"
 SMS_PassedMessage="The legends were true afterall! Enjoy your reimbursement"
 
 --DONT SEND ANY FAIL/PASS SMS? SO can leave above blank if true:
-SMS_NoFailedMessage=true,
-SMS_NoPassedMessage=true,
+SMS_NoFailedMessage=true
+SMS_NoPassedMessage=true
 
 
 --Make mission title the sms subject, ignoring SMS_ContactSubjects array?
@@ -385,7 +385,7 @@ Config.IsDefendTargetKillPenalty = 5000 --cash
 Config.ObjectRescueReward = 3000 --cash
 
 
-—Reward for helping IsDefendTarget NPC to the goal.
+--Reward for helping IsDefendTarget NPC to the goal.
 Config.GoalReachedReward = 2000
 
 
@@ -464,7 +464,7 @@ Config.SpawnMissionComponentsOnPlayer = false
 Config.SpawnMissionPickups = {"WEAPON_CARBINERIFLE","WEAPON_COMBATPISTOL","WEAPON_KNIFE","GADGET_NIGHTVISION"}
 
 --What components to give the player at mission start: 
--NOTE: Need a space between attachment/component and weapon it goes on
+--NOTE: Need a space between attachment/component and weapon it goes on
 Config.SpawnMissionComponents = {"COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL"} 
 
 
@@ -481,7 +481,7 @@ Config.SpawnRewardPickups = {
 Config.SpawnRewardComponents = {"COMPONENT_AT_PI_FLSH WEAPON_COMBATPISTOL","COMPONENT_AT_PI_SUPP WEAPON_COMBATPISTOL"} 
 
 
--Useful for certain missions like certain Checkpoint Missions
+--Useful for certain missions like certain Checkpoint Missions
 Config.SafeHouseDoInvincibleVehicles=false
 
 
@@ -582,10 +582,10 @@ Config.SafeHouseCostVehicle = 2000
 Config.SafeHouseVehiclesMaxClaim = 2 
 
 --immediate give of upgrade and weapons when the player enters the safehouse
-SafeHouseGiveImmediately = true,
+SafeHouseGiveImmediately = true
 
 --no countdown with safehouse.
-SafeHouseGiveNoCountDown = true,
+SafeHouseGiveNoCountDown = true
 
 --Time in milliseconds till the safe house can next be used by the player?:
 Config.SafeHouseTimeTillNextUse = 180000 --3 minutes default 
@@ -919,14 +919,14 @@ Config.RandomParadropWeapons = {0x1B06D571,0xBFE256D4,0x88374054,0xCB96392F,0x5E
 --IsRandomSpawnAnywhere=true does not support IsDefend=true missions.
 
 
-RandomMissionGoalDestinationMinDistance —min distance to determine where a RandomMissionDestinations value is from the RandomMissionPositions value used for IsDefendTargetGotoGoal
+--RandomMissionGoalDestinationMinDistance --min distance to determine where a RandomMissionDestinations value is from the RandomMissionPositions value used for IsDefendTargetGotoGoal
 
 
 --spawn any where on the map:
 Config.IsRandomSpawnAnywhere=true
 
 --if so, what coordinate range to use on the map:
-Config.IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}}, --this is the whole rectangle around all land
+Config.IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}} --this is the whole rectangle around all land
 
 --forces only land spawns for IsRandomSpawnAnywhere=true missions
 --if false, and the mission spawns on water, NPCs in boats are spawned.  
@@ -956,9 +956,9 @@ Config.RandomMissionAircraftChance = 25
 --% population of "Boss"'s from  RandomMissionBossPeds will spawn. 
 Config.RandomMissionBossChance = 5
 
-RandomIsDefendTargetWander —when IsRandom=true as well, does the target NPC to defend on foot, wander randomly if not fighting?
+--RandomIsDefendTargetWander --when IsRandom=true as well, does the target NPC to defend on foot, wander randomly if not fighting?
 
-RandomMissionDoBoats —spawn a boat if a random vehicle location is found on water?
+--RandomMissionDoBoats --spawn a boat if a random vehicle location is found on water?
 
 
 
@@ -1041,8 +1041,8 @@ Config.RandomMissionAircraft = {
 }
 
 
-—what aircraft to spawn around random mission objective to protect it. 
--Config.RandomMissionGuardAircraftSpawns = {"strikeforce"}
+--what aircraft to spawn around random mission objective to protect it. 
+Config.RandomMissionGuardAircraftSpawns = {"strikeforce"}
 
 --used for IsRandomSpawnAnywhere missions, for when the random position is on water.
 Config.RandomMissionBoat = {
@@ -1101,13 +1101,13 @@ Config.RandomMissionProps = {
 --amount of peds to spawn, since GTA V seems to make them go invisible when many are spawned this way.
 --also 'force=true' can cause NPCs to spawn within a building and not be accessible, so the Mission Type will always become Type="Objective",
 --to allow it to be finished on time. 
-—For IsDefendTarget missions, can also have: 
-—DefendTargetInVehicle = true,
-—DefendTargetVehicleIsBoat=true,
-—DefendTargetVehicleIsAircraft=true,
--DefendTargetVehicleMoveSpeedRatio = 0.5, --have vehicle move at 1/2 top speed etc...
+--For IsDefendTarget missions, can also have: 
+DefendTargetInVehicle = true
+DefendTargetVehicleIsBoat=true
+DefendTargetVehicleIsAircraft=true
+DefendTargetVehicleMoveSpeedRatio = 0.5 --have vehicle move at 1/2 top speed etc...
 
-—See mission 26
+--See mission 26
 Config.RandomMissionPositions = { 
 
 
@@ -1183,7 +1183,7 @@ Config.RandomMissionPositions = {
 }
 
 
-—used for IsDefendTargetGotoGoal. Can have SpawnAt attribute that defines coordinates for NPCs to spawn at. See Mission26
+--used for IsDefendTargetGotoGoal. Can have SpawnAt attribute that defines coordinates for NPCs to spawn at. See Mission26
 
 Config.RandomMissionDestinations = { 
 
@@ -1365,7 +1365,7 @@ Config.RandomMissionIsBountyOverrideVehPeds = {"hc_hacker","hc_gunman","u_m_m_ba
 --These are: 
 --IsDefendTargetChase = true, which makes enemy NPC ped and vehicles chase after the friendly Target NPC. NOTE: Only good for when Players are nearby (<300 to 500m), else they do nothing. 
 --IsDefendTargetGotoBlip = true, which makes NPCs move to 'Blip'. Target friendly NPC will also move to 'Blip' from 'Blip2'. Works long range for NPCs in vehicles. 
-—SEE FURTHER UP AS WELL, MORE IsDefendTarget settings explained above.
+--SEE FURTHER UP AS WELL, MORE IsDefendTarget settings explained above.
 
 --'Blip' defines the mission location blip
 --'Marker' defines the capture zone for Type="Ojective" missions
@@ -1398,14 +1398,14 @@ Config.RandomMissionIsBountyOverrideVehPeds = {"hc_hacker","hc_gunman","u_m_m_ba
 --	'conqueror=true' this is used for IsDefend=true missions to make the NPC neutral to everyone (but IsDefendTarget NPC) so they will go straight to 'Blip2' 
 --	'notzed=true' When using the models: 's_m_m_movalien_01' and 'u_m_y_zombie_01' and 'ig_orleans' the resource will add special Ped attributes, to make a zombie
 --      act like a zombie. Use notzed=true to override this for the models. 
-—-	SetBlockingOfNonTemporaryEvents=true, make peds stick to task, oblivious to events around them
+--	SetBlockingOfNonTemporaryEvents=true, make peds stick to task, oblivious to events around them
 
 --'Vehicles', for regular missions, you define what model, weapon, location etc.. 'id' needs to be 1, 2, 3, with no gaps for multiple vehicles. 'id2' defines the NPC driver.
 --	'id2' needs to be 1, 2, 3 with no gaps as well. 'Weapon' defines driver weapon, modelhash the Ped driver model. 
 --	NOTE: LEAVE OUT THE id2 ATTRIBUTE TO SPAWN A PLAYER VEHICLE with no NPC. With safe houses on, this will become a safe house vehicle. 
 --Vehicles have attributes as well:
 --      'notvisible=true' this makes the vehicle invisible, and turns off collision. I only use this for 'trailersmall' vehicle I place on the map as a target 
-	for enemy A.I. to use, since the A.I. seems to work better with a vehicle target.
+--	for enemy A.I. to use, since the A.I. seems to work better with a vehicle target.
 --	'outside=true' Use for when 'IndoorsMission=-true' is set, to make the Vehicle spawn at mission start, not dynamically
 --	'nomods=true', Do not call 'doVehicleMods' for the vehicle in client.lua, to buff the vehicle up (only certain vehicles doVehicleMods will work on anyways)
 --	'noFill=true', All vehicles added to a mission will have all seats auto-filled. This disables that, so only ExtraPeds (see below) can be used (Or use Config.VehicleTurretSeatIds)
@@ -1422,16 +1422,16 @@ Config.RandomMissionIsBountyOverrideVehPeds = {"hc_hacker","hc_gunman","u_m_m_ba
 --	'conqueror=true' this is used for IsDefend=true missions to make the NPC neutral to everyone (but IsDefendTarget NPC) so they will go straight to 'Blip2' 
 --	'notzed=true' When using the models: 's_m_m_movalien_01' and 'u_m_y_zombie_01' and 'ig_orleans' the resource will add special Ped attributes, to make a zombie
 --       act like a zombie. Use notzed=true to override this for the models. 
-—-	SetBlockingOfNonTemporaryEvents=true, make peds stick to task, oblivious to events around them	
-
+--	SetBlockingOfNonTemporaryEvents=true, make peds stick to task, oblivious to events around them	
+--
 --	'IsDefendTargetEntity' Used in IsDefend=true->IsDefendTarget=true regular missions, to define the target friendly NPC. Can be Ped only type NPC, like in Peds, or a Ped driver in Vehicle, 
 --	like in 'Vehicles' with an 'id2' attribute. See Mission14 below as an example. has attributes like movetocoord, driving, as well to define the npc behavior. Also SpawnAt attribute 
-—- 	to define coords to spawn at if not the Blip coords. 
-'OpenDoorNum' used for opening the ramps for planes like the Titan or cargoplane see https://docs.fivem.net/natives/?_0x7C65DAC73C35C862 for numbers to allocate.
-'Destroyed' explodes the vehicle on spawn
-'useDefaultHeading' used for aircraft only, when set to true, the default heading set for it is guaranteed to be used, since spawned planes have their headings tweaked for them
-not to crash. 
-'vehicleinvincible' when set to true, makes the vehicle invicible.
+-- 	to define coords to spawn at if not the Blip coords. 
+-- 'OpenDoorNum' used for opening the ramps for planes like the Titan or cargoplane see https://docs.fivem.net/natives/?_0x7C65DAC73C35C862 for numbers to allocate.
+-- 'Destroyed' explodes the vehicle on spawn
+-- 'useDefaultHeading' used for aircraft only, when set to true, the default heading set for it is guaranteed to be used, since spawned planes have their headings tweaked for them
+-- not to crash. 
+-- 'vehicleinvincible' when set to true, makes the vehicle invicible.
 --'Events',This is basically a trigger than spawns something when a player is within a certain distance away. 
 --      Used in *both* Regular and IsRandom Mission. 5 Event types: Paradrop, Squad, Vehicle and Aircraft and Boat
 --      For IsRandom missions, used with IsRandomEvent=true as well. This setting will generate a single Event of Type either Paradrop, Squad, Vehicle. within 200m to 1500m from the mission Blip
@@ -1454,9 +1454,9 @@ not to crash.
 --	'SquadSpawnRadius', what radius to spawn the peds around the Event (Type = Squad)
 --      'CheckGroundZ=true', Recommended for any SquadSpawnRadius > 1m (Type = Squad)
 --      'SpawnHeight', what extra height above the event (typically water/ground) to spawn the aircraft (Type = Aircraft)
-—-	DoSetBlockingOfNonTemporaryEvents=true, —make npcs stick to task, oblivious to events around them
-—-	DoIsDefendBehavior=true, —make  npcs take on is defend tasks
-—- 	IsDefendTargetTriggersEvent = true,— IsDefendTarget NPC can trigger the event
+--	DoSetBlockingOfNonTemporaryEvents=true, —make npcs stick to task, oblivious to events around them
+--	DoIsDefendBehavior=true, —make  npcs take on is defend tasks
+-- 	IsDefendTargetTriggersEvent = true,— IsDefendTarget NPC can trigger the event
 
 
 --IsRandom=true missions are easier to set up, they are missions: Mission12, Mission17, Mission19, Mission18 and Mission20
@@ -4160,4 +4160,4 @@ Mission21 = {
   },
   ]]--
 
-}}
+}
