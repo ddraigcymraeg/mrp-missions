@@ -394,7 +394,7 @@ VehicleGotoMissionTarget=true, - Add to Enemy NPC Vehicles for them to circle/ch
 VehicleGotoMissionTargetPed   —index of npc ped for NPC vehicles that have the VehicleGotoMissionTarget=true attribute to circle/chase  
 VehicleGotoMissionTargetVehicle —index of npc vehicle for vehicle npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
 —NOTE, you can set VehicleGotoMissionTargetPed or VehicleGotoMissionTargetPed attributes per vehicle definition as well.
-Its also has RandomJuggernautBossWeaponCanBeRailgun=true, so Juggernauts can have railguns 50% of the time, else default miniraybun
+Its also has RandomJuggernautBossWeaponCanBeRailgun=true, so Juggernauts can have railguns 50% of the time, else default miniraygun
 
 
 	
