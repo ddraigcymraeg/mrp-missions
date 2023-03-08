@@ -42,10 +42,19 @@ Config.IndoorsMissionSpawnRadius=30
 IndoorsMissionStrongSpawnCheck = true --Used with IndoorMissions=true. Does raytracing on players within 300m of spawn location, to make sure the NPC/Vehicle doesnt just appear out of nowhere in front of a player. 
 --if any player is in the line of sight it will not spawn. Sometimes you will not want this on.
 
-VehicleGotoMissionTarget="trailersmall", —create an inert vehicle to make vehicle  NPCs that have the VehicleGotoMissionTarget=true attribute to circle/chase
-VehicleGotoMissionTargetPed   —index of npc ped for vehicles npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
+--3 Mission attributes below FOR VEHICLES/HELIS/PLANES TO FOLLOW/ATTACK/PROTECT A TARGET ped, vehicle or location (see missions.lua and README.TXT for examples and more information for attributes 
+below and how they are used):
+--best results were found for vehicles targeting another vehicle. (NOTE: Seem mission10 and mission16 and other 'IsDefend=true' missions, which use a different way to
+have peds and vehicles go to a target. This attributes can still be used and added to IsDefend=true missions nonetheless, see Mission16) 
+--so typically if we want a vehicle to go to a target location use 'trailersmall' vehicle there and set Freeze=true,notvisible=true. The client.lua code will also make the trailersmall vehicles have noclip, when notvisible is true. The vehicle will simple go to that location then, and/or hover around if a heli, or circle it if a plane.
+--For any of this logic to work for a mission,a VehicleGotoMissionTargetVehicle index or a VehicleGotoMissionTargetPed index below HAS to be set for the mission. 
+--Even if the missions dont use the index, it acts like a flag to allow the mission to use the AI if it wants. 
+--Anyways, the vehicle or ped index defined, this will be index of the ped or vehicle that is to be chased/attacked/protected, which any vehicle with the attribute VehicleGotoMissionTarget=true set will perform. NOTE, you can set VehicleGotoMissionTargetPed  or VehicleGotoMissionTargetPed attributes PER VEHICLE DEFINIITION  as well within the mission. Where vehicles with these values and having VehicleGotoMissionTarget=true can target other specific vehicles in the mission with the vehicle index provided, or ped with the ped index provided. So there can be complex behavior created, where at the mission levelsay  VehicleGotoMissionTargetVehicle = 3 is set, and any vehicle with VehicleGotoMissionTarget=true will target that vehicle at index 3 or location where it is at. BUT this can be overrided if a vehicle itself has also either for example VehicleGotoMissionTargetPed= 2  orVehicleGotoMissionTargetVehicle=5 say. Having these will override the behaviour of the vehicle to target ped at index 2, or vehicle at index 5. See Mission60. REMEMBER, VehicleGotoMissionTargetVehicle=an index or VehicleGotoMissionTargetPed=an index below HAS to be set for the mission at mission level for any of this to work, since they also act as a flag to turn on this behavior for vehicles, even if those indexes are not used, and only PER VEHICLE DEFINIITION behaviour is wanted. See Mission 3 for simple example, or Mission60 for more complex example. 
+
+VehicleGotoMissionTarget=true, - Add to Enemy NPC Vehicles for them to circle/chase/attack using the attributes below
+VehicleGotoMissionTargetPed   —index of npc ped for NPC vehicles that have the VehicleGotoMissionTarget=true attribute to circle/chase  
 VehicleGotoMissionTargetVehicle —index of npc vehicle for vehicle npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
-—NOTE, you can set VehicleGotoMissionTargetPed or VehicleGotoMissionTargetPed attributes per vehicle definition as well. See below. 
+—NOTE, you can set VehicleGotoMissionTargetPed or VehicleGotoMissionTargetPed attributes per vehicle definition as well.
 
 
 
