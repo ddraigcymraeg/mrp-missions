@@ -820,6 +820,9 @@ Config.FastFiringPeds = true
 --in regular missions, use isBoss=true
 Config.BossHealth = 1000 
 
+--Are randomly spawning Juggernaut bosses able to have a railgun. If so 50% chance, else miniraygun (default)
+Config.RandomJuggernautBossWeaponCanBeRailgun=false 
+
 --**START RANDOM MISSION GENERATOR SETTINGS**--
 Config.RandomMissionSpawnRadius = 50.0 --keep a float for enemy ped wandering to work
 Config.RandomMissionMaxPedSpawns = 30
@@ -17420,6 +17423,10 @@ Mission60 = {
 	--MissionTriggerRadius = 10.0,
 	GenerateExtraRandomEventsNum = 0,
 	
+	RandomJuggernautBossWeaponCanBeRailgun=true,
+	
+	--RandomMissionBossPeds = {"u_m_y_juggernaut_01"},
+	
 	SMS_Subject="OmniCorp V2",
 	SMS_Message="Our intel have revealed the clients of renegade mercenaries terrorizing San Andreas.",
 	SMS_Message2="We are calling them The Syndicate. We need someone to take out the mercs infrastructure and clients",
@@ -17674,7 +17681,8 @@ Mission60 = {
 		 NumberPeds=3,
 		  SquadSpawnRadius=15.0,
 		 -- modelHash="s_m_y_ammucity_01",
-		  CheckGroundZ=true,		  
+		  CheckGroundZ=true,	
+			isBoss = true,		  
 		},
 	
 		{ Type="Vehicle",
@@ -17715,7 +17723,8 @@ Mission60 = {
 		 NumberPeds=3,
 		  SquadSpawnRadius=15.0,
 		 -- modelHash="s_m_y_ammucity_01",
-		  CheckGroundZ=true,		  
+		  CheckGroundZ=true,
+		isBoss = true,			  
 		},
 		
 		{ Type="Vehicle",
@@ -17758,7 +17767,8 @@ Mission60 = {
 		 NumberPeds=3,
 		  SquadSpawnRadius=15.0,
 		 -- modelHash="s_m_y_ammucity_01",
-		  CheckGroundZ=true,		  
+		  CheckGroundZ=true,
+		isBoss = true,			  
 		},		
 		
 		{ Type="Vehicle",
@@ -17785,7 +17795,8 @@ Mission60 = {
 		 NumberPeds=3,
 		  SquadSpawnRadius=15.0,
 		 -- modelHash="s_m_y_ammucity_01",
-		  CheckGroundZ=true,		  
+		  CheckGroundZ=true,	
+			isBoss = true,			  
 		},		
 		
 
@@ -17799,7 +17810,8 @@ Mission60 = {
 		 NumberPeds=3,
 		  SquadSpawnRadius=15.0,
 		 -- modelHash="s_m_y_ammucity_01",
-		  CheckGroundZ=true,		  
+		  CheckGroundZ=true,
+		isBoss = true,	
 		},	
 
 
@@ -17827,7 +17839,8 @@ Mission60 = {
 		 NumberPeds=3,
 		  SquadSpawnRadius=15.0,
 		 -- modelHash="s_m_y_ammucity_01",
-		  CheckGroundZ=true,		  
+		  CheckGroundZ=true,	
+			isBoss = true,	
 		},			
 				
 		{ Type="Vehicle",
@@ -17853,7 +17866,8 @@ Mission60 = {
 		 NumberPeds=3,
 		  SquadSpawnRadius=15.0,
 		 -- modelHash="s_m_y_ammucity_01",
-		  CheckGroundZ=true,		  
+		  CheckGroundZ=true,		
+			isBoss = true,	
 		},					
 	
 
