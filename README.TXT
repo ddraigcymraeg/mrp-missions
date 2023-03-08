@@ -387,6 +387,14 @@ Mission58 similar to Mission54, except its helicopters.
 
 Mission59 similar to Mission55, except its helicopters. 
 
+Mission60 similar Mission39, in that there are multiple mission location objectives 
+Uses a lot of the below as well. Multiple planes/helis guarding mission objectives.
+
+(from Config_Guide.lua.txt)
+VehicleGotoMissionTarget=true, - Add to Enemy NPC Vehicles for them to circle/chase/attack using the attributes below
+VehicleGotoMissionTargetPed   —index of npc ped for NPC vehicles that have the VehicleGotoMissionTarget=true attribute to circle/chase  
+VehicleGotoMissionTargetVehicle —index of npc vehicle for vehicle npcs that have the VehicleGotoMissionTarget=true attribute to circle/chase
+—NOTE, you can set VehicleGotoMissionTargetPed or VehicleGotoMissionTargetPed attributes per vehicle definition as well.
 
 
 	
