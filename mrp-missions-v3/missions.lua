@@ -1469,10 +1469,10 @@ Config.Missions = {
     Vehicles = {
       -- ID: id of NPC | name: Name of Blip | BlipID: Icone of Blip | VoiceName: NPC Talk When near it | Ambiance: Ambiance of Shop | Weapon: Hash of Weapon | modelHash: Model | X: Position x | Y: Position Y | Z: Position Z | heading: Where Npc look
       {id = 1, id2 = 1, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01", x = -203.92, y = -1096.21, z = 21.16, heading = 143.9},
-	  {id = 2, id2 = 2, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -187.1, y = -1100.09, z = 42.14, heading = 68.51},
-	 {id = 3, id2 = 3, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -140.47, y = -1091.98, z = 42.14, heading = 250.11},
+	  {id = 2, id2 = 2, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -187.1, y = -1100.09, z = 42.14, heading = 68.51, driverfiringpattern = 0xC6EE6B4C,turretfiringpattern = 0xC6EE6B4C},
+	 {id = 3, id2 = 3, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -140.47, y = -1091.98, z = 42.14, heading = 250.11,driverfiringpattern = 0xC6EE6B4C,turretfiringpattern = 0xC6EE6B4C},
 	 -- {id = 4, id2 = 4, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",x = -161.65, y = -1077.89, z = 42.14+100, heading = 70.54,driving=true,pilot=true,isAircraft=true},
-	  {id = 4, id2 = 4, Vehicle = "trailersmall2", nomods=true, modelHash = "s_m_y_ammucity_01", x = -175.84, y = -1060.36, z = 42.14, heading = 20.14},
+	  {id = 4, id2 = 4, Vehicle = "trailersmall2", nomods=true, modelHash = "s_m_y_ammucity_01", x = -175.84, y = -1060.36, z = 42.14, heading = 20.14,driverfiringpattern = 0xC6EE6B4C,turretfiringpattern = 0xC6EE6B4C},
 	  -- {id = 6, id2 = 5, Vehicle = "savage", modelHash = "s_m_y_ammucity_01",  x = -1409.41, y = -2391.27, z = 14.73, heading = 160.04,isAircraft=true,pilot=true},
 	  
 	  
@@ -1617,7 +1617,7 @@ Config.Missions = {
    	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
 	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
 	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2  
-		{id = 1, id2 = 1, Vehicle = "trailersmall2", nomods=true, modelHash = "mp_m_boatstaff_01",  x = -180.47, y = 854.62, z = 232.7, heading = 136.03},	  
+		{id = 1, id2 = 1, Vehicle = "trailersmall2", nomods=true, modelHash = "mp_m_boatstaff_01",  x = -180.47, y = 854.62, z = 232.7, heading = 136.03,driverfiringpattern = 0xC6EE6B4C,turretfiringpattern = 0xC6EE6B4C},	  
 	  --{id = 1, id2 = 1, Vehicle = "khanjali", modelHash = "s_m_y_ammucity_01",  x = -2970.94, y = 5.36, z = 6.6, heading = 244.62,driving=true,pilot=true},
 	  --{id = 1, id2 = 1, Vehicle = "hydra", modelHash = "s_m_y_ammucity_01",  x = -2970.94, y = 5.36, z = 6.6, heading = 244.62,driving=true,pilot=true},
 	  --{id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true,flee=true},
@@ -1783,9 +1783,9 @@ Config.Missions = {
 	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
 	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
 	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2
-      {id = 1, id2 = 1, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -2060.33, y = 1522.0, z = 281.4, heading = 347.35, target=true},
-	  {id = 2, id2 = 2, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01",  x = -2049.6, y = 1430.96, z = 275.81, heading = 212.78, target=true},
-	  {id = 3, id2 = 3, Vehicle = "trailersmall2", nomods=true,modelHash = "s_m_y_ammucity_01",  x = -2127.29, y = 1470.08, z = 284.56, heading = 240.86, target=true},
+      {id = 1, id2 = 1, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01", x = -2060.33, y = 1522.0, z = 281.4, heading = 347.35, target=true,driverfiringpattern = 0xC6EE6B4C,turretfiringpattern = 0xC6EE6B4C},
+	  {id = 2, id2 = 2, Vehicle = "trailersmall2",nomods=true, modelHash = "s_m_y_ammucity_01",  x = -2049.6, y = 1430.96, z = 275.81, heading = 212.78, target=true,driverfiringpattern = 0xC6EE6B4C,turretfiringpattern = 0xC6EE6B4C},
+	  {id = 3, id2 = 3, Vehicle = "trailersmall2", nomods=true,modelHash = "s_m_y_ammucity_01",  x = -2127.29, y = 1470.08, z = 284.56, heading = 240.86, target=true,driverfiringpattern = 0xC6EE6B4C,turretfiringpattern = 0xC6EE6B4C},
 	  
 	  {id = 4, id2 = 4, Vehicle = "khanjali", modelHash = "s_m_y_ammucity_01",  x = -2103.88, y = 1494.37, z = 282.54, heading = 240.44, target=true,driving=true},
 	  {id = 5, id2 = 5, Vehicle = "rhino", modelHash = "s_m_y_ammucity_01",  x = -2034.77, y = 1497.24, z = 276.13, heading = 147.64, target=true,driving=true},
@@ -13835,13 +13835,14 @@ Mission48 = {
 	MissionMessageAss = "Drive through all the checkpoints before the time is up",	
 	RandomMissionDoLandBattle=true, --needed for pier npcs to spawn!
 	Type = "Checkpoint",	
-	MaxCheckpoints=10, --NEEDS TO BE 2 OR MORE
+	MaxCheckpoints=6, --NEEDS TO BE 2 OR MORE
 	CheckpointsDoLand=true,
 	CheckpointsStartPos={x=0.0,y=0.0,z=0.0},
 	RecordedCheckpoints={},
 	CheckpointsDoWater=false,
 	CheckpointsDoWaterAndLand=false,
 	SpawnCheckpointsOnRoadsOnly=true,
+	CheckpointsNoEvents=false,
 	CheckpointsAirBattle=false, --only spawn enemy aicraft, good for flying missions.
 	CheckPointClaimdReward=1000, --drivers and passengers get this
 	RaceWinReward=20000, --only driver gets this in the winning vehicle
@@ -13852,7 +13853,7 @@ Mission48 = {
 	IsRandom = true,
 	IsRandomSpawnAnywhere=true,
 	IsBountyHunt=true,
-	MissionLengthMinutes = 40,
+	MissionLengthMinutes = 30,
 	RandomMissionMaxPedSpawns = 0,
 	RandomMissionMinPedSpawns = 0,
 	RandomMissionBossChance =  0,
@@ -17932,6 +17933,216 @@ Mission60 = {
 	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
     }
   }, 
+   Mission61 = {
+    
+	StartMessage = "Drive through all the checkpoints before the time is up",
+	FinishMessage = "Mission Completed!",
+	MissionTitle = "Off-Road Rampage, No Enemies",
+	MissionMessage = "Drive through all the checkpoints before the time is up",	
+	
+	KillReward = 0,
+	KillBossPedBonus = 0, --stacks with both above
+	FinishedObjectiveReward =20000,
+	
+	--Obj/Ass values are the messages used depending on which random Type is selected Objective or Assassinate
+	--The real messages (values above), will be set to the below, based on which Type
+	StartMessageObj = "Drive through all the checkpoints before the time is up",
+	FinishMessageObj = "Mission Completed!",
+	MissionTitleObj = "Off-Road Rampage, No Enemies",
+	MissionMessageObj = "Drive through all the checkpoints before the time is up",	
+	--RandomMissionTypes ={"Objective","Assassinate"},
+	RandomMissionTypes ={"Checkpoint"},
+	StartMessageAss = "Drive through all the checkpoints before the time is up",
+	FinishMessageAss = "Mission Completed!",
+	MissionTitleAss = "Off-Road Rampage, No Enemies",
+	MissionMessageAss = "Drive through all the checkpoints before the time is up",	
+	RandomMissionDoLandBattle=true, --needed for pier npcs to spawn!
+	Type = "Checkpoint",	
+	MaxCheckpoints=6, --NEEDS TO BE 2 OR MORE
+	CheckpointsDoLand=true,
+	CheckpointsStartPos={x=0.0,y=0.0,z=0.0},
+	RecordedCheckpoints={},
+	CheckpointsDoWater=false,
+	CheckpointsDoWaterAndLand=false,
+	SpawnCheckpointsOnRoadsOnly=false,
+	CheckpointsNoEvents=true,
+	CheckpointsAirBattle=false, --only spawn enemy aicraft, good for flying missions.
+	CheckPointClaimdReward=1000, --drivers and passengers get this
+	RaceWinReward=20000, --only driver gets this in the winning vehicle
+	CheckpointRaceJoinTime=3600, --not used
+	CheckpointsNoEvents=false,
+	MissionShareMoney=false,
+	--RandomMissionTypes ={"Objective","HostageRescue"},
+	IsRandomEvent=false,
+	IsRandom = true,
+	IsRandomSpawnAnywhere=true,
+	IsBountyHunt=true,
+	MissionLengthMinutes = 30,
+	RandomMissionMaxPedSpawns = 0,
+	RandomMissionMinPedSpawns = 0,
+	RandomMissionBossChance =  0,
+	RandomMissionMaxVehicleSpawns = 0,
+	RandomMissionMinVehicleSpawns = 0,
+	RandomMissionSpawnRadius = 100.0,
+	IsBountyHuntMinSquadSize=0,
+	IsBountyHuntMaxSquadSize=0,
+	IsBountySquadMinRadius=0,
+	IsBountySquadMinRadius=0,
+	RandomMissionBountyBossChance=0,
+	RandomMissionGuardAircraft=true,
+	SafeHouseDoInvincibleVehicles=false,
+	SafeHouseAircraftCount=0,
+	SafeHouseVehicleCount = 24,
+	SafeHouseBoatCount = 0,
+	SafeHouseVehicles = 
+	{
+		"bf400",
+	},
+	TeleportToSafeHouseMinDistance = 10,
+	TeleportToSafeHouseMinVehicleDistance = 10,
+	SafeHouseVehiclesMaxClaim = 6,
+	SafeHouseTimeTillNextUse = 60000,
+	TeleportToSafeHouseOnSpawn = true,
+	TeleportToSafeHouseOnMissionStart = true,
+	TeleportToSafeHouseOnMissionStartNoVehicle = true,
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-500,2500},yrange={3500,4700}},	--just sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-1000,3000},yrange={3000,5000}},	--land and sea
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,3000},yrange={-3700,1000}}, --just land 
+	
+	
+	SMS_Subject="Off-Road Rampage",
+	SMS_Message="Get to the mission vehicle safe house and grab a vehicle, then head to the marker that will appear",
+	SMS_Message2="Once you join the race, proceed through the checkpoints.",
+	SMS_Message3="You earn $ when you are first to a checkpoint. More $ if you finish the race first",	
+		
+	--SMS_ContactPics={"CHAR_STEVE",
+	--},
+	--SMS_ContactNames={"Agency Contact",
+	--},
+	SMS_NoFailedMessage=true,
+	SMS_NoPassedMessage=true,
+	SMS_FailedSubject="Are you up for this?",
+	SMS_FailedMessage="What is going on?",
+	SMS_PassedSubject="Great Job! Congratulations!",
+	SMS_PassedMessage="You made it!",
+	
+	
+--IsRandomSpawnAnywhereCoordRange = {xrange={-30,30},yrange={1970,2030}},	
+	--RandomMissionSpawnRadius = 6000.0, --keep a float for enemy ped wandering to work
+	--IsBountyHuntAssassinateAll = true,
+	
+	--RandomMissionTypes ={"Objective"},	
+	--Config.RandomMissionPositions = { 
+--{ x = 57.0, y = 3717.01, z = 39.75, MissionTitle="Trailer Park"},--lost caravans
+--}
+	--IsDefend = true,
+	--IsDefendTarget = true,
+	--IsDefendTargetChase = true,
+	--IsDefendTargetGotoBlip=true,
+	--IsRandomSpawnAnywhere = true,
+	--what x and y coordinate range should these mission spawn in?
+	--IsRandomSpawnAnywhereCoordRange = {xrange={-3500,4200},yrange={-3700,7700}},
+	--RandomLocation = true, --for completely random location.. 
+	
+	Blip = {
+      Title = "Mission Goal",
+      Position = { x = -10000, y = 0, z =  0},
+      Icon     = 58,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 1,
+    },
+	
+	
+
+    Marker = {
+      Type     = 1,
+      Position = { x = -10000, y = 0, z = 0}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 100, g = 100, b = 204},
+      DrawDistance = 100.0,
+    },
+	BlipS = { --safehouse blip
+      Title = "Mission Safehouse",
+      Position = { x = 137.06, y = -3093.18, z = 4.9}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+      Icon     = 417,
+      Display  = 4,
+      Size     = 1.2,
+      Color    = 2,
+	  Alpha	 =80, --Used for AddBlipForRadius with IsDefend Missions
+    },	
+	 MarkerS = { --safehouse marker
+      Type     = 1,
+      Position = { x = 137.06, y = -3093.18, z = 4.9},  --{  x = 1944.96, y = 3150.6, z = 46.77}, 
+      Size     = {x = 6.0, y = 6.0, z = 2.0},
+      Color    = {r = 117, g = 218, b = 255},
+      DrawDistance = 200.0,
+    },
+	BlipSL = { --safehouse Vehicle blip 
+		  Title = "Mission Vehicle Safehouse",
+		  Position = { x = -1228.1, y = -2267.77, z = 13.94}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		  Icon     = 421,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	BlipSB = { --safehouse boat blip 
+		  Title = "Mission Boat Safehouse",
+		  Position = {x = 413.98, y = -3411.47, z = 0.23}, --{ x = 1944.96, y = 3150.6, z = 46.77},
+		 Icon     = 404,
+		  Display  = 4,
+		  Size     = 1.2,
+		  Color    = 3,
+		  Alpha	 =80, 
+		},
+	
+	Props = { 
+		--**need a stub entry set for the random prop**
+		{ id=1, Name="",Position = { x = 0, y = 0, z = 0, heading = 0 }},
+	
+    },
+	
+	Peds = {
+		--**need a stub entry set for the random ped hostage for HostageRescue=true**
+      {id = 1, Position = { x = 0, y = 0, z = 0, heading = 0 }},
+     },
+	 Vehicles = { 
+		--**need a stub entry set for the random prop**
+		
+	
+    },	 
+	Events = {
+		--**need a stub entry set for the random default event**
+		--add custom events for mission with id=1 onwards
+      {id = 1, 
+		Position = { x = 50000.0, y = 50000.0, z = 50000.0, heading = 0 },
+	  	  Size     = {radius=1000.0},
+		  SpawnHeight = 200.0,
+		  FacePlayer = true,
+		  --NumberPeds=1,
+		  isBoss=false,
+		  Target=false,
+		  SquadSpawnRadius=25.0,
+		  
+	  
+	  },
+     },	
+
+	Pickups = {
+		
+	},
+	MissionPickups = {
+		
+		
+	},
+
+  
+  
+  
+  
+  }
+  
   
   
 }
