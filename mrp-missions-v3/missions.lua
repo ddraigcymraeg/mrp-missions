@@ -17933,7 +17933,7 @@ Mission60 = {
 	 -- {id = 2, id2 = 2, Vehicle = "toro2", modelHash = "s_m_y_ammucity_01",  x = -3014.83, y = -43.5, z = 0.13, heading = 151.19, driving=true},
     }
   }, 
-   Mission61 = {
+ --[[  Mission61 = {
     
 	StartMessage = "Drive through all the checkpoints before the time is up",
 	FinishMessage = "Mission Completed!",
@@ -17970,7 +17970,6 @@ Mission60 = {
 	CheckPointClaimdReward=1000, --drivers and passengers get this
 	RaceWinReward=20000, --only driver gets this in the winning vehicle
 	CheckpointRaceJoinTime=3600, --not used
-	CheckpointsNoEvents=false,
 	MissionShareMoney=false,
 	--RandomMissionTypes ={"Objective","HostageRescue"},
 	IsRandomEvent=false,
@@ -17989,7 +17988,7 @@ Mission60 = {
 	IsBountySquadMinRadius=0,
 	IsBountySquadMinRadius=0,
 	RandomMissionBountyBossChance=0,
-	RandomMissionGuardAircraft=true,
+	RandomMissionGuardAircraft=false,
 	SafeHouseDoInvincibleVehicles=false,
 	SafeHouseAircraftCount=0,
 	SafeHouseVehicleCount = 24,
@@ -18141,7 +18140,7 @@ Mission60 = {
   
   
   
-  }
+  } ]]--
   
   
   
