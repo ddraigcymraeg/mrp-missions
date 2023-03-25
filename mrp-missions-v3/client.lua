@@ -4446,7 +4446,7 @@ function doVehicleMods(vehiclename,PedVehicle,input)
 			SetVehicleMod(PedVehicle, 9,0, customWheels) --proximity mine
 			SetVehicleMod(PedVehicle, 0,0, customWheels) --barbed wire
 			SetVehicleMod(PedVehicle, 11,3, customWheels) --maxed engine
-			return {driverfiringpattern = false,turretfiringpattern = 0x914E786F} --fast grenade launcher
+			return {driverfiringpattern = 0xE2CA3A71,turretfiringpattern = 0x914E786F} --fast grenade launcher
 		elseif(vehiclename=="mule4") then
 		
 			SetVehicleModKit(PedVehicle, 0)
@@ -4458,7 +4458,7 @@ function doVehicleMods(vehiclename,PedVehicle,input)
 			SetVehicleMod(PedVehicle, 11,3, customWheels) --maxed engine
 			SetVehicleMod(PedVehicle, 16,4, customWheels) --armor
 
-			return {driverfiringpattern = false,turretfiringpattern = 0x914E786F} --fast grenade launcher
+			return {driverfiringpattern = 0xE2CA3A71,turretfiringpattern = 0x914E786F} --fast grenade launcher
 			
 		elseif(vehiclename=="kuruma2") then
 			SetVehicleModKit(PedVehicle, 0)
@@ -4827,7 +4827,7 @@ function doVehicleMods(vehiclename,PedVehicle,input)
 			SetVehicleMod(PedVehicle, 16,4, customWheels)
 			SetVehicleMod(PedVehicle, 10,0, customWheels) --missiles
 			SetVehicleMod(PedVehicle, 11,3, customWheels) --maxed engine
-			return {driverfiringpattern = false,turretfiringpattern = false} 
+			return {driverfiringpattern = 0xE2CA3A71,turretfiringpattern = false} 
 		
 		elseif (vehiclename=="scarab") then
 			SetVehicleModKit(PedVehicle, 0)
@@ -4903,7 +4903,7 @@ function doVehicleMods(vehiclename,PedVehicle,input)
 			else 
 				--default 
 				SetVehicleMod(PedVehicle, 10,1, customWheels) --missiles
-				return {driverfiringpattern = false,turretfiringpattern = false} 
+				return {driverfiringpattern = 0xE2CA3A71,turretfiringpattern = false} 
 			end			
 			
 			
@@ -6775,10 +6775,17 @@ end
 						SetRelationshipBetweenGroups(5, GetHashKey("TRUENEUTRAL"), GetHashKey("ISDEFENDTARGET"))
 					
 					end 	
+					
+					--guided missiles on these vehicles are overpowered and have a large range.
+					if (randomPedVehicleHash=="pounder2" or randomPedVehicleHash=="mule4" or randomPedVehicleHash=="trailerlarge" or randomPedVehicleHash=="oppressor" or randomPedVehicleHash=="oppressor2") then
+						SetPedSeeingRange(Ped, 300.0)
+						SetPedHearingRange(Ped, 300.0)
+					
+					else 
 						
-					 SetPedSeeingRange(Ped, 10000.0)
-					 SetPedHearingRange(Ped, 10000.0)
-
+						SetPedSeeingRange(Ped, 10000.0)
+						SetPedHearingRange(Ped, 10000.0)
+					end 
 					
 					
 					if firingpatterns.driverfiringpattern then
@@ -7881,8 +7888,21 @@ AddEventHandler('SpawnPed', function(input)
 				
 				
 				
-				SetPedSeeingRange(Config.Missions[input].Vehicles[i].id2, 10000.0)
-				SetPedHearingRange(Config.Missions[input].Vehicles[i].id2, 10000.0)	
+				--guided missiles on these vehicles are overpowered and have a large range.
+				if (veh=="pounder2" or randomPedVehicleHash=="mule4" or veh=="trailerlarge" or veh=="oppressor" or veh=="oppressor2") then
+					
+					SetPedSeeingRange(Config.Missions[input].Vehicles[i].id2, 300.0)
+					SetPedHearingRange(Config.Missions[input].Vehicles[i].id2, 300.0)	
+					
+				else 
+					
+					SetPedSeeingRange(Config.Missions[input].Vehicles[i].id2, 10000.0)
+					SetPedHearingRange(Config.Missions[input].Vehicles[i].id2, 10000.0)	
+				end 				
+				
+				
+				
+				
 			else 
 			-- is there a better way to make an NPC true neutral?
 			--does not handle custom groups from other resources
@@ -9298,7 +9318,7 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 		--which can mix up what spawns where: (probably should get rid of veh and vehiclehash)
 		
 		--Wait(1)
-        --veh         =  Config.Missions[input].Vehicles[i].Vehicle
+        veh         =  Config.Missions[input].Vehicles[i].Vehicle
 		
        -- vehiclehash = GetHashKey(veh)
         RequestModel(GetHashKey(Config.Missions[input].Vehicles[i].Vehicle))
@@ -9430,8 +9450,18 @@ function SpawnAPed(input,i,isVehicle,EventName,DoIsDefendBehavior,DoBlockingOfNo
 				
 				
 				
-				SetPedSeeingRange(Config.Missions[input].Vehicles[i].id2, 10000.0)
-				SetPedHearingRange(Config.Missions[input].Vehicles[i].id2, 10000.0)	
+				--guided missiles on these vehicles are overpowered and have a large range.
+				if (veh=="pounder2" or randomPedVehicleHash=="mule4" or veh=="trailerlarge" or veh=="oppressor" or veh=="oppressor2") then
+					
+					SetPedSeeingRange(Config.Missions[input].Vehicles[i].id2, 300.0)
+					SetPedHearingRange(Config.Missions[input].Vehicles[i].id2, 300.0)	
+					
+				else 
+					
+					SetPedSeeingRange(Config.Missions[input].Vehicles[i].id2, 10000.0)
+					SetPedHearingRange(Config.Missions[input].Vehicles[i].id2, 10000.0)	
+				end 						
+				
 			else 
 			-- is there a better way to make an NPC true neutral?
 			--does not handle custom groups from other resources
@@ -10151,8 +10181,21 @@ function PutPedsIntoTurrets(PedVehicle,vehicleHash,modelHash,weaponHash,MissionT
 				--SetPedCombatAttributes(Ped, 0, true);
 				SetPedCombatAttributes(Ped, 1, true) --can use vehicles		
 				
-				 SetPedSeeingRange(Ped, 10000.0)
-				 SetPedHearingRange(Ped, 10000.0)		
+				
+				--guided missiles on these vehicles are overpowered and have a large range.	
+				if(vehicleHash=="trailerlarge") then
+					
+					SetPedSeeingRange(Ped, 300.0)
+					SetPedHearingRange(Ped, 300.0)
+					
+				else 
+					
+					SetPedSeeingRange(Ped, 10000.0)
+					SetPedHearingRange(Ped, 10000.0)
+				end 				
+				
+				
+				
 				
 				SetPedDropsWeaponsWhenDead(Ped, getMissionConfigProperty(MissionName, "SetPedDropsWeaponsWhenDead"))
 				SetPedDiesWhenInjured(Ped, true)
@@ -10350,8 +10393,17 @@ function PutPedsIntoTurrets(PedVehicle,vehicleHash,modelHash,weaponHash,MissionT
 				--SetPedCombatAttributes(Ped, 0, true);
 				SetPedCombatAttributes(Ped, 1, true) --can use vehicles		
 				
-				 SetPedSeeingRange(Ped, 10000.0)
-				 SetPedHearingRange(Ped, 10000.0)		
+				--guided missiles on these vehicles are overpowered and have a large range.	
+				if(vehicleHash=="trailerlarge") then
+					
+					SetPedSeeingRange(Ped, 300.0)
+					SetPedHearingRange(Ped, 300.0)
+					
+				else 
+					
+					SetPedSeeingRange(Ped, 10000.0)
+					SetPedHearingRange(Ped, 10000.0)
+				end 					
 				
 				SetPedDropsWeaponsWhenDead(Ped, getMissionConfigProperty(MissionName, "SetPedDropsWeaponsWhenDead"))
 				SetPedDiesWhenInjured(Ped, true)
@@ -18161,6 +18213,9 @@ function TeleportIntoInterior(locationdata, ent)
 	FreezeEntityPosition(PlayerPedId(), false)
 	SetGameplayCamRelativeHeading(0.0)
 	DoScreenFadeIn(1000)
+	--GHK Fadeout DEBUG
+	--print("GHK mrpmissions TeleportIntoInterior fade:"..x..","..y..","..z)
+	
 	while IsScreenFadingIn() do Citizen.Wait(0)	end
 end
 
@@ -18272,6 +18327,9 @@ function doTeleportToSafeHouse(isOnSpawn)
 			Wait(1000)
 			FreezeEntityPosition(EntityToTeleport, false)
 			
+			
+			--GHK Fadeout DEBUG
+			--print("GHK mrpmissions doTeleportToSafeHouse fade:"..locationdata.x..","..locationdata.y..","..locationdata.z)
 			
 			--for obj in EnumerateObjects() do
 				--if DecorGetInt(obj, "mrpsafehousepropid") > 0 then
@@ -18761,7 +18819,11 @@ AddEventHandler("doMissionDropTeleport",function()
 					SetGameplayCamRelativeHeading(0.0) 
 					--break
 				--end
-			--end					
+			--end		
+
+			
+			--GHK Fadeout DEBUG
+			--print("GHK mrpmissions doMissionDropTeleport fade:"..locationdata.x..","..locationdata.y..","..locationdata.z)			
 			
 			--SetGameplayCamRelativeHeading(0.0)
 			PlaySoundFrontend(-1, "CHECKPOINT_AHEAD", "HUD_MINI_GAME_SOUNDSET", 0)
@@ -19288,6 +19350,10 @@ Citizen.CreateThread(function()
 			SetEntityHeading(PlayerPed,playerorigheading)
 			SetGameplayCamRelativeHeading(0.0)
 			DoScreenFadeIn(2000)
+			
+			--GHK Fadeout DEBUG
+			--print("GHK mrpmissions rcbandito exit fade:"..playerorigpos.x..","..playerorigpos.y..","..playerorigpos.z)		
+			
 			playerrcbanditoexit=false
 			SetEntityInvincible(PlayerPed, false)
 		end
