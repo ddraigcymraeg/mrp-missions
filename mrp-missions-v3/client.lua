@@ -15913,6 +15913,17 @@ end
 --for ObjectRescue and HostageRescue
 AddEventHandler('SecureObjRescue',function(playerPed,Ent,intType) --0 hostage, 1 defendtarget, 2 objective
 	local SecureStartTime = 5
+
+	if Active == 1 and MissionName ~="N/A" then 
+		if intType == 0 then
+			SecureStartTime = getMissionConfigProperty(MissionName, "MissionSecureTimeHostagePed") 
+		elseif intType == 1 then
+			SecureStartTime = getMissionConfigProperty(MissionName, "MissionSecureTimeDefendTargetPed") 
+		elseif intType == 2 then 
+			SecureStartTime = getMissionConfigProperty(MissionName, "MissionSecureTimePropObject") 
+		end
+	
+	end 
     local SecureTime = SecureStartTime
     while securingRescue > 0 do
 		
