@@ -7,6 +7,7 @@ resource_type 'map' { gameTypes = { fivem = true } }
 
 map 'map.lua'
 
+client_script 'basic_client.lua'
 client_script 'client.lua'
 client_script 'missions.lua'
 
