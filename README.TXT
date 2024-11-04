@@ -9,7 +9,7 @@ and 2 or more players join at the exact same time to be the first player joining
 Installation:
 
 UPDATE: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync
-server.lua provided in the root of the repo, as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on will make the resource unstable and break it. These onesync settings
+server.lua provided in the root of the repo (and replacing the one in mrp-missions-v3), as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on will make the resource unstable and break it. These onesync settings
 are done in server.cfg
 
 (If you are experiencing issues, after turning off other custom resources and doing the above try running on gamebuild 1604. If that is still an issue try running on the server artifact here: https://www.mediafire.com/file/aahzl5yslqhwpbv/FXServer_jan19.zip/file (very old server version, defaults to 1604 and default to onesync off, but may be too old to run now).)
