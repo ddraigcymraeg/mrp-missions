@@ -6,6 +6,8 @@
 # 'Well Enough' meaning that it has some quirks now. Many missions use long distance blips for enemies and other mission NPCS. These can and probably will stop showing now for clients during missions until the player gets within streaming range (300+ meters?) of the targets.
 # So missions are still playable but could be more challenging, depending on the mission. Many missions though should not be affected, since they do not make use of long range NPC blips. You could still create your own missions in a way to avoid this. 
 
+Other UPDATE notes: Make sure 'start baseevents' is in the server.cfg. 
+
 
 See the README.TXT for installation, controls and other information about this resource. 
 See the SHADOW STATE MISSION PACK README.txt file in shadowstate-missionpack.zip for information 
