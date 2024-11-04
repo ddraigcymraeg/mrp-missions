@@ -7,6 +7,8 @@
 # So missions are still playable but could be more challenging, depending on the mission. Many missions though should not be affected, since they do not make use of long range NPC blips. You could still create your own missions in a way to avoid this. 
 # map.lua is now added from mrp-missions_spawn (mrp-missions_spawn is no longer needed). basic_client.lua added from fivem server vanilla freeroam 'basic-gamemode' for spawning and respawning.
 
+# *mrp-missions_spawn resource is no longer needed*
+
 # Other notes: Make sure 'start baseevents' is in the server.cfg (as well as one sync set to off or set to legacy in server.cfg and txadmin). Also for this to work properly either comment out or remove 'ensure basic-gamemode' (default freeroam gametype) in server.cfg (if vanilla server). Else and also if you are using other gametypes, you will need to change the code and/or manifest in the mrp-missions-v3 resource to behave better with other gametypes. ALSO: With onesync set to legacy, use the server.lua provided in the root of the repo (and replacing the one in mrp-missions-v3), as well as setting Config.UsingOneSync = true in missions.lua
 
 
