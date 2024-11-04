@@ -1,4 +1,4 @@
-# mrp-missions (OUT OF DATE)
+# mrp-missions (OUT OF DATE but still playable)
 # Crackdown Mission Resource for FiveM
 
 # UPDATE:The main resource 'mrp-missions-v3' requires an non-supported out date manifest for it to work. resource_manifest_version '77731fab-63ca-442c-a67b-abc70f28dfa5' 
