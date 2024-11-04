@@ -9,7 +9,7 @@
 
 # *mrp-missions_spawn resource is no longer needed*
 
-# Other notes: Make sure 'start baseevents' is in the server.cfg (as well as one sync set to off or set to legacy in server.cfg and txadmin). Also for this to work properly either comment out or remove 'ensure basic-gamemode' (default freeroam gametype) in server.cfg (if vanilla server). Else and also if you are using other gametypes, you will need to change the code and/or manifest in the mrp-missions-v3 resource to behave better with other gametypes. ALSO: With onesync set to legacy, use the server.lua provided in the root of the repo (and replacing the one in mrp-missions-v3), as well as setting Config.UsingOneSync = true in missions.lua
+# Other notes: Make sure 'start baseevents' is in the server.cfg (as well as one sync set to off or set to legacy in server.cfg and txadmin). Also for this to work properly either comment out or remove 'ensure basic-gamemode' (default freeroam gametype) in server.cfg (if vanilla server). Else and also if you are using other gametypes, you will need to change the code and/or manifest in the mrp-missions-v3 resource to behave better with other gametypes. ALSO: With onesync set to legacy, use the server.lua provided in the root of the repo/zip (and replacing the one in mrp-missions-v3), as well as setting Config.UsingOneSync = true in missions.lua
 
 
 See the README.TXT for installation, controls and other information about this resource. 
