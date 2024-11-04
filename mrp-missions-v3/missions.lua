@@ -1900,7 +1900,7 @@ Config.Missions = {
 	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
 	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
 	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2
-      {id = 1, id2 = 1, Vehicle = "insurgent3",Weapon=0x13532244, modelHash = "s_m_y_ammucity_01", x = 0.30, y = -399.48, z = 39.43, heading = 10.41, armor=100, movespeed=20.0, target=true, flee=true, driving=true, conqueror=true},
+      {id = 1, id2 = 1, Vehicle = "insurgent3",Weapon=0x13532244, modelHash = "s_m_y_ammucity_01", x = 0.30, y = -399.48, z = 39.43, heading = 10.41, armor=100, movespeed=20.0, target=true, flee=true, driving=true, SetBlockingOfNonTemporaryEvents=true},
 	 {id = 2, id2 = 2, Vehicle = "akula", modelHash = "s_m_y_ammucity_01",  x = 0.30, y = -399.48, z = 39.43+30.0, heading = 10.41,driving=true,pilot=true, target=true,isAircraft=true,VehicleGotoMissionTarget=true,SetBlockingOfNonTemporaryEvents=true,},	  
     }
   },
@@ -1997,8 +1997,8 @@ Config.Missions = {
 	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
 	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
 	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2
-      {id = 1, id2 = 1, Weapon =0x2BE6766B, Vehicle = "kuruma2", noFill=true, modelHash = "IG_TylerDix",ExtraPeds={{id=1,seatid=0}}, x = 275.7607, y = 1686.501, z = 237.8363, heading = 162.26272, armor=100, target=true, driving=true, movespeed=120.0, flee=true,conqueror=true},
-	 -- {id = 2, id2 = 2, Weapon =0x2BE6766B, Vehicle = "kuruma2", noFill=true, modelHash = "IG_TylerDix",ExtraPeds={{id=1,seatid=0}},x = -155.82, y = 1954.74, z = 193.84, heading = 143.31, armor=100,  driving=true, movespeed=120.0, flee=true,conqueror=true,VehicleGotoMissionTargetVehicle=1,VehicleGotoMissionTarget=true,SetBlockingOfNonTemporaryEvents=true},
+      {id = 1, id2 = 1, Weapon =0x2BE6766B, Vehicle = "kuruma2", noFill=true, modelHash = "IG_TylerDix",ExtraPeds={{id=1,seatid=0}}, x = 275.7607, y = 1686.501, z = 237.8363, heading = 162.26272, armor=100, target=true, driving=true, movespeed=120.0, flee=true,SetBlockingOfNonTemporaryEvents=true},
+	 -- {id = 2, id2 = 2, Weapon =0x2BE6766B, Vehicle = "kuruma2", noFill=true, modelHash = "IG_TylerDix",ExtraPeds={{id=1,seatid=0}},x = -155.82, y = 1954.74, z = 193.84, heading = 143.31, armor=100,  driving=true, movespeed=120.0, flee=true,SetBlockingOfNonTemporaryEvents=true,VehicleGotoMissionTargetVehicle=1,VehicleGotoMissionTarget=true,SetBlockingOfNonTemporaryEvents=true},
     }
   },
   
@@ -2774,9 +2774,9 @@ Events = {
 		{id = 6,  Weapon = 0x13532244,  modelHash = "u_m_y_zombie_01",  x = 1051.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true},
 		{id = 7, Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",   x = 1052.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true},
 		]]--
-		--{id = 8, Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",   x = 1053.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true,conqueror=true},
-		--{id = 9, Weapon = 0x2BE6766B, modelHash = "u_m_y_zombie_01",   x = 1054.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true,conqueror=true},
-		--{id = 10, Weapon = 0x2BE6766B, modelHash = "u_m_y_zombie_01",   x = 1055.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true,conqueror=true},
+		--{id = 8, Weapon = 0x13532244, modelHash = "u_m_y_zombie_01",   x = 1053.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+		--{id = 9, Weapon = 0x2BE6766B, modelHash = "u_m_y_zombie_01",   x = 1054.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+		--{id = 10, Weapon = 0x2BE6766B, modelHash = "u_m_y_zombie_01",   x = 1055.11, y = 3061.58, z = 41.93, heading = 372.55 ,notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
 			
 
 		
@@ -2790,21 +2790,21 @@ Events = {
    	  --**IMPORTANT: make sure the id of the ped starts from 1, each Peds id in above, increments by 1 and matches that entries index if it were in an array***
 	  --vehicles are not consistent, so use ExtraPeds at your own discretion.
 	  --Below takes a ped with id=1 from Peds above and will put it in seatid = -2   
-	{id = 1, id2 = 1, Weapon= 0x13532244, Vehicle = "issi4", modelHash = "u_m_y_zombie_01", x = 1747.84, y = 3250.61, z = 41.55, heading = 262.09,notzed=true,target=true,conqueror=true}, --movetocoord={ x = 1453.72, y = -2282.69, z = 67.47},
-	{id = 2, id2 = 2, Weapon= 0x13532244, Vehicle = "barrage", modelHash = "u_m_y_zombie_01",  x = 1716.09, y = 3263.64, z = 41.14, heading = 287.06,notzed=true,nomods=true ,target=true,conqueror=true},
-	{id = 3, id2 = 3, Weapon= 0x13532244, Vehicle = "dune3", modelHash = "u_m_y_zombie_01",x = 1675.94, y = 3235.49, z = 40.71, heading = 280.06, notzed=true,target=true,conqueror=true},
-	{id = 4, id2 = 4, Weapon= 0x13532244, Vehicle = "deathbike", modelHash = "u_m_y_zombie_01",  x = 1633.08, y = 3235.96, z = 40.41, heading = 280.53, notzed=true,target=true,conqueror=true},
-	{id = 5, id2 = 5, Weapon= 0x13532244, Vehicle = "brutus", modelHash = "u_m_y_zombie_01",  x = 1601.39, y = 3219.89, z = 40.41, heading = 281.29, notzed=true,target=true,conqueror=true},
-	{id = 6, id2 = 6, Weapon= 0x13532244, Vehicle = "tampa3", modelHash = "u_m_y_zombie_01", x = 1564.8, y = 3221.98, z = 40.44, heading = 279.78, notzed=true,target=true,conqueror=true},
-	{id = 7, id2 = 7, Weapon= 0x13532244, Vehicle = "deathbike", modelHash = "u_m_y_zombie_01",  x = 1530.94, y = 3195.49, z = 40.43, heading = 283.06, notzed=true,target=true,conqueror=true},
-	{id = 8, id2 = 8, Weapon= 0x13532244, Vehicle = "deathbike", modelHash = "u_m_y_zombie_01",  x = 1507.08, y = 3207.04, z = 40.45, heading = -80.67, notzed=true,target=true,conqueror=true},
-{id = 9, id2 = 9, Weapon= 0x13532244, Vehicle = "dune4", modelHash = "u_m_y_zombie_01",  x = 1718.96, y = 3258.17, z = 41.13, heading = 284.77 , notzed=true,target=true,conqueror=true},
-		{id = 10, id2 = 10, Weapon= 0x13532244, Vehicle = "dune3", modelHash = "u_m_y_zombie_01", x = 1480.56, y = 3181.15, z = 40.44, heading = 279.9, notzed=true,target=true,conqueror=true},
-		{id = 11, id2 = 11, Weapon= 0x13532244, Vehicle = "barrage", modelHash = "u_m_y_zombie_01",x = 1443.97, y = 3190.27, z = 40.45, heading = 281.69, notzed=true,target=true,conqueror=true},
-		{id = 12, id2 = 12, Weapon= 0x13532244, Vehicle = "dune3", modelHash = "u_m_y_zombie_01", x = 1257.43, y = 3056.12, z = 40.53, heading = 280.06, notzed=true,target=true,conqueror=true},
-		{id = 13, id2 = 13, Weapon= 0x13532244, Vehicle = "technical2", modelHash = "u_m_y_zombie_01",  x = 1421.18, y = 3162.42, z = 40.47, heading = 280.8 , notzed=true,target=true,conqueror=true},
-		{id = 14, id2 = 14, Weapon= 0x13532244, Vehicle = "technical3", modelHash = "u_m_y_zombie_01", x = 1376.34, y = 3172.96, z = 40.46, heading = 280.96, notzed=true,target=true,conqueror=true},
-	{id = 15, id2 = 15, Weapon= 0x13532244, Vehicle = "boxville5", modelHash = "u_m_y_zombie_01",x = 1345.56, y = 3142.1, z = 40.47, heading = -78.9, notzed=true,target=true,conqueror=true},
+	{id = 1, id2 = 1, Weapon= 0x13532244, Vehicle = "issi4", modelHash = "u_m_y_zombie_01", x = 1747.84, y = 3250.61, z = 41.55, heading = 262.09,notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true}, --movetocoord={ x = 1453.72, y = -2282.69, z = 67.47},
+	{id = 2, id2 = 2, Weapon= 0x13532244, Vehicle = "barrage", modelHash = "u_m_y_zombie_01",  x = 1716.09, y = 3263.64, z = 41.14, heading = 287.06,notzed=true,nomods=true ,target=true,SetBlockingOfNonTemporaryEvents=true},
+	{id = 3, id2 = 3, Weapon= 0x13532244, Vehicle = "dune3", modelHash = "u_m_y_zombie_01",x = 1675.94, y = 3235.49, z = 40.71, heading = 280.06, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+	{id = 4, id2 = 4, Weapon= 0x13532244, Vehicle = "deathbike", modelHash = "u_m_y_zombie_01",  x = 1633.08, y = 3235.96, z = 40.41, heading = 280.53, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+	{id = 5, id2 = 5, Weapon= 0x13532244, Vehicle = "brutus", modelHash = "u_m_y_zombie_01",  x = 1601.39, y = 3219.89, z = 40.41, heading = 281.29, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+	{id = 6, id2 = 6, Weapon= 0x13532244, Vehicle = "tampa3", modelHash = "u_m_y_zombie_01", x = 1564.8, y = 3221.98, z = 40.44, heading = 279.78, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+	{id = 7, id2 = 7, Weapon= 0x13532244, Vehicle = "deathbike", modelHash = "u_m_y_zombie_01",  x = 1530.94, y = 3195.49, z = 40.43, heading = 283.06, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+	{id = 8, id2 = 8, Weapon= 0x13532244, Vehicle = "deathbike", modelHash = "u_m_y_zombie_01",  x = 1507.08, y = 3207.04, z = 40.45, heading = -80.67, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+{id = 9, id2 = 9, Weapon= 0x13532244, Vehicle = "dune4", modelHash = "u_m_y_zombie_01",  x = 1718.96, y = 3258.17, z = 41.13, heading = 284.77 , notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+		{id = 10, id2 = 10, Weapon= 0x13532244, Vehicle = "dune3", modelHash = "u_m_y_zombie_01", x = 1480.56, y = 3181.15, z = 40.44, heading = 279.9, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+		{id = 11, id2 = 11, Weapon= 0x13532244, Vehicle = "barrage", modelHash = "u_m_y_zombie_01",x = 1443.97, y = 3190.27, z = 40.45, heading = 281.69, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+		{id = 12, id2 = 12, Weapon= 0x13532244, Vehicle = "dune3", modelHash = "u_m_y_zombie_01", x = 1257.43, y = 3056.12, z = 40.53, heading = 280.06, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+		{id = 13, id2 = 13, Weapon= 0x13532244, Vehicle = "technical2", modelHash = "u_m_y_zombie_01",  x = 1421.18, y = 3162.42, z = 40.47, heading = 280.8 , notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+		{id = 14, id2 = 14, Weapon= 0x13532244, Vehicle = "technical3", modelHash = "u_m_y_zombie_01", x = 1376.34, y = 3172.96, z = 40.46, heading = 280.96, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
+	{id = 15, id2 = 15, Weapon= 0x13532244, Vehicle = "boxville5", modelHash = "u_m_y_zombie_01",x = 1345.56, y = 3142.1, z = 40.47, heading = -78.9, notzed=true,target=true,SetBlockingOfNonTemporaryEvents=true},
 	
 	{id = 16,  Vehicle = "insurgent3",x = 1286.39, y = 2965.3, z = 40.92, heading = 257.85, },
 	{id = 17,  Vehicle = "insurgent3",x = 1285.51, y = 2961.29, z = 40.91, heading = 262.97, },
@@ -3672,9 +3672,9 @@ Events = {
 
     Vehicles = {
 
-	 {id = 1, id2 = 1, Weapon = 0x13532244, Vehicle = "cognoscenti2", nomods=true, modelHash = "g_m_y_lost_03", x = 67.76, y = 6444.12, z = 31.3, heading = 133.24,  conqueror=true,driving=true,target=true},
-	 {id = 2, id2 = 2, Weapon = 0x13532244, Vehicle = "cognoscenti2", nomods=true,  modelHash = "g_m_y_lost_02",x = 134.65, y = 6543.84, z = 31.62, heading = 225.14 , conqueror=true,driving=true,target=true},
-	 {id = 3, id2 = 3, Weapon = 0x13532244, Vehicle = "cognoscenti2",  nomods=true,  modelHash = "g_m_y_lost_01",x = 50.66, y = 6458.93, z = 31.41, heading =  147.24, conqueror=true,driving=true,target=true},
+	 {id = 1, id2 = 1, Weapon = 0x13532244, Vehicle = "cognoscenti2", nomods=true, modelHash = "g_m_y_lost_03", x = 67.76, y = 6444.12, z = 31.3, heading = 133.24,  SetBlockingOfNonTemporaryEvents=true,driving=true,target=true},
+	 {id = 2, id2 = 2, Weapon = 0x13532244, Vehicle = "cognoscenti2", nomods=true,  modelHash = "g_m_y_lost_02",x = 134.65, y = 6543.84, z = 31.62, heading = 225.14 , SetBlockingOfNonTemporaryEvents=true,driving=true,target=true},
+	 {id = 3, id2 = 3, Weapon = 0x13532244, Vehicle = "cognoscenti2",  nomods=true,  modelHash = "g_m_y_lost_01",x = 50.66, y = 6458.93, z = 31.41, heading =  147.24, SetBlockingOfNonTemporaryEvents=true,driving=true,target=true},
 	 {id = 4, id2 = 4, Vehicle = "buzzard", modelHash = "s_m_y_ammucity_01", x = 50.66, y = 6458.93, z = 71.41, heading =  147.24,isAircraft=true,pilot=true,SetBlockingOfNonTemporaryEvents=true,target=true},
 	 {id = 5, id2 = 5, Vehicle = "seabreeze", modelHash = "s_m_y_ammucity_01", x = 427.14, y = 6663.39, z = 108.93,  heading = 114.8,isAircraft=true,pilot=true,SetBlockingOfNonTemporaryEvents=true,target=true},	 
 
@@ -3852,9 +3852,9 @@ Events = {
 	{id = 5, id2 = 5, Weapon= 0x2BE6766B, Vehicle = "khanjali", modelHash = "s_m_y_ammucity_01",x = 216.18, y = 3134.58, z = 42.35, heading = 184.52, target=true,SetBlockingOfNonTemporaryEvents=true},
 	{id = 6, id2 = 6, Weapon= 0x2BE6766B, Vehicle = "barrage", modelHash = "s_m_y_ammucity_01",x = 2906.09, y = 4446.63, z = 48.17, heading = 107.07,target=true,SetBlockingOfNonTemporaryEvents=true},
 	
-	{id = 7, id2 = 7, Weapon= 0x2BE6766B, Vehicle = "apc", modelHash = "s_m_y_ammucity_01", x = -385.54, y = 5994.55, z = 31.47, heading = 134.79, target=true,conqueror=true},
+	{id = 7, id2 = 7, Weapon= 0x2BE6766B, Vehicle = "apc", modelHash = "s_m_y_ammucity_01", x = -385.54, y = 5994.55, z = 31.47, heading = 134.79, target=true,SetBlockingOfNonTemporaryEvents=true},
 	
-	{id = 8, id2 = 8, Weapon= 0x2BE6766B, Vehicle = "apc", modelHash = "s_m_y_ammucity_01",  x = 1323.05, y = 6485.61, z = 19.99, heading = 256.07, target=true,conqueror=true},
+	{id = 8, id2 = 8, Weapon= 0x2BE6766B, Vehicle = "apc", modelHash = "s_m_y_ammucity_01",  x = 1323.05, y = 6485.61, z = 19.99, heading = 256.07, target=true,SetBlockingOfNonTemporaryEvents=true},
 	
 	{id = 9, id2 = 9, Weapon= 0x2BE6766B, Vehicle = "trailersmall", modelHash = "s_m_y_ammucity_01", x = -51.33, y = -909.57, z = 29.5, heading = 295.67,Freeze=true,notvisible=true},
 	
