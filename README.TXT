@@ -8,6 +8,8 @@ and 2 or more players join at the exact same time to be the first player joining
 
 Installation:
 
+# *mrp-missions_spawn resource is no longer needed* with latest Release 3.2.8.3
+
 UPDATE: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync
 server.lua provided in the root of the repo (and replacing the one in mrp-missions-v3), as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on will make the resource unstable and break it. These onesync settings
 are done in server.cfg
