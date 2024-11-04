@@ -2,9 +2,9 @@
 # Crackdown Mission Resource for FiveM
 
 # UPDATE:The main resource 'mrp-missions-v3' requires an non-supported out date manifest for it to work. resource_manifest_version '77731fab-63ca-442c-a67b-abc70f28dfa5' 
-# It worked 'well enough' for me testing just a litle bit with a newer (albiet custom) build of FiveM. (11/4/24) . It still needs one sync to be set to off or set to legacy. Also Using a newer manifest will break it.
+# It worked 'well enough' for me testing just a litle bit with a newer (albiet custom) build of FiveM. (11/4/24) . It still needs one sync to be set to off or set to legacy. Also using a newer manifest will break it.
 # 'Well Enough' meaning that it has some quirks now. Many missions use long distance blips for enemies and other mission NPCS. These can and probably will stop showing now for clients during missions until the player gets within streaming range (300+ meters?) of the targets.
-# So missions are still playable but could be more challenging, depending on the mission. Many missions though should not be affected. You could still create your own missions in a way avoid this. 
+# So missions are still playable but could be more challenging, depending on the mission. Many missions though should not be affected, since they do not make use of long range NPC blips. You could still create your own missions in a way avoid this. 
 
 
 See the README.TXT for installation, controls and other information about this resource. 
