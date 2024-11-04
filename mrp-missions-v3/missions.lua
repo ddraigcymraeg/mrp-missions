@@ -50,7 +50,10 @@ Config.ObjectiveRescueShortRangeBlipDistance=100
 Config.UseSafeHouseRepair=true
 Config.UseSafeHouseTargetPedHeal=true
 
-
+--how many seconds does it take to secure...
+Config.MissionSecureTimeHostagePed = 5
+Config.MissionSecureTimeDefendTargetPed = 5
+Config.MissionSecureTimePropObject = 5
 
 Config.BackupPeds={ 's_m_y_blackops_01', 's_m_y_blackops_02', 's_m_y_blackops_03',  's_m_y_swat_01' }
 
