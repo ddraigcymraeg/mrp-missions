@@ -3533,6 +3533,7 @@ Events = {
 	IsDefendTarget = true,
 	IsDefendTargetRescue = true,
 	IsVehicleDefendTargetChase = true,	
+	MissionSecureTimeDefendTargetPed = 1,
 	TeleportToSafeHouseOnMissionStartNoVehicle = true,
 	--SafeHouseTimeTillNextUse=10000, --10 seconds
 	SafeHousePedDoctors = {},
