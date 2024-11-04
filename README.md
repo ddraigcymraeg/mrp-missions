@@ -1,5 +1,5 @@
 # mrp-missions (OUT OF DATE)
-Crackdown Mission Resource for FiveM
+# Crackdown Mission Resource for FiveM
 
 # UPDATE:The main resource 'mrp-missions-v3' requires an non-supported out date manifest for it to work. resource_manifest_version '77731fab-63ca-442c-a67b-abc70f28dfa5' 
 # It worked 'well enough' for me testing just a litle bit with a newer (albiet custom) build of FiveM. (11/4/24) . It still needs one sync to be set to off or set to legacy. Also Using a newer manifest will break it.
