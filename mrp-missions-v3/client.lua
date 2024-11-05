@@ -31,6 +31,9 @@ local MissionEndTime = 0
 local MissionNoTimeout = false
 local sharedmoney = 0
 
+--hack for Missioncheck()
+local MISSIONSTARTER = false
+
 
 MissionIsDefendTargetGoalDestIndex = nil
 GlobalGotoGoalX = nil
@@ -420,7 +423,9 @@ end)
 
 RegisterCommand("mission", function(source, args, rawCommand)
     input = args[1]
-
+	
+	--GHKHERE
+	MISSIONSTARTER = true
 	
         for i, v in pairs(Config.Missions) do
             if input == i then
@@ -1081,6 +1086,9 @@ end)
 --server tells the host player to start a new mission
 RegisterNetEvent("mt:startnextmission")
 AddEventHandler("mt:startnextmission", function(nextmission)
+
+	--GHKHERE
+	MISSIONSTARTER = true
 	print("mt:startnextmission called")
 	local rMissionLocationIndex = 0
 	local rSafeHouseLocationIndex = 0
@@ -1380,6 +1388,9 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 		TriggerEvent('missionBlips',MissionName,rMissionLocationIndex,rMissionType,rIsRandomSpawnAnywhereInfo,rSafeHouseLocationIndex,false,rMissionDestinationIndex) 
 		--print("2mrpoptin_teleportcheck"..DecorGetInt(GetPlayerPed(-1),"mrpoptin_teleportcheck"))				
 		if(currentplayercount == 1) then 
+		
+		--GHKHERE
+		MISSIONSTARTER = true
 			--mission is currently running on server (ActiveMission=true), and they are only player
 			--start mission for them and spawn peds, set mission blip, and NPC blips
 			--print("MADE IT")
@@ -1914,6 +1925,8 @@ AddEventHandler('missionBlips', function(input,rMissionLocationIndex,rMissionTyp
 	
 	--print("FIRSTmissionBlips rIsRandomSpawnAnywhereInfo: "..rIsRandomSpawnAnywhereInfo.x)
 	--print("FIRSTmissionBlips rSafeHouseLocationIndex: "..rSafeHouseLocationIndex)
+	
+	--print("FIRSTmissionBlips rMissionDestinationIndex: "..rMissionDestinationIndex)
 
 	--INITIALIZE NON-HOST CLIENTS HERE
 	Active = 1
@@ -2363,9 +2376,10 @@ AddEventHandler('missionBlips', function(input,rMissionLocationIndex,rMissionTyp
 			and getMissionConfigProperty(input,"IsRandom") then 
 				--print("made it dest")
 				local randomlocation = Config.Missions[input].RandomMissionPositions[1].Blip2.Position
-				--print("made it dest"..randomlocation.x)
-				MissionIsDefendTargetGoalDestIndex = setBestRandomDestination(randomlocation,input,rMissionDestinationIndex,MissionIsDefendTargetGoalDestIndex)
-					
+				print("made it dest"..tostring(randomlocation.x))
+				
+				MissionIsDefendTargetGoalDestIndex = setBestRandomDestination(randomlocation,input,rMissionDestinationIndex)--,MissionIsDefendTargetGoalDestIndex)
+				print("made it destindex"..tostring(MissionIsDefendTargetGoalDestIndex))
 			end		
 		
 		
@@ -2602,7 +2616,7 @@ end)
 --For Random isDefendtarget Missions with a rewardblip (destination)
 --dont want the destination too close either
 function setBestRandomDestination(randomlocation,input,currentfound)
-	--print("currentfound:"..tostring(currentfound))
+	print("currentfound:"..tostring(currentfound))
 	local closestindex = currentfound
 	local current = 0.0
 	
@@ -2652,6 +2666,9 @@ function setBestRandomDestination(randomlocation,input,currentfound)
 			table.insert(Blips, blip)
 
 			MissionIsDefendTargetGoalDestIndex	= currentfound	
+			
+			--ghk added
+			Config.Missions[input].Blip.Position = getMissionConfigProperty(input,"RandomMissionDestinations")[currentfound]
 
 			return MissionIsDefendTargetGoalDestIndex
 	
@@ -2660,8 +2677,10 @@ function setBestRandomDestination(randomlocation,input,currentfound)
 	if MissionIsDefendTargetGoalDestIndex then 
 		--print("wtf:"..MissionIsDefendTargetGoalDestIndex)
 		
-	closestindex = MissionIsDefendTargetGoalDestIndex
-	--Config.Missions[input].Blip.Position = getMissionConfigProperty(input,"RandomMissionDestinations")[closestindex]
+		closestindex = MissionIsDefendTargetGoalDestIndex
+	
+		--GHK ADDED
+		Config.Missions[input].Blip.Position = getMissionConfigProperty(input,"RandomMissionDestinations")[closestindex]
 	
 	--print("WTF find psot:"..Config.Missions[input].Blip.Position.x)
 	--Config.Missions[input].RandomMissionPositions[1].x = getMissionConfigProperty(input,"RandomMissionDestinations")[closestindex].x
@@ -2789,7 +2808,7 @@ end
 RegisterNetEvent('DONE')
 AddEventHandler('DONE', function(input,isstop,isfail,reasontext,blGoalReached,checkpointdata)
 
-	
+		MISSIONSTARTER = false
 		local targetPedsKilledByPlayer = 0
 		local nontargetPedsKilledByPlayer = 0
 		local hostagePedsKilledByPlayer = 0
@@ -13949,7 +13968,7 @@ function calcMissionStats()
 				--IsDefendTarget is dead?
 				if getMissionConfigProperty(MissionName, "IsDefend") and getMissionConfigProperty(MissionName, "IsDefendTarget") and (DecorGetInt(ped, "mrppeddefendtarget") > 0) then 
 						
-							--print("isdefebdtarget inner "..GetGameTimer())
+							--print("isdefendtarget inner "..GetGameTimer())
 					if(IsEntityDead(ped) == 1) then
 						isDefendTargetDead = 1
 					
@@ -13989,7 +14008,8 @@ function calcMissionStats()
 
 					elseif (getMissionConfigProperty(MissionName, "IsDefendTargetRewardBlip")) then
 						local otherpc  = GetEntityCoords(ped)
-						--print ("IsDefendTargetRewardBlip "..GetGameTimer())		
+						--print ("IsDefendTargetRewardBlip blip distance "..tostring(GetDistanceBetweenCoords(otherpc.x,otherpc.y,otherpc.z,Config.Missions[MissionName].Blip.Position.x, Config.Missions[MissionName].Blip.Position.y,Config.Missions[MissionName].Blip.Position.z,true)))	
+						
 						if GetDistanceBetweenCoords(otherpc.x,otherpc.y,otherpc.z,Config.Missions[MissionName].Blip.Position.x, Config.Missions[MissionName].Blip.Position.y,Config.Missions[MissionName].Blip.Position.z,true) <= getMissionConfigProperty(MissionName,"IsDefendTargetGoalDistance") then			
 							isDefendGoalReached=1
 								--print ("made it calc"..GetGameTimer())		
@@ -15485,9 +15505,13 @@ function MissionCheck()
 				print(GetSequenceProgress(Config.Missions[MissionName].Vehicles[i].id2))
 			end
 		end
-	end
+	-- end
 	]]--
 	--print(GetIsTaskActive(Config.Missions[MissionName].Vehicles[6].id2,373))
+	--print("MISSIONSTARTER:"..tostring(MISSIONSTARTER))
+	--if MISSIONSTARTER == false then
+		---return 
+	--end
 	PLY = PlayerId()
 	PLYN = GetPlayerName(PLY)
 		--Wait called in loop now:
@@ -16529,8 +16553,7 @@ Citizen.CreateThread(function()
 		
 	--Left stick down + right stick down ( C + Left Ctrl)
 		if (IsControlPressed(0, 36) and IsControlPressed(0, 26)) and DecorGetInt(GetPlayerPed(-1),"mrpoptout") == 0 and true then
-			
-		
+	
 			if  Active == 1 and MissionName ~="N/A" then
 				
 				if blDoNightVisionToggleStates == 1 then
