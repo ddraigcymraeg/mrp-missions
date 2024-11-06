@@ -7,7 +7,7 @@
 
 # if you get crashes then try setting game build to1604 on server.
 
-# WORKAROUND FIX ADDED if you see mission A.I. etc.. acting wierd not responding etc.. A workaround fix can be enabled for globally for all missions or per mission See 'IgnoreMissionStarterFix' at the top of Missions.lua file). 
+# WORKAROUND FIX ADDED if you see mission A.I. etc.. acting wierd not responding etc.. A workaround fix can be enabled  globally for all missions or per mission See 'IgnoreMissionStarterFix' at the top of Missions.lua file). 
 
 # STEPS
 # NOTE: whether the workaround is enabled or not following the STEPS  below will minimize/remove glitches and should make all 62 missions playable:
