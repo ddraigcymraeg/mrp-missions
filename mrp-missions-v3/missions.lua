@@ -5,9 +5,31 @@ Config.MissionSpaceTime = 30000 --milliseconds between missions
 Config.MissionLengthMinutes = 60
 Config.MissionNoTimeout = false
 
---only support for onesync legacy.
---'set onesync legacy'
+--**only support for onesync legacy**.
+--'set onesync legacy' in your server.cfg as well as txAdmin settings. Basically calls FoundIamSpawner() function in client.lua
+--this is to fix IndoorsMission=true missions that have outside spawns when using OneSync.
 Config.UsingOneSync = false
+
+--Enable WORKAROUND fix! for more than 1 player. if a mission and mission A.I. is acting Janky:
+--To fix certain issues with more than 1 player, a workaround was made to ensure that
+--ONLY the first player (host) will be responsible to spawn mission entities (except for indoors missions and mission events) 
+--on behlaf of all players.
+--This workaround is turned off globally for all mission by default (Config.IgnoreMissionStarterFix=true below), so any client: host or 
+--non-host can spawn mission entities. 
+--If a mission is acting janky A.I.-wise go to the mission and add 'IgnoreMissionStarter=false,' to it (missions are further down in this file) 
+--and try the mission again. 
+--This will enable the workaoround above 
+--Sometimes restarting the server and reconnecting may fix it if that doesnt help.
+
+--NOTE: whether the workaround is enabled or not following the tips below will minimize/remove glitches and should make all 62 missions playable:
+--1. players should always stick together as much as possible. I added a teleport resource where players can teleport '/tp' to telelport to waypoint if on foot. 
+--'/tpv' teleport to waypoint when in a vehicle. This can help players stick together. Mission resource drops for fast travel can be used too.
+--2. It's REQUIRED that the first player to join the server use '/Mission <missionname>'  (i.e. /mission Mission1). 
+--to start a mission (they become the MISSIONSTARTER in the code). The first player to join should also trigger the mission. This is when a player comes within 
+--a certain amount of distance from the mission blip.
+--3. If mission and mission A.I. still is janky set IgnoreMissionStarterFix=true, for the mission. and restart the resource and follow 1. and 2. above. 
+--4. Try restarting the server and reconnecting may fix it if that doesnt help. 
+Config.IgnoreMissionStarterFix=true --the workaround is turned off. set to false to turn it on. It can be turned off/on for all missions here, or set per mission.
 
 --change hud for splitscreen resolution?
 Config.HUDSplitScreen = false
@@ -58,7 +80,7 @@ Config.MissionSecureTimePropObject = 5
 Config.BackupPeds={ 's_m_y_blackops_01', 's_m_y_blackops_02', 's_m_y_blackops_03',  's_m_y_swat_01' }
 
 -- L3 + DPAD LEFT,
-Config.MissionDoBackup=false
+Config.MissionDoBackup=true
 
 Config.BackupPedHealth=5000
 
@@ -486,7 +508,7 @@ Config.SafeHousePedDoctorAnims={"EAR_TO_TEXT","WORLD_HUMAN_CLIPBOARD","WORLD_HUM
 
 --pawns player to the current mission safehouse when they spawn/respawn
 Config.TeleportToSafeHouseOnSpawn = true
-Config.TeleportToSafeHouseOnMissionStart = false
+Config.TeleportToSafeHouseOnMissionStart = true
 --Will teleport all mission players OUT of vehicles 
 --to the safehouse marker (useful as well if no BlipSL set):
 Config.TeleportToSafeHouseOnMissionStartNoVehicle = false
@@ -1342,6 +1364,7 @@ Config.Missions = {
 	MissionMessage = "Go to the construction site and secure it from the mercenaries",
 	MissionSpaceTime = 10000,
 	MissionTriggerRadius = 1000.0,
+	--IgnoreMissionStarterFix=true,
 	--NextMission="Mission27",
 	--NextMissionIfFailed="Mission1",
 	--TeleportToSafeHouseOnMissionStart = true,
