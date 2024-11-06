@@ -16,8 +16,8 @@
 # 2. It's REQUIRED that the first player to join the server use '/Mission <missionname>'  (i.e. /mission Mission1). 
 # to start a mission (they become the MISSIONSTARTER in the code). The first player to join should also trigger the mission. This is when a player comes within 
 # a certain amount of distance from the mission blip.
-# 3. If mission and mission A.I. still  janky set IgnoreMissionStarterFix=true, for the mission. and restart the resource and follow 1. and 2. above. 
-# 4. Try restarting the server and reconnecting may fix it if that doesnt help. 
+# 3. If mission and mission A.I. is still  janky set IgnoreMissionStarterFix=true, for the mission. and restart the resource and follow 1. and 2. above. 
+# 4. Try restarting the server and reconnecting may fix it if that doesnt help (with IgnoreMissionStarterFix either false or true). 
 
 
 # UPDATE:The main resource 'mrp-missions-v3' requires an non-supported out date manifest for it to work. resource_manifest_version '77731fab-63ca-442c-a67b-abc70f28dfa5' 
