@@ -10,6 +10,7 @@ map 'map.lua'
 client_script 'basic_client.lua'
 client_script 'client.lua'
 client_script 'missions.lua'
+client_script 'teleportcommands.lua'
 
 -- temporary!
 ui_page 'html/scoreboard.html'
