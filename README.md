@@ -1,34 +1,31 @@
 # mrp-missions (OUT OF DATE but still somewhat playable)
 # Crackdown Mission Resource for FiveM
 
-# This resource is glitchy with more than 1 player for some missions, though all missions should be playable (see STEPS below) . Only recommended for playing on a server just to play these missions. To minimize glitches the FIRST player to join the server MUST be the one to start and stop missions with '/mission missionname' (i.e. /mission Mission1) and '/stop' 
-# See missiona.lua for mission name. FIRST player MUST also be the one to trigger the mission. Missions can be started but then actually triggered when within a variable range of the mission blip (spawning in props, NPCS vehicles etc...). if a mission starts by ityself, FIRST player should '/stop' the mission and use '/mission missionname'.
-# some missions get started and triggered at start, just make sure FIRST player is starting it. 
+# This resource is glitchy with more than 1 player for some missions. Only recommended for playing on a server just to play these missions. 
 
-# if you get crashes then try setting game build to1604 on server.
+# I am not longer supporting this, but after some playtesting added some fixes and tips to for anyone wanting to play. Best for a server that is set up to run this and coordinated players. 
 
-# WORKAROUND FIX ADDED if you see mission A.I. etc.. acting wierd not responding etc.. A workaround fix can be enabled  globally for all missions or per mission See 'IgnoreMissionStarterFix' at the top of Missions.lua file). 
+# WORKAROUND FIXES ADDED in release 3.2.8.7. If you see mission A.I. etc.. acting wierd not responding etc.. A workaround fix can be enabled  globally for all missions or per mission. See 'IgnoreMissionStarterFix' at the top of Missions.lua file). 
 
 # STEPS
-# NOTE: whether the workaround is enabled or not following the STEPS  below will minimize/remove glitches and should make all 62 missions playable:
-# 1. players should always stick together as much as possible. I added a teleportcommand.lua file where players can teleport '/tp' to telelport to waypoint if on foot. 
-# '/tpv' teleport to waypoint when in a vehicle. This can help players stick together. Mission resource drops for fast travel can be used too.
-# 2. It's REQUIRED that the first player to join the server use '/Mission <missionname>'  (i.e. /mission Mission1). 
-# to start a mission (they become the MISSIONSTARTER in the code). The first player to join should also trigger the mission. This is when a player comes within 
-# a certain amount of distance from the mission blip.
-# 3. If mission and mission A.I. is still  janky set IgnoreMissionStarterFix=false, for the mission. and restart the resource and follow 1. and 2. above. 
+# NOTE: whether the workaround is enabled or not, following the STEPS  below will minimize/remove glitches and should make all 62 missions playable:
+# 1. players should always stick together as much as possible. I added a teleportcommand.lua file where players can teleport '/tp' to telelport to waypoint if on foot.  '/tpv' teleport to waypoint when in a vehicle. This can help players stick together. Mission resource drops for fast travel can be used too.
+# 2. It's REQUIRED that the first player to join the server use '/mission missionname'  (i.e. /mission Mission1). to start a mission (they become the MISSIONSTARTER in the code). The first player to join should also trigger the mission (spawns mission entities). This is when a player comes within  a certain amount of distance from the mission blip. 
+# 3. If mission and mission A.I. is still  janky set IgnoreMissionStarterFix=false, for the mission. and restart the resource and follow 1. and 2. above. This forces the first player ''host' to spawn entities on behalf of the other players. (except for indoorsMission=true mission types and mission events which should work fine)
 # 4. Try restarting the server and reconnecting may fix it if that doesnt help (with IgnoreMissionStarterFix either false or true). 
+# 5. if you get crashes then try setting  game build to1604 on server. 
+# 6. The resource will not work with regular onesync. set  onesync  to off or onesync set to legacy in server.cfg and txadmin. If onesync is set to legacy, copy the server.lua in the root of the repo/zip archive and put it into mrp-missions.v3 directory, backing up server.lua already there. Then at the top of Missions.lua set Config.UsingOneSync = true
+
+# NOTE: some missions get started and triggered at the same time just make sure FIRST player is starting it.
+
+# NOTE: :The main resource 'mrp-missions-v3' requires an non-supported out date manifest for it to work. resource_manifest_version '77731fab-63ca-442c-a67b-abc70f28dfa5'. using a newer manifest will break it and cause missions to not work at all.
+
+# Other notes: Make sure 'start baseevents' is in the server.cfg (as well as one sync set to off or set to legacy in server.cfg and txadmin). Also for this to work properly either comment out or remove 'ensure basic-gamemode' (default freeroam gametype) in server.cfg (if vanilla server). Else and also if you are using other gametypes, you will need to change the code and/or manifest in the mrp-missions-v3 resource to behave better with other gametypes.
 
 
-# UPDATE:The main resource 'mrp-missions-v3' requires an non-supported out date manifest for it to work. resource_manifest_version '77731fab-63ca-442c-a67b-abc70f28dfa5' 
-# It worked 'well enough' for me testing just a litle bit with a newer (albiet custom) build of FiveM. (11/4/24) . It still needs one sync to be set to off or set to legacy. Also using a newer manifest will break it.
-# 'Well Enough' meaning that it has some quirks now. Many missions use long distance blips for enemies and other mission NPCS. These can and probably will stop showing now for clients during missions until the player gets within streaming range (300+ meters?) of the targets.
-# So missions are still playable but could be more challenging, depending on the mission. Many missions though should not be affected, since they do not make use of long range NPC blips. You could still create your own missions in a way to avoid this. 
-# map.lua is now added from mrp-missions_spawn (mrp-missions_spawn is no longer needed). basic_client.lua added from fivem server vanilla freeroam 'basic-gamemode' for spawning and respawning.
+# This resource is OUT OF DATE. One issue with newer clients and servers is for missions that use long range NPC blips. For more than 1 player games, these blips can and probably will turn off until you are within streaming range of the NPC (300+meteres). This can make some of the missions more challenging. 
 
-# *mrp-missions_spawn resource is no longer needed*
-
-# Other notes: Make sure 'start baseevents' is in the server.cfg (as well as one sync set to off or set to legacy in server.cfg and txadmin). Also for this to work properly either comment out or remove 'ensure basic-gamemode' (default freeroam gametype) in server.cfg (if vanilla server). Else and also if you are using other gametypes, you will need to change the code and/or manifest in the mrp-missions-v3 resource to behave better with other gametypes. ALSO: With onesync set to legacy, use the server.lua provided in the root of the repo/zip (and replacing the one in mrp-missions-v3), as well as setting Config.UsingOneSync = true in missions.lua
+# See rest of README.md and README.TXT for installation instructions
 
 
 See the README.TXT for installation, controls and other information about this resource. 
