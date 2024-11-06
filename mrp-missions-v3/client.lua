@@ -1735,7 +1735,7 @@ AddEventHandler("mt:doMissionHelpText", function(input)
 				
 			end
 			
-			if getMissionConfigProperty(MissionName, "UseMissionDrop") then 
+			if getMissionConfigProperty(input, "UseMissionDrop") then 
 				Wait(5000)
 				HelpMessage("Press~INPUT_DUCK~ and ~INPUT_COVER~ to toggle a Mission Reinforcement Drop (MRD) at your location",false,5000)
 				Wait(5000)
@@ -5292,7 +5292,9 @@ RegisterNetEvent('SpawnRandomPed')
 AddEventHandler('SpawnRandomPed', function(input,MissionType, NumPeds,NumVehicles,rIndex,IsRandomSpawnAnywhereInfo)
 
 	if not MISSIONSTARTER then
-		return
+		if not getMissionConfigProperty(input, "IgnoreMissionStarterFix") then
+			return
+		end
 	end 
 	print ('made it')
 	if getMissionConfigProperty(input, "MissionTriggerRadius") then 
@@ -7263,7 +7265,9 @@ AddEventHandler('SpawnPed', function(input)
 
 
 	if not MISSIONSTARTER then
-		return
+		if not getMissionConfigProperty(input, "IgnoreMissionStarterFix") then
+			return
+		end
 	end 
 	print ('made it')
 
@@ -8662,7 +8666,7 @@ Citizen.CreateThread(function()
 					--allow for 'outside' peds to spawn right away, but let host do that
 					
 					if(Config.Missions[MissionName].Peds[i].outside and FoundIamSpawner()) then 
-						--print("spawn outside ped"..i)
+						print("spawn outside ped"..i)
 						
 						SpawnAPed(MissionName,i,false)
 						Config.Missions[MissionName].Peds[i].spawned = true
@@ -8709,7 +8713,7 @@ Citizen.CreateThread(function()
 				
 					--allow for 'outside' vehicles to spawn right away, but let host do that
 					if(Config.Missions[MissionName].Vehicles[i].outside and FoundIamSpawner()) then 
-						--print("spawn outside vehicle"..i)
+						print("spawn outside vehicle"..i)
 						
 						SpawnAPed(MissionName,i,true)
 						Config.Missions[MissionName].Vehicles[i].spawned = true
@@ -13532,6 +13536,8 @@ function calcMissionStats()
 	local bossPedsKilledByPlayer = 0
 	local totalRescuedObjects = 0
 	local isDefendGoalReached = 0
+	local totalPeds = 0
+	local totalVehicles = 0
 	
 	
 	local playerPed = GetPlayerPed(-1)
@@ -13553,6 +13559,10 @@ function calcMissionStats()
 				SetEntityVisible(ped,true,true)
 			end 
 		end		
+		
+		if DecorGetInt(ped, "mrpvehdid") > 0 then
+			totalVehicles = totalVehicles + 1;
+		end
 		
 		if DecorGetInt(ped, "mrpvehdid") > 0 and DecorGetInt(ped, "mrpvehdidGround") > 0  then 
 			local ecoords = GetEntityCoords(ped,true)
@@ -13733,6 +13743,24 @@ function calcMissionStats()
 					end
 					]]--
 				end
+				
+				if (DecorGetInt(ped, "mrppedid") > 0) then	
+					totalPeds = totalPeds + 1
+					--print('targets calc')
+					--[[if(getMissionConfigProperty(MissionName, "DrawText3D")) and not IsEntityDead(ped)  then
+						
+							local o1 = GetEntityCoords(ped, true)
+							if(GetDistanceBetweenCoords(o1.x,o1.y,o1.z, pcoords.x, pcoords.y, pcoords.z, true) < 30) then						
+								
+								--DrawText3D({x = o1.x, y =o1.y, z = o1.z}, "~r~Enemy Target ($"..getTargetKillReward(MissionName)..")", 0.6)	
+							
+								DrawText3D({x = o1.x, y =o1.y, z = o1.z + 1.0}, "~r~Target", 1.0)		
+							end
+						
+		
+					end
+					]]--
+				end				
 				
 				--[[ DISABLED FOR NOW
 				--check for rogue spawns that have z < GroundZ within collision range of the player. Reset them if so. 
@@ -14870,8 +14898,10 @@ function calcMissionStats()
 				end	
 		
 		--print("events done"..GetGameTimer())
+	--print("tottargetpeds:"..totalTargets.." totpeds:"..totalPeds.." totvehs:"..totalVehicles)
 	
-	--print("totalRescuedHostages"..totalRescuedHostages.."hpeds:"..hostagesKilledByPlayer.." regpeds:"..nontargetPedsKilledByPlayer.." targetpeds:"..targetPedsKilledByPlayer.." totpeds:"..totalTargets.." totdeadtargpeds:"..totalDeadTargets.." vehpeds:"..vehiclePedsKilledByPlayer)
+	
+	--print("totalRescuedHostages"..totalRescuedHostages.."hpeds:"..hostagesKilledByPlayer.." regpeds:"..nontargetPedsKilledByPlayer.." targetpedskilled:"..targetPedsKilledByPlayer.." tottargetpeds:"..totalTargets.." totdeadtargpeds:"..totalDeadTargets.." vehpedskilled:"..vehiclePedsKilledByPlayer)
 	
 	return {nontargetPedsKilledByPlayer,targetPedsKilledByPlayer,hostagesKilledByPlayer,totalTargets,totalDeadTargets,totalDeadHostages,totalRescuedHostages,hasBeenConquered,isDefendTargetDead,isDefendTargetRescued,isDefendTargetKilledByPlayer,vehiclePedsKilledByPlayer,bossPedsKilledByPlayer,totalRescuedObjects,isDefendGoalReached}
 
@@ -15592,27 +15622,36 @@ function MissionCheck()
 				
 			elseif(totalTargets  == totalDeadTargets) and (totalTargets > 0 and totalDeadTargets > 0) and (Config.Missions[MissionName].Type == "Assassinate" or Config.Missions[MissionName].Type == "BossRush") then --and PedsSpawned == 1 then --need at least 1 target, or the mission will autocomplete on start
 				--print("MISSIONCHECK DONE1")
-				securing = false --needed?
-				buying = false
+				
 				
 				--message  = "^1[MISSIONS]: ^2".. PLYN .."^0 has assassinated all the targets!"
 	
-				message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 has been completed!"
+				if MISSIONSTARTER then 
+					securing = false --needed?
+					buying = false
 				
-			   -- TriggerServerEvent("sv:two", message)
-				--TriggerServerEvent("sv:two", message2)
-				TriggerEvent('chatMessage', message2)
-				Active = 0
-				--TriggerServerEvent("sv:done", MissionName)
-				--TriggerEvent("DONE", MissionName)
-				aliveCheck()
-				local oldmission = MissionName
-				--MissionName = "N/A"
-				TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission
+					message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 has been completed!"
+					
+				   -- TriggerServerEvent("sv:two", message)
+					--TriggerServerEvent("sv:two", message2)
+					TriggerEvent('chatMessage', message2)
+					
+					Active = 0
+					--TriggerServerEvent("sv:done", MissionName)
+					--TriggerEvent("DONE", MissionName)
+					aliveCheck()
+					local oldmission = MissionName
+					--MissionName = "N/A"
+					TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission
+				else 
+					aliveCheck()
+				end 
 			
 			--IsDefend requires Assassinate Type?
 			elseif getMissionConfigProperty(MissionName, "IsDefend") and (not getMissionConfigProperty(MissionName, "IsDefendTarget"))  and hasBeenConquered > 0 then   --and hasBeenConquered(MissionName) then --and Config.Missions[MissionName].Type == "Assassinate" and hasBeenConquered(MissionName) then
 				--print("MISSIONCHECK ISDEFEND")
+				
+			--if MISSIONSTARTER then 	
 				isfail = true
 				PLY = PlayerId()
 				PLYN = GetPlayerName(PLY)
@@ -15633,7 +15672,9 @@ function MissionCheck()
 				local oldmission = MissionName
 				--MissionName = "N/A"
 				TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,reasontext) --GHK Start New Mission
-
+			--else
+				--aliveCheck()
+			--end
 
 			elseif getMissionConfigProperty(MissionName, "IsDefend") and getMissionConfigProperty(MissionName, "IsDefendTarget") then   --and hasBeenConquered(MissionName) then --and Config.Missions[MissionName].Type == "Assassinate" and hasBeenConquered(MissionName) then
 				--print("mcheck2...isDefendTargetRescued:"..isDefendTargetRescued)
@@ -15748,14 +15789,20 @@ function MissionCheck()
 					end
 				end
 			elseif Config.Missions[MissionName].Type == "HostageRescue" and Config.Missions[MissionName].IsRandom and totalRescuedHostages == 0 and hostagePedsKilledByPlayer == 0 and totalDeadHostages == 0 and IsRandomMissionAllHostagesRescued then
-				securing = false --needed?
-				buying = false
-				message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 has been completed!"					
-				TriggerEvent('chatMessage', message2)
-				Active = 0
-				aliveCheck()
-				local oldmission = MissionName
-				TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission							
+				
+				if MISSIONSTARTER then 
+					securing = false --needed?
+					buying = false
+					message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 has been completed!"					
+					TriggerEvent('chatMessage', message2)
+					Active = 0
+					aliveCheck()
+					local oldmission = MissionName
+					TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission	
+				else 
+					aliveCheck()
+				
+				end
 			
 			elseif Config.Missions[MissionName].Type == "HostageRescue" and not Config.Missions[MissionName].IsRandom and totalRescuedHostages == 0 and hostagePedsKilledByPlayer == 0 and totalDeadHostages == 0 and totalRescuedObjects == 0 then
 				local totalhostages = 0
@@ -15772,14 +15819,21 @@ function MissionCheck()
 				end
 				
 				if totalhostages > 0 and rescuedhostages > 0 and (rescuedhostages==totalhostages) then 
-					securing = false --needed?
-					buying = false
-					message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 has been completed!"					
-					TriggerEvent('chatMessage', message2)
-					Active = 0
-					aliveCheck()
-					local oldmission = MissionName
-					TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission					
+					--if MISSIONSTARTER then 	
+					
+						securing = false --needed?
+						buying = false
+						
+						message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 has been completed!"					
+						TriggerEvent('chatMessage', message2)
+						Active = 0
+						aliveCheck()
+						local oldmission = MissionName
+						TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission					
+					--else
+					--	aliveCheck()
+					--end 
+				
 				end
 				
 			elseif Config.Missions[MissionName].Type == "ObjectiveRescue" and totalRescuedObjects == 0 and totalRescuedHostages == 0 
@@ -15801,14 +15855,20 @@ function MissionCheck()
 				end
 				
 				if totalobjects > 0 and rescuedobjects > 0 and (rescuedobjects==totalobjects) then 
-					securing = false --needed?
-					buying = false
-					message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 has been completed!"					
-					TriggerEvent('chatMessage', message2)
-					Active = 0
-					aliveCheck()
-					local oldmission = MissionName
-					TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission					
+					--if MISSIONSTARTER then 	
+					
+						securing = false --needed?
+						buying = false
+						message2 = "^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle .."'^0 has been completed!"					
+						TriggerEvent('chatMessage', message2)
+						Active = 0
+						aliveCheck()
+						local oldmission = MissionName
+						TriggerEvent('ExitOldMissionAndStartNewMission',oldmission,isfail,"") --GHK Start New Mission					
+					--else
+						--aliveCheck()
+					--end
+				
 				end
 				
 				--should be OK to be here, rathee than above objects logic?
