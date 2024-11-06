@@ -1,11 +1,23 @@
 # mrp-missions (OUT OF DATE but still somewhat playable)
 # Crackdown Mission Resource for FiveM
 
-# This resource is glitchy with more than 1 player for some missions. Only recommended for playing on a server just to play these missions. To minimize glitches the FIRST player to join the server MUST be the one to start and stop missions with '/mission missionname' (i.e. /mission Mission1) and '/stop' 
+# This resource is glitchy with more than 1 player for some missions, though all missions should be playable (see STEPS below) . Only recommended for playing on a server just to play these missions. To minimize glitches the FIRST player to join the server MUST be the one to start and stop missions with '/mission missionname' (i.e. /mission Mission1) and '/stop' 
 # See missiona.lua for mission name. FIRST player MUST also be the one to trigger the mission. Missions can be started but then actually triggered when within a variable range of the mission blip (spawning in props, NPCS vehicles etc...). if a mission starts by ityself, FIRST player should '/stop' the mission and use '/mission missionname'.
 # some missions get started and triggered at start, just make sure FIRST player is starting it. 
 
 # if you get crashes then try setting game build to1604 on server.
+
+# WORKAROUND FIX ADED if you see mission A.I. etc.. acting wierd not responding etc.. A workaround fix can be enabled for globally for all missions or per mission See 'IgnoreMissionStarterFix' at the top of Missions.lua file). 
+
+# STEPS
+# NOTE: whether the workaround is enabled or not following the STEPS  below will minimize/remove glitches and should make all 62 missions playable:
+# 1. players should always stick together as much as possible. I added a teleportcommand.lua file where players can teleport '/tp' to telelport to waypoint if on foot. 
+# '/tpv' teleport to waypoint when in a vehicle. This can help players stick together. Mission resource drops for fast travel can be used too.
+# 2. It's REQUIRED that the first player to join the server use '/Mission <missionname>'  (i.e. /mission Mission1). 
+# to start a mission (they become the MISSIONSTARTER in the code). The first player to join should also trigger the mission. This is when a player comes within 
+# a certain amount of distance from the mission blip.
+# 3. If mission and mission A.I. still  janky set IgnoreMissionStarterFix=true, for the mission. and restart the resource and follow 1. and 2. above. 
+# 4. Try restarting the server and reconnecting may fix it if that doesnt help. 
 
 
 # UPDATE:The main resource 'mrp-missions-v3' requires an non-supported out date manifest for it to work. resource_manifest_version '77731fab-63ca-442c-a67b-abc70f28dfa5' 
