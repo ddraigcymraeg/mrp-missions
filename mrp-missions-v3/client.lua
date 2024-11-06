@@ -1088,7 +1088,7 @@ RegisterNetEvent("mt:startnextmission")
 AddEventHandler("mt:startnextmission", function(nextmission)
 
 	--GHKHERE
-	MISSIONSTARTER = true
+	--MISSIONSTARTER = true
 	print("mt:startnextmission called")
 	local rMissionLocationIndex = 0
 	local rSafeHouseLocationIndex = 0
@@ -1390,7 +1390,7 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 		if(currentplayercount == 1) then 
 		
 		--GHKHERE
-		MISSIONSTARTER = true
+		--MISSIONSTARTER = true
 			--mission is currently running on server (ActiveMission=true), and they are only player
 			--start mission for them and spawn peds, set mission blip, and NPC blips
 			--print("MADE IT")
@@ -5291,7 +5291,10 @@ end
 RegisterNetEvent('SpawnRandomPed')
 AddEventHandler('SpawnRandomPed', function(input,MissionType, NumPeds,NumVehicles,rIndex,IsRandomSpawnAnywhereInfo)
 
-
+	if not MISSIONSTARTER then
+		return
+	end 
+	print ('made it')
 	if getMissionConfigProperty(input, "MissionTriggerRadius") then 
 	
 		local mcoords = {x=0,y=0,z=0}
@@ -5368,7 +5371,10 @@ AddEventHandler('SpawnRandomPed', function(input,MissionType, NumPeds,NumVehicle
 
 		
 		if playerTriggered and not MissionTriggered then 
-			TriggerServerEvent("sv:CheckHostFlag",BLHOSTFLAG)
+			--if MISSIONSTARTER == true then
+				--print('trigger event')
+				TriggerServerEvent("sv:CheckHostFlag",BLHOSTFLAG)
+			--end
 			MissionTriggered = true			
 			--wait 1 second and check again. 
 			--if no mission host where  BLHOSTFLAG = true
@@ -7256,6 +7262,11 @@ RegisterNetEvent('SpawnPed')
 AddEventHandler('SpawnPed', function(input)
 
 
+	if not MISSIONSTARTER then
+		return
+	end 
+	print ('made it')
+
 	if getMissionConfigProperty(input, "MissionTriggerRadius") then 
 	
 		local mcoords = {x=0,y=0,z=0}
@@ -7346,8 +7357,9 @@ AddEventHandler('SpawnPed', function(input)
 		
 		if playerTriggered and not MissionTriggered then 
 			--print("trigger event:")
-			
-			TriggerServerEvent("sv:CheckHostFlag",BLHOSTFLAG)
+			--if MISSIONSTARTER == true then
+				TriggerServerEvent("sv:CheckHostFlag",BLHOSTFLAG)
+			--end 
 			MissionTriggered = true			
 			--wait 1 second and check again. 
 			--if no mission host where  BLHOSTFLAG = true
@@ -15509,8 +15521,9 @@ function MissionCheck()
 	]]--
 	--print(GetIsTaskActive(Config.Missions[MissionName].Vehicles[6].id2,373))
 	--print("MISSIONSTARTER:"..tostring(MISSIONSTARTER))
-	--if MISSIONSTARTER == false then
-		---return 
+	--if not MISSIONSTARTER then
+		--Citizen.Wait(2500)
+		--return 
 	--end
 	PLY = PlayerId()
 	PLYN = GetPlayerName(PLY)
