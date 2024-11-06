@@ -1,8 +1,8 @@
 # mrp-missions (OUT OF DATE but still somewhat playable)
 # Crackdown Mission Resource for FiveM
 
-# This resource is glitchy with more than 1 player for some missions. Only recommended for playing on a server just to play these missions. To minimize glitches the FIRST player to join the server MUST be the one to start and stop missions with '/mission <missionname>' (i.e. /mission Mission1) and '/stop' 
-# See missiona.lua for mission name. FIRST player MUST also be the one to trigger the mission. Missions can be started but then actually triggered when within a variable range of the mission blip (spawning in props, NPCS vehicles etc...). if a mission starts by ityself, FIRST player should '/stop' the mission and use '/mission <missionname>'.
+# This resource is glitchy with more than 1 player for some missions. Only recommended for playing on a server just to play these missions. To minimize glitches the FIRST player to join the server MUST be the one to start and stop missions with '/mission missionname' (i.e. /mission Mission1) and '/stop' 
+# See missiona.lua for mission name. FIRST player MUST also be the one to trigger the mission. Missions can be started but then actually triggered when within a variable range of the mission blip (spawning in props, NPCS vehicles etc...). if a mission starts by ityself, FIRST player should '/stop' the mission and use '/mission missionname'.
 # some missions get started and triggered at start, just make sure FIRST player is starting it. 
 
 # if you get crashes then try setting game build to1604 on server.
