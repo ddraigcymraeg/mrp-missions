@@ -231,7 +231,7 @@ AddEventHandler("sv:one", function(input,input2, timet,rMissionLocationIndex,rMi
 	print("sv:one called to start new mission")
 	if blActiveMissionCheck then 
 		if(not ActiveMission) then 
-			TriggerClientEvent('chatMessage', -1, "^1[MISSIONS]: ^2'".. input2 .."'^0 has been launched.")
+			TriggerClientEvent('chatMessage', -1, "^1[MISSIONS]: ^2'".. input2 .."'^0 has been launched. Mission Name is: ^2'"..input.."'^0")
 			--TriggerClientEvent("mt:missiontext", -1, input, timet)
 			TriggerClientEvent('missionBlips', -1, input,rMissionLocationIndex,rMissionType,rIsRandomSpawnAnywhereInfo,rSafeHouseLocationIndex,true,rMissionDestinationIndex)
 			TriggerClientEvent("SpawnPedBlips",-1, input)
@@ -257,7 +257,7 @@ AddEventHandler("sv:one", function(input,input2, timet,rMissionLocationIndex,rMi
 		--print("rMissionType:"..rMissionType)
 		--print("rMissionLocationIndex:"..rMissionLocationIndex)
 		
-		TriggerClientEvent('chatMessage', -1, "^1[MISSIONS]: ^2'".. input2 .."'^0 has been launched.")
+					TriggerClientEvent('chatMessage', -1, "^1[MISSIONS]: ^2'".. input2 .."'^0 has been launched. Mission Name is: ^2'"..input.."'^0")
 		
 		TriggerClientEvent("mt:missiontext", -1, input, timet)
 		--print("sv:one rSafeHouseLocationIndex"..rSafeHouseLocationIndex)
