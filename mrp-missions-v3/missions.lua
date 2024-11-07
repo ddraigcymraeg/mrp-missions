@@ -22,8 +22,10 @@ Config.UsingOneSync = false
 --Sometimes restarting the server and reconnecting may fix it if that doesnt help.
 
 --NOTE: whether the workaround is enabled or not following the tips below will minimize/remove glitches and should make all 62 missions playable:
---1. players should always stick together as much as possible. I added a teleport resource where players can teleport '/tp' to telelport to waypoint if on foot. 
---'/tpv' teleport to waypoint when in a vehicle. This can help players stick together. Mission resource drops for fast travel can be used too.
+--1. players should always stick together as much as possible. I added a teleport resource where players can teleport to a waypoint set near another player (wihtin 300m) 
+-- using right stick down and dpad up simultaenously (or keyboard equivalents) Control Indexes 26 & 27. https://docs.fivem.net/docs/game-references/controls/ 
+-- also a /tp command where players can teleport anywhere on the map regardless where any other player is. With both --if a player is in a vehicle they will teleport in the vehicle.
+-- Mission resource drops can be used for fast travel too see in-game help or README.TXT.
 --2. It's REQUIRED that the first player to join the server use '/Mission <missionname>'  (i.e. /mission Mission1). 
 --to start a mission (they become the MISSIONSTARTER in the code). The first player to join should also trigger the mission. This is when a player comes within 
 --a certain amount of distance from the mission blip.
