@@ -10,20 +10,23 @@ Installation:
 
 # *mrp-missions_spawn resource is no longer needed* with latest Release 3.2.8.3
 
+if you need to restart mrp-missions-v3 or mrpStreetRaces make you sure you restart the other one as well, as mrpStreetRaces works with mrp-missions-v3 run race missions. 
+
 UPDATE: This resource by default is meant to be played with onesync off (preferable), but has reportedly worked fine/ok with onesync legacy turned on with the onesync
 server.lua provided in the root of the repo/zip (and replacing the one in mrp-missions-v3), as well as setting Config.UsingOneSync = true in missions.lua. Regular onesync turned on will make the resource unstable and break it. These onesync settings
 are done in server.cfg
 
 (If you are experiencing issues, after turning off other custom resources and doing the above try running on gamebuild 1604. If that is still an issue try running on the server artifact here: https://www.mediafire.com/file/aahzl5yslqhwpbv/FXServer_jan19.zip/file (very old server version, defaults to 1604 and default to onesync off, but may be too old to run now).)
 
-
 UPDATE 2: Make sure 'start baseevents' is in the server.cfg (as well as one sync set to off or set to legacy in server.cfg and txadmin [see above]). Also for this to work properly either comment out or remove 'ensure basic-gamemode' (default freeroam gametype) in server.cfg (if vanilla server). Else and also if you are using other gametypes, you will need to change the code and/or manifest in this resource to behave better with other gametypes. 
 
-Install like any other FiveM Server Resource. Both mrp-missions-v3 and mrpStreetRaces need to be installed. 
+Install like any other FiveM Server Resource. Both mrp-missions-v3 and mrpStreetRaces need to be installed. teleport resource is recommended as well. See top of Readme.md why.
 
 install resources as well from shadowstate-missionpack.zip which some missions require.
 
 'mrp-missions_spawn' is purely optional, and has defined player skins to spawn as. 
+
+if you need to restart mrp-missions-v3 or mrpStreetRaces make you sure you restart the other one as well, as mrpStreetRaces works with mrp-missions-v3 run race missions. 
 
 To build your own missions, check out the Config_Guide.lua.txt, and see notes below.
 
