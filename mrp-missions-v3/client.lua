@@ -1260,7 +1260,7 @@ AddEventHandler("mt:setactive", function(activeflag,input,onlineplayers,dochecks
 		
 		
 		--MissionNumber = tonumber(string.sub(MissionName, -1))
-		TriggerEvent('chatMessage',"^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle.."'^0 has been launched.")
+		TriggerEvent('chatMessage',"^1[MISSIONS]: ^2'".. Config.Missions[MissionName].MissionTitle.."'^0 has been launched. Mission Name is: ^2'"..MissionName.."'^0")
 		
 		TriggerEvent("mt:missiontext", MissionName, 10000)
 		
