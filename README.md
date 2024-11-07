@@ -12,7 +12,6 @@
 # 1. players should always stick together as much as possible. I added a teleport resource where players can teleport to a  waypoint set near another player (wihtin 300m) using right stick down and dpad up simultaenously (or keyboard equivalents) Control Indexes 26 & 27. https://docs.fivem.net/docs/game-references/controls/ Mission resource drops for fast travel can be used too.
 # also a /tp command where players can teleport anywhere on the map regardless where any other player is. With both if a player is in a vehicle they will teleport in the vehicle.
 # 2. It's REQUIRED that the first player to join the server use '/mission missionname'  (i.e. /mission Mission1). to start a mission (they become the MISSIONSTARTER in the code). The first player to join should also trigger the mission (spawns mission entities). This is when a player comes within  a certain amount of distance from the mission blip.
-# the chat 
 # 3. If mission and mission A.I. is still  janky set IgnoreMissionStarterFix=false, for the mission. and restart the resource and follow 1. and 2. above. This forces the first player ''host' to spawn entities on behalf of the other players. (except for indoorsMission=true mission types and mission events which should work fine)
 # 4. Try restarting the server and reconnecting may fix it if that doesnt help (with IgnoreMissionStarterFix either false or true). 
 # 5. if you get crashes then try setting  game build to1604 on server. 
